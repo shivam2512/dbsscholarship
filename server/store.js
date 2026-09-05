@@ -1,8 +1,8 @@
 const fs = require('fs');
 const path = require('path');
 
-// Local storage file for zero-db persistence
-const dataDir = path.join(__dirname, '..', 'data');
+const isServerless = !!(process.env.AWS_LAMBDA_FUNCTION_NAME || process.env.NETLIFY);
+const dataDir = isServerless ? path.join('/tmp', 'data') : path.join(__dirname, '..', 'data');
 try {
   if (!fs.existsSync(dataDir)) {
     fs.mkdirSync(dataDir, { recursive: true });

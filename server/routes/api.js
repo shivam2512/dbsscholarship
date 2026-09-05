@@ -13,7 +13,9 @@ const { sendScorecardEmail } = require('../mailer');
 // Multer Storage Configuration for Webcam Proctor Snapshots
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    const uploadPath = path.join(__dirname, '..', '..', 'uploads');
+    const uploadPath = process.env.AWS_LAMBDA_FUNCTION_NAME || process.env.NETLIFY
+      ? path.join('/tmp', 'uploads')
+      : path.join(__dirname, '..', '..', 'uploads');
     if (!fs.existsSync(uploadPath)) {
       fs.mkdirSync(uploadPath, { recursive: true });
     }
@@ -217,7 +219,7 @@ router.post('/save-progress', (req, res) => {
 });
 
 // 5. Record Security / Proctoring Violation
-router.post('/violation', (req, res) => {
+router.post('/violation', async (req, res) => {
   try {
     const { token, testId, violationType, details } = req.body;
     if (!token || !testId) {

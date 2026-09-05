@@ -15,7 +15,9 @@ function getWebhookUrl() { return process.env.GOOGLE_SHEET_WEBHOOK_URL || ''; }
 function getSheetViewUrl() { return process.env.GOOGLE_SHEET_VIEW_URL || ''; }
 
 // Local CSV fallback — every submission is written here regardless of webhook status
-const CSV_PATH = path.join(__dirname, '..', 'submissions_local.csv');
+const CSV_PATH = (process.env.AWS_LAMBDA_FUNCTION_NAME || process.env.NETLIFY)
+  ? path.join('/tmp', 'submissions_local.csv')
+  : path.join(__dirname, '..', 'submissions_local.csv');
 
 /** Write a row to the local CSV log */
 function writeLocalCSV(type, data) {
