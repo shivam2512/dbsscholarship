@@ -125,10 +125,12 @@ router.post('/register', async (req, res) => {
       currentAnswers: {}
     });
 
-    // Log registration directly to Google Sheet in background
-    googleSheets.appendCandidate(newCandidate).catch(err => {
-      console.warn('Google Sheet Async Registration Sync Notice:', err.message);
-    });
+    // Log registration directly to Google Sheet
+    try {
+      await googleSheets.appendCandidate(newCandidate);
+    } catch (err) {
+      console.warn('Google Sheet Registration Sync Notice:', err.message);
+    }
 
     res.json({
       success: true,
@@ -235,9 +237,11 @@ router.post('/violation', (req, res) => {
     });
 
     const candidate = store.getCandidateById(test.candidateId);
-    googleSheets.appendViolation(violation, candidate).catch(err => {
+    try {
+      await googleSheets.appendViolation(violation, candidate);
+    } catch (err) {
       console.warn('Google Sheet Violation Sync Notice:', err.message);
-    });
+    }
 
     const violations = store.getViolationsByTestId(testId);
     const strikeCount = violations.length;
@@ -401,18 +405,22 @@ router.post('/submit-test', async (req, res) => {
     store.saveSubmission(submissionPayload);
 
     // 📊 Sync Final Submission & Scorecard to Google Sheet
-    googleSheets.appendSubmission(candidate, submissionPayload, test)
-      .catch(err => console.warn('Google Sheet Async Submission Sync Notice:', err.message));
+    try {
+      await googleSheets.appendSubmission(candidate, submissionPayload, test);
+    } catch (err) {
+      console.warn('Google Sheet Submission Sync Notice:', err.message);
+    }
 
-    // Async Email Dispatch (Scorecard & Scholarship Certificate)
-    sendScorecardEmail(candidate, submissionPayload, test)
-      .then(result => {
-        if (result.success) {
-          submissionPayload.emailSent = 1;
-          store.saveSubmission(submissionPayload);
-        }
-      })
-      .catch(err => console.error('Background Email Error:', err));
+    // Email Dispatch (Scorecard & Scholarship Certificate)
+    try {
+      const emailResult = await sendScorecardEmail(candidate, submissionPayload, test);
+      if (emailResult && emailResult.success) {
+        submissionPayload.emailSent = 1;
+        store.saveSubmission(submissionPayload);
+      }
+    } catch (err) {
+      console.error('Email Dispatch Error:', err);
+    }
 
     res.json({
       success: true,
