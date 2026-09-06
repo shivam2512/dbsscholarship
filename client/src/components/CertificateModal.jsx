@@ -63,10 +63,10 @@ export default function CertificateModal({ candidate, submission, onClose }) {
     <div className="modal show d-block" style={{ backgroundColor: 'rgba(15, 23, 42, 0.85)', backdropFilter: 'blur(12px)', zIndex: 1050 }} tabIndex="-1">
       <div className="container-fluid min-vh-100 d-flex flex-column align-items-center justify-content-start py-4 overflow-y-auto">
         {/* Top Modal Control Header */}
-        <div className="w-100 max-w-5xl d-flex align-items-center justify-content-between gap-3 mb-3 text-white px-2" style={{ maxWidth: 1123 }}>
+        <div className="w-100 d-flex align-items-center justify-content-between gap-3 mb-3 text-white px-2" style={{ maxWidth: 1123 }}>
           <div className="d-flex align-items-center gap-2">
             <Award className="w-6 h-6 text-warning" />
-            <h2 className="fs-5 fw-bold text-white mb-0">A4 Official Scholarship Certificate Preview</h2>
+            <h2 className="fs-5 fw-bold text-white mb-0">DBS IT Institute — A4 Official Scholarship Certificate</h2>
           </div>
 
           <div className="d-flex align-items-center gap-2">
@@ -89,134 +89,147 @@ export default function CertificateModal({ candidate, submission, onClose }) {
           </div>
         </div>
 
-      {/* Formal A4 Landscape Certificate Template Container */}
-      <div className="w-full max-w-5xl d-flex justify-content-center align-items-center overflow-x-auto py-2">
-        <div
-          ref={certRef}
-          id="official-a4-certificate"
-          className="bg-slate-950 text-white border-4 border-amber-500 relative overflow-hidden shadow-2xl d-flex flex-column justify-content-between align-items-center text-center box-border shrink-0"
-          style={{
-            width: '1123px',
-            height: '794px', // Exact 96 DPI A4 Landscape (297mm x 210mm)
-            padding: '40px 48px',
-            backgroundImage: 'radial-gradient(ellipse at 50% 0%, rgba(245, 158, 11, 0.12) 0%, transparent 65%), radial-gradient(ellipse at 50% 100%, rgba(56, 189, 248, 0.08) 0%, transparent 65%), linear-gradient(135deg, #070b14 0%, #0d1527 100%)'
-          }}
-        >
-          {/* Double Ornate Inner Gold Borders */}
-          <div className="absolute inset-4 border-2 border-amber-400/40 rounded-lg pointer-events-none"></div>
-          <div className="absolute inset-7 border border-amber-400/20 rounded pointer-events-none"></div>
+        {/* Formal A4 Landscape Certificate Template Container (LIGHT THEME) */}
+        <div className="w-100 d-flex justify-content-center align-items-center overflow-x-auto py-2">
+          <div
+            ref={certRef}
+            id="official-a4-certificate"
+            className="bg-white text-dark border-4 position-relative overflow-hidden shadow-2xl d-flex flex-column justify-content-between align-items-center text-center box-border shrink-0"
+            style={{
+              width: '1123px',
+              height: '794px', // Exact 96 DPI A4 Landscape (297mm x 210mm)
+              padding: '38px 48px',
+              borderColor: '#1d4ed8',
+              backgroundImage: 'radial-gradient(ellipse at 50% 0%, rgba(29, 78, 216, 0.05) 0%, transparent 70%), radial-gradient(ellipse at 50% 100%, rgba(217, 119, 6, 0.04) 0%, transparent 70%), #ffffff'
+            }}
+          >
+            {/* Triple Ornate Inner Gold & Blue Borders */}
+            <div className="position-absolute" style={{ inset: '12px', border: '2px solid #d97706', borderRadius: '8px', pointerEvents: 'none' }}></div>
+            <div className="position-absolute" style={{ inset: '18px', border: '1px solid #93c5fd', borderRadius: '6px', pointerEvents: 'none' }}></div>
 
-          {/* Decorative Corner Ornaments */}
-          <div className="absolute top-5 left-5 w-11 h-11 border-t-2 border-l-2 border-amber-400 pointer-events-none"></div>
-          <div className="absolute top-5 right-5 w-11 h-11 border-t-2 border-r-2 border-amber-400 pointer-events-none"></div>
-          <div className="absolute bottom-5 left-5 w-11 h-11 border-b-2 border-l-2 border-amber-400 pointer-events-none"></div>
-          <div className="absolute bottom-5 right-5 w-11 h-11 border-b-2 border-r-2 border-amber-400 pointer-events-none"></div>
+            {/* Decorative Corner Ornaments */}
+            <div className="position-absolute" style={{ top: 22, left: 22, width: 36, height: 36, borderTop: '3px solid #1d4ed8', borderLeft: '3px solid #1d4ed8', pointerEvents: 'none' }}></div>
+            <div className="position-absolute" style={{ top: 22, right: 22, width: 36, height: 36, borderTop: '3px solid #1d4ed8', borderRight: '3px solid #1d4ed8', pointerEvents: 'none' }}></div>
+            <div className="position-absolute" style={{ bottom: 22, left: 22, width: 36, height: 36, borderBottom: '3px solid #1d4ed8', borderLeft: '3px solid #1d4ed8', pointerEvents: 'none' }}></div>
+            <div className="position-absolute" style={{ bottom: 22, right: 22, width: 36, height: 36, borderBottom: '3px solid #1d4ed8', borderRight: '3px solid #1d4ed8', pointerEvents: 'none' }}></div>
 
-          {/* Header Banner */}
-          <div className="w-full text-center relative z-10 pt-2">
-            <div className="d-flex align-items-center justify-content-center gap-2 mb-1.5">
-              <div className="w-8 h-8 rounded-full bg-amber-500/20 border border-amber-400/50 d-flex align-items-center justify-content-center text-amber-400 shadow-inner">
-                <ShieldCheck className="w-4.5 h-4.5" />
-              </div>
-              <span className="text-xs font-mono font-bold tracking-[0.3em] text-amber-400 uppercase">
-                NATIONAL IT CAREER READINESS &amp; SCHOLARSHIP BOARD
-              </span>
-            </div>
-
-            <h1 className="text-4xl font-black uppercase tracking-wider text-amber-200 font-serif mt-2">
-              Certificate of Scholarship &amp; Achievement
-            </h1>
-            <p className="text-xs text-slate-400 uppercase tracking-[0.2em] font-mono mt-1">
-              Proctored Computer-Based Assessment • L1 IT Support Role Competency
-            </p>
-          </div>
-
-          {/* Candidate Recipient Section */}
-          <div className="w-full text-center my-2 relative z-10 space-y-2 d-flex flex-column align-items-center">
-            <p className="text-xs text-slate-300 italic font-serif tracking-widest">This is to officially certify that</p>
-
-            <div className="py-1 border-b-2 border-amber-400/60 inline-block px-14">
-              <h2 className="text-4xl sm:text-5xl font-black text-amber-100 font-serif tracking-wide" style={{ color: '#fef08a' }}>
-                {fullName}
-              </h2>
-            </div>
-
-            <p className="text-xs sm:text-sm text-slate-300 max-w-2xl mx-auto leading-relaxed pt-2 text-center">
-              has successfully qualified in the national proctored assessment for <strong className="text-sky-300 font-semibold">L1 IT Support &amp; Technical Operations</strong>, demonstrating verified excellence across required domain competencies.
-            </p>
-          </div>
-
-          {/* Award Tier & Performance Ribbon Box (Perfectly Centered) */}
-          <div className="w-[860px] bg-slate-900/95 border border-amber-500/50 rounded-xl p-4 d-flex align-items-center justify-content-between gap-6 relative z-10 shadow-xl" style={{ backgroundColor: '#0f172a' }}>
-            {/* Left: Honor Tier */}
-            <div className="d-flex align-items-center gap-3.5 text-left min-w-[280px]">
-              <div className={`p-3 rounded-xl bg-gradient-to-br ${badgeInfo.bg} border ${badgeInfo.border} text-white shadow-md shrink-0`}>
-                <Award className="w-7 h-7 text-amber-300" />
-              </div>
-              <div>
-                <div className="text-[9px] uppercase font-extrabold tracking-wider text-slate-400">Awarded Honor Tier</div>
-                <div className="text-base font-black text-amber-300">{tier}</div>
-              </div>
-            </div>
-
-            <div className="h-10 w-px bg-slate-700 shrink-0"></div>
-
-            {/* Center: Marks Scored */}
-            <div className="text-center min-w-[180px]">
-              <div className="text-[9px] uppercase font-bold tracking-wider text-slate-400">Marks Scored</div>
-              <div className="text-base font-extrabold text-sky-400 font-mono mt-0.5">
-                {score} / {maxScore} <span className="text-xs text-emerald-400 font-normal">({percentage}%)</span>
-              </div>
-            </div>
-
-            <div className="h-10 w-px bg-slate-700 shrink-0"></div>
-
-            {/* Right: Security Audit */}
-            <div className="text-right min-w-[180px]">
-              <div className="text-[9px] uppercase font-bold tracking-wider text-slate-400">Security Audit</div>
-              <div className="text-xs font-bold text-emerald-400 d-flex align-items-center justify-end gap-1 mt-0.5">
-                <CheckCircle2 className="w-4 h-4" /> AI Verified
-              </div>
-            </div>
-          </div>
-
-          {/* Footer Metadata & Dual Signatures */}
-          <div className="w-full pt-4 pb-1 border-t border-slate-800 d-flex items-end justify-content-between text-xs relative z-10">
-            {/* Left: Certificate Metadata */}
-            <div className="text-left space-y-1 text-[10px] text-slate-400" style={{ width: '260px' }}>
-              <div>Certificate ID: <strong className="text-sky-300 font-mono">{certId}</strong></div>
-              <div>Issue Date: <strong className="text-slate-200">{issueDate}</strong></div>
-              <div>Assigned Coach: <strong className="text-slate-200">{coach}</strong></div>
-            </div>
-
-            {/* Center: Golden Embossed Seal */}
-            <div className="d-flex flex-column align-items-center justify-content-center">
-              <div className="w-14 h-14 rounded-full border-2 border-amber-400 bg-amber-500/15 d-flex flex-column align-items-center justify-content-center text-amber-300 shadow-md">
-                <ShieldCheck className="w-6 h-6 text-amber-400" />
-                <span className="text-[7px] font-bold font-mono tracking-tighter uppercase mt-0.5">AUTHENTIC</span>
-              </div>
-            </div>
-
-            {/* Right: Signature Lines */}
-            <div className="d-flex align-items-center gap-8 text-center" style={{ width: '300px', justifySelf: 'end' }}>
-              <div className="d-flex-1">
-                <div className="font-serif italic text-sm font-bold text-slate-200 border-b border-slate-700 pb-0.5 px-2">
-                  Sadanand B.
+            {/* Header Banner */}
+            <div className="w-100 text-center position-relative z-1 pt-1">
+              <div className="d-flex align-items-center justify-content-center gap-2.5 mb-1">
+                <div className="rounded-circle d-flex align-items-center justify-content-center shadow-sm" style={{ width: 40, height: 40, background: 'linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%)', color: '#ffffff' }}>
+                  <Award style={{ width: 22, height: 22 }} />
                 </div>
-                <div className="text-[9px] text-slate-400 mt-1 uppercase tracking-wider font-semibold">Head of Evaluation</div>
+                <div className="text-start">
+                  <span className="fw-black text-primary text-uppercase d-block" style={{ fontSize: 20, letterSpacing: '0.12em', fontFamily: '"Outfit", sans-serif', lineHeight: 1.1 }}>
+                    DBS INSTITUTE OF TECHNOLOGY
+                  </span>
+                  <span className="fw-bold text-warning text-uppercase font-monospace d-block" style={{ fontSize: 10, letterSpacing: '0.2em' }}>
+                    National IT Career Readiness &amp; Scholarship Board
+                  </span>
+                </div>
               </div>
 
-              <div className="d-flex-1">
-                <div className="font-serif italic text-xs font-bold text-amber-300 border-b border-slate-700 pb-0.5 px-2">
-                  Scholarship Board
+              <div className="my-2" style={{ borderBottom: '2px solid #d97706', width: '280px', margin: '0 auto' }}></div>
+
+              <h1 className="fw-extrabold uppercase text-dark font-serif mt-2" style={{ fontSize: 32, letterSpacing: '0.04em', color: '#0f172a' }}>
+                Certificate of Scholarship &amp; Excellence
+              </h1>
+              <p className="small text-muted uppercase font-monospace mt-1 mb-0" style={{ letterSpacing: '0.15em', fontSize: 11 }}>
+                Proctored Computer-Based Assessment • L1 IT Support Role Competency
+              </p>
+            </div>
+
+            {/* Candidate Recipient Section */}
+            <div className="w-100 text-center my-2 position-relative z-1 d-flex flex-column align-items-center">
+              <p className="small text-muted italic font-serif" style={{ fontSize: 14, letterSpacing: '0.1em' }}>
+                This is to officially certify that
+              </p>
+
+              <div className="py-1 border-bottom border-primary border-3 inline-block px-5 mb-2">
+                <h2 className="display-6 fw-black text-primary font-serif tracking-wide mb-0" style={{ fontSize: 40, color: '#1d4ed8', fontFamily: '"Outfit", serif' }}>
+                  {fullName}
+                </h2>
+              </div>
+
+              <p className="small text-secondary max-w-2xl mx-auto leading-relaxed pt-1 text-center" style={{ maxWidth: 740, fontSize: 13.5 }}>
+                has successfully qualified in the national proctored assessment conducted by <strong className="text-primary fw-bold">DBS Institute of Technology</strong> for <strong className="text-dark fw-bold">L1 IT Support &amp; Technical Operations</strong>, demonstrating verified technical proficiency and domain excellence across required competency modules.
+              </p>
+            </div>
+
+            {/* Award Tier & Performance Ribbon Box (Clean Light Theme) */}
+            <div className="w-100 rounded-3 p-3 d-flex align-items-center justify-content-between gap-4 position-relative z-1 shadow-sm border" style={{ maxWidth: 880, backgroundColor: '#f8faff', borderColor: '#dce8fb' }}>
+              {/* Left: Honor Tier */}
+              <div className="d-flex align-items-center gap-3 text-start min-w-[260px]">
+                <div className="p-2.5 rounded-3 bg-primary text-white shadow-sm flex-shrink-0">
+                  <Award className="w-6 h-6" />
                 </div>
-                <div className="text-[9px] text-slate-400 mt-1 uppercase tracking-wider font-semibold">Authorized Signatory</div>
+                <div>
+                  <div className="small text-muted text-uppercase fw-bold" style={{ fontSize: 9, letterSpacing: '0.08em' }}>Awarded Honor Tier</div>
+                  <div className="fs-6 fw-bold text-primary">{tier}</div>
+                </div>
+              </div>
+
+              <div className="vr bg-secondary opacity-25" style={{ height: 36 }}></div>
+
+              {/* Center: Marks Scored */}
+              <div className="text-center min-w-[180px]">
+                <div className="small text-muted text-uppercase fw-bold" style={{ fontSize: 9, letterSpacing: '0.08em' }}>Score Scored</div>
+                <div className="fs-6 fw-bold text-dark font-monospace mt-0.5">
+                  {score} / {maxScore} <span className="small text-success font-normal">({percentage}%)</span>
+                </div>
+              </div>
+
+              <div className="vr bg-secondary opacity-25" style={{ height: 36 }}></div>
+
+              {/* Right: Security Audit */}
+              <div className="text-end min-w-[180px]">
+                <div className="small text-muted text-uppercase fw-bold" style={{ fontSize: 9, letterSpacing: '0.08em' }}>Security Audit</div>
+                <div className="small fw-bold text-success d-flex align-items-center justify-content-end gap-1 mt-0.5">
+                  <CheckCircle2 className="w-4 h-4" /> AI Proctor Verified
+                </div>
+              </div>
+            </div>
+
+            {/* Footer Metadata & Dual Signatures */}
+            <div className="w-100 pt-3 pb-1 border-top d-flex align-items-end justify-content-between small position-relative z-1" style={{ borderColor: '#e2e8f0' }}>
+              {/* Left: Certificate Metadata */}
+              <div className="text-start text-muted" style={{ width: 270, fontSize: 10.5 }}>
+                <div>Certificate ID: <strong className="text-primary font-monospace">{certId}</strong></div>
+                <div>Issue Date: <strong className="text-dark">{issueDate}</strong></div>
+                <div>Career Coach: <strong className="text-dark">{coach}</strong></div>
+                <div>Institute Code: <strong className="text-dark">DBS-IT-INST-2025</strong></div>
+              </div>
+
+              {/* Center: Official Golden/Blue Stamp Seal */}
+              <div className="d-flex flex-column align-items-center justify-content-center">
+                <div className="rounded-circle border border-primary bg-primary bg-opacity-10 d-flex flex-column align-items-center justify-content-center text-primary shadow-sm" style={{ width: 56, height: 56 }}>
+                  <ShieldCheck className="w-6 h-6 text-primary" />
+                  <span className="fw-bold font-monospace text-uppercase" style={{ fontSize: 6.5, letterSpacing: '0.05em' }}>DBS VERIFIED</span>
+                </div>
+              </div>
+
+              {/* Right: Signature Lines */}
+              <div className="d-flex align-items-center gap-4 text-center" style={{ width: 320 }}>
+                <div className="flex-fill">
+                  <div className="font-serif italic fs-6 fw-bold text-dark border-bottom border-dark pb-1 px-2">
+                    Sadanand B.
+                  </div>
+                  <div className="text-muted mt-1 uppercase fw-semibold" style={{ fontSize: 9, letterSpacing: '0.05em' }}>Head of Evaluation</div>
+                  <div className="text-primary fw-bold" style={{ fontSize: 8 }}>DBS IT Institute</div>
+                </div>
+
+                <div className="flex-fill">
+                  <div className="font-serif italic fs-6 fw-bold text-primary border-bottom border-primary pb-1 px-2">
+                    Scholarship Board
+                  </div>
+                  <div className="text-muted mt-1 uppercase fw-semibold" style={{ fontSize: 9, letterSpacing: '0.05em' }}>Authorized Signatory</div>
+                  <div className="text-primary fw-bold" style={{ fontSize: 8 }}>DBS Institute of Technology</div>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
-);
+  );
 }
