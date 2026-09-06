@@ -460,47 +460,13 @@ router.get('/scorecard/:id', (req, res) => {
   }
 });
 
-// 9. Admin: All Candidates & Proctoring Summary
-router.get('/admin/candidates', (req, res) => {
+// 9. Admin: All Candidates & Proctoring Summary (Synced with Google Sheets)
+router.get('/admin/candidates', async (req, res) => {
   try {
-    const candidatesList = store.getAllCandidates();
-    const rows = candidatesList.map(c => {
-      const test = store.getCompletedTestByCandidateId(c.id) || store.getActiveTestByCandidateId(c.id) || {};
-      const submission = test.id ? (store.getSubmissionByTestId(test.id) || {}) : {};
-      const violations = test.id ? store.getViolationsByTestId(test.id) : [];
-      const snapshots = test.id ? store.getSnapshotsByTestId(test.id) : [];
-
-      return {
-        id: c.id,
-        fullName: c.fullName,
-        email: c.email,
-        phone: c.phone,
-        college: c.college,
-        experience: c.experience,
-        coach: c.coach,
-        createdAt: c.createdAt,
-        candidateStatus: c.status,
-        testId: test.id || null,
-        startedAt: test.startedAt || null,
-        submittedAt: test.submittedAt || null,
-        timeSpentSeconds: test.timeSpentSeconds || 0,
-        testStatus: test.status || 'registered',
-        submissionId: submission.id || null,
-        totalScore: submission.totalScore !== undefined ? submission.totalScore : null,
-        maxScore: submission.maxScore || 50,
-        percentage: submission.percentage !== undefined ? submission.percentage : null,
-        scholarshipTier: submission.scholarshipTier || null,
-        emailSent: submission.emailSent || 0,
-        violationsCount: violations.length,
-        snapshotsCount: snapshots.length
-      };
-    });
-
-    // Sort newest first
-    rows.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    const candidatesList = await googleSheets.fetchUnifiedCandidates(store);
 
     res.json({
-      candidates: rows,
+      candidates: candidatesList,
       googleSheets: googleSheets.getStatus()
     });
   } catch (error) {
@@ -510,10 +476,14 @@ router.get('/admin/candidates', (req, res) => {
 });
 
 // 10. Admin: Detailed Candidate View with Proctor Violations & Webcam Snapshots
-router.get('/admin/candidate-detail/:candidateId', (req, res) => {
+router.get('/admin/candidate-detail/:candidateId', async (req, res) => {
   try {
     const { candidateId } = req.params;
-    const candidate = store.getCandidateById(candidateId);
+    let candidate = store.getCandidateById(candidateId);
+    if (!candidate) {
+      await googleSheets.fetchUnifiedCandidates(store);
+      candidate = store.getCandidateById(candidateId);
+    }
     if (!candidate) {
       return res.status(404).json({ error: 'Candidate not found.' });
     }
@@ -536,18 +506,14 @@ router.get('/admin/candidate-detail/:candidateId', (req, res) => {
   }
 });
 
-// 11. Admin: Export CSV
-router.get('/admin/export-csv', (req, res) => {
+// 11. Admin: Export CSV (Synced with Google Sheets)
+router.get('/admin/export-csv', async (req, res) => {
   try {
-    const candidatesList = store.getAllCandidates();
+    const candidatesList = await googleSheets.fetchUnifiedCandidates(store);
     let csv = 'Candidate Name,Email,Phone,Coach,College,Experience,Cert ID,Score,Max Score,Percentage,Scholarship Tier,Violations,Time Spent (s),Submission Date\n';
 
     candidatesList.forEach(c => {
-      const test = store.getCompletedTestByCandidateId(c.id) || store.getActiveTestByCandidateId(c.id) || {};
-      const submission = test.id ? (store.getSubmissionByTestId(test.id) || {}) : {};
-      const violations = test.id ? store.getViolationsByTestId(test.id) : [];
-
-      csv += `"${c.fullName || ''}","${c.email || ''}","${c.phone || ''}","${c.coach || ''}","${c.college || ''}","${c.experience || ''}","${submission.id || 'N/A'}",${submission.totalScore || 0},${submission.maxScore || 50},"${submission.percentage || 0}%","${submission.scholarshipTier || 'Not Completed'}",${violations.length},${test.timeSpentSeconds || 0},"${submission.submittedAt || test.submittedAt || ''}"\n`;
+      csv += `"${c.fullName || ''}","${c.email || ''}","${c.phone || ''}","${c.coach || ''}","${c.college || ''}","${c.experience || ''}","${c.submissionId || 'N/A'}",${c.totalScore || 0},${c.maxScore || 50},"${c.percentage || 0}%","${c.scholarshipTier || 'Not Completed'}",${c.violationsCount || 0},${c.timeSpentSeconds || 0},"${c.submittedAt || c.createdAt || ''}"\n`;
     });
 
     res.setHeader('Content-Type', 'text/csv');

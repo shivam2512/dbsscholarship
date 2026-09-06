@@ -250,5 +250,335 @@ module.exports = {
       candidateId: candidateId,
       timestamp: new Date().toISOString()
     });
+  },
+
+  /**
+   * Fetch live data directly from Google Apps Script Web App
+   */
+  async fetchSheetData() {
+    const url = getWebhookUrl();
+    if (isWebhookPlaceholder(url)) {
+      return { success: false, error: 'Google Sheet Webhook not configured' };
+    }
+
+    // Try GET request with redirect following
+    const getResult = await getRedirectTarget(url);
+    if (getResult && Array.isArray(getResult.registrations)) {
+      return { success: true, data: getResult };
+    }
+
+    // If doGet returned default status, try POST with action 'FETCH_ALL_DATA'
+    const postResult = await postToGoogleSheets({ action: 'FETCH_ALL_DATA' }, url);
+    if (postResult && Array.isArray(postResult.registrations)) {
+      return { success: true, data: postResult };
+    }
+
+    return { success: false, raw: getResult || postResult };
+  },
+
+  /**
+   * Read fallback rows from local CSV files
+   */
+  readLocalCSVRecords() {
+    const pathsToTry = [
+      CSV_PATH,
+      path.join(__dirname, '..', 'submissions_local.csv'),
+      path.join('/tmp', 'submissions_local.csv')
+    ];
+
+    for (const p of pathsToTry) {
+      try {
+        if (fs.existsSync(p)) {
+          const content = fs.readFileSync(p, 'utf8');
+          if (content && content.trim().length > 50) {
+            return content;
+          }
+        }
+      } catch (e) {
+        // Continue
+      }
+    }
+    return '';
+  },
+
+  /**
+   * Returns unified candidates list synced between Google Sheets, Local CSV, and In-Memory Store
+   */
+  async fetchUnifiedCandidates(store) {
+    const candidatesMap = new Map();
+
+    // 1. Try to fetch live data from Google Sheets Web App
+    try {
+      const sheetRes = await this.fetchSheetData();
+      if (sheetRes.success && sheetRes.data) {
+        const { registrations, scorecards, violations } = sheetRes.data;
+
+        (registrations || []).forEach(r => {
+          const email = (r.email || '').trim().toLowerCase();
+          if (!email) return;
+
+          candidatesMap.set(email, {
+            id: r.candidateId || email,
+            fullName: r.fullName,
+            email: email,
+            phone: r.phone,
+            college: r.college,
+            experience: r.experience,
+            coach: r.coach,
+            createdAt: r.timestamp,
+            candidateStatus: r.status || 'registered',
+            testId: null,
+            startedAt: null,
+            submittedAt: null,
+            timeSpentSeconds: 0,
+            testStatus: 'registered',
+            submissionId: null,
+            totalScore: null,
+            maxScore: 50,
+            percentage: null,
+            scholarshipTier: null,
+            emailSent: 0,
+            violationsCount: 0,
+            snapshotsCount: 0
+          });
+        });
+
+        (scorecards || []).forEach(s => {
+          const email = (s.email || '').trim().toLowerCase();
+          if (!email) return;
+
+          let cand = candidatesMap.get(email);
+          if (!cand) {
+            cand = {
+              id: email,
+              fullName: s.fullName,
+              email: email,
+              phone: s.phone,
+              college: s.college,
+              experience: s.experience,
+              coach: s.coach,
+              createdAt: s.timestamp,
+              candidateStatus: 'completed',
+              snapshotsCount: 0
+            };
+            candidatesMap.set(email, cand);
+          }
+
+          cand.testStatus = 'completed';
+          cand.submissionId = s.certificateId;
+          cand.totalScore = s.totalScore !== null && s.totalScore !== undefined ? Number(s.totalScore) : null;
+          cand.maxScore = s.maxScore ? Number(s.maxScore) : 50;
+          cand.percentage = s.percentage !== null && s.percentage !== undefined ? Number(s.percentage) : null;
+          cand.scholarshipTier = s.scholarshipTier;
+          cand.submittedAt = s.timestamp;
+          cand.violationsCount = Number(s.violationsCount) || 0;
+
+          if (s.timeSpent) {
+            const mMatch = s.timeSpent.match(/(\d+)m/);
+            const sMatch = s.timeSpent.match(/(\d+)s/);
+            const sec = (mMatch ? parseInt(mMatch[1]) * 60 : 0) + (sMatch ? parseInt(sMatch[1]) : 0);
+            cand.timeSpentSeconds = sec || parseInt(s.timeSpent) || 0;
+          }
+        });
+
+        if (violations && Array.isArray(violations)) {
+          violations.forEach(v => {
+            const email = (v.candidateEmail || '').trim().toLowerCase();
+            if (email && candidatesMap.has(email)) {
+              const cand = candidatesMap.get(email);
+              const matchCount = violations.filter(x => (x.candidateEmail || '').trim().toLowerCase() === email).length;
+              cand.violationsCount = Math.max(cand.violationsCount || 0, matchCount);
+            }
+          });
+        }
+      }
+    } catch (err) {
+      console.warn('Google Sheet live sync notice:', err.message);
+    }
+
+    // 2. Parse fallback records from Local CSV if Google Sheets didn't return them
+    const csvContent = this.readLocalCSVRecords();
+    if (csvContent) {
+      const lines = csvContent.split('\n');
+      lines.forEach(line => {
+        const trimmed = line.trim();
+        if (!trimmed || trimmed.startsWith('Type,') || trimmed.startsWith('"Type",')) return;
+
+        // Simple CSV cell splitter respecting quotes
+        const cells = [];
+        let inQuote = false;
+        let current = '';
+        for (let i = 0; i < trimmed.length; i++) {
+          const char = trimmed[i];
+          if (char === '"') {
+            inQuote = !inQuote;
+          } else if (char === ',' && !inQuote) {
+            cells.push(current.trim());
+            current = '';
+          } else {
+            current += char;
+          }
+        }
+        cells.push(current.trim());
+
+        const type = cells[0]?.replace(/^"|"$/g, '');
+        if (type === 'REGISTER') {
+          const [, timestamp, name, email, phone, college, experience, coach] = cells.map(c => c.replace(/^"|"$/g, ''));
+          const lowerEmail = (email || '').toLowerCase();
+          if (lowerEmail && !candidatesMap.has(lowerEmail)) {
+            candidatesMap.set(lowerEmail, {
+              id: lowerEmail,
+              fullName: name,
+              email: lowerEmail,
+              phone: phone || '',
+              college: college || '',
+              experience: experience || '',
+              coach: coach || 'Direct / None',
+              createdAt: timestamp || new Date().toISOString(),
+              candidateStatus: 'registered',
+              testId: null,
+              startedAt: null,
+              submittedAt: null,
+              timeSpentSeconds: 0,
+              testStatus: 'registered',
+              submissionId: null,
+              totalScore: null,
+              maxScore: 50,
+              percentage: null,
+              scholarshipTier: null,
+              emailSent: 0,
+              violationsCount: 0,
+              snapshotsCount: 0
+            });
+          }
+        } else if (type === 'SCORECARD') {
+          const [, timestamp, certId, name, email, phone, coach, college, score, maxScore, pct, tier, viol, timeSpent] = cells.map(c => c.replace(/^"|"$/g, ''));
+          const lowerEmail = (email || '').toLowerCase();
+          if (lowerEmail) {
+            let cand = candidatesMap.get(lowerEmail);
+            if (!cand) {
+              cand = {
+                id: lowerEmail,
+                fullName: name,
+                email: lowerEmail,
+                phone: phone || '',
+                college: college || '',
+                experience: '',
+                coach: coach || 'Direct / None',
+                createdAt: timestamp || new Date().toISOString(),
+                candidateStatus: 'completed',
+                snapshotsCount: 0
+              };
+              candidatesMap.set(lowerEmail, cand);
+            }
+            cand.testStatus = 'completed';
+            cand.submissionId = certId;
+            cand.totalScore = Number(score) || 0;
+            cand.maxScore = Number(maxScore) || 50;
+            cand.percentage = Number(pct) || 0;
+            cand.scholarshipTier = tier || 'Certificate of Participation';
+            cand.submittedAt = timestamp;
+            cand.violationsCount = Number(viol) || 0;
+            cand.timeSpentSeconds = Number(timeSpent) || 0;
+          }
+        }
+      });
+    }
+
+    // 3. Merge with current in-memory store
+    if (store && typeof store.getAllCandidates === 'function') {
+      const memoryCandidates = store.getAllCandidates();
+      memoryCandidates.forEach(c => {
+        const lowerEmail = (c.email || '').toLowerCase();
+        if (!lowerEmail) return;
+
+        const test = store.getCompletedTestByCandidateId(c.id) || store.getActiveTestByCandidateId(c.id) || {};
+        const submission = test.id ? (store.getSubmissionByTestId(test.id) || {}) : {};
+        const violations = test.id ? store.getViolationsByTestId(test.id) : [];
+        const snapshots = test.id ? store.getSnapshotsByTestId(test.id) : [];
+
+        let existing = candidatesMap.get(lowerEmail);
+        if (!existing) {
+          candidatesMap.set(lowerEmail, {
+            id: c.id,
+            fullName: c.fullName,
+            email: lowerEmail,
+            phone: c.phone,
+            college: c.college,
+            experience: c.experience,
+            coach: c.coach,
+            createdAt: c.createdAt,
+            candidateStatus: c.status,
+            testId: test.id || null,
+            startedAt: test.startedAt || null,
+            submittedAt: test.submittedAt || null,
+            timeSpentSeconds: test.timeSpentSeconds || 0,
+            testStatus: test.status || 'registered',
+            submissionId: submission.id || null,
+            totalScore: submission.totalScore !== undefined ? submission.totalScore : null,
+            maxScore: submission.maxScore || 50,
+            percentage: submission.percentage !== undefined ? submission.percentage : null,
+            scholarshipTier: submission.scholarshipTier || null,
+            emailSent: submission.emailSent || 0,
+            violationsCount: violations.length,
+            snapshotsCount: snapshots.length
+          });
+        } else {
+          // If in-memory has active test or snapshots, enrich existing record
+          if (test.id) existing.testId = test.id;
+          if (snapshots.length > 0) existing.snapshotsCount = snapshots.length;
+          if (violations.length > 0) existing.violationsCount = Math.max(existing.violationsCount || 0, violations.length);
+        }
+      });
+    }
+
+    // 4. Hydrate in-memory store with any records that were missing so other endpoints can access them
+    if (store && typeof store.saveCandidate === 'function') {
+      candidatesMap.forEach(cand => {
+        const existingInStore = store.getCandidateByEmail(cand.email);
+        if (!existingInStore) {
+          store.saveCandidate({
+            id: cand.id,
+            fullName: cand.fullName,
+            email: cand.email,
+            phone: cand.phone,
+            college: cand.college,
+            experience: cand.experience,
+            coach: cand.coach,
+            createdAt: cand.createdAt,
+            status: cand.testStatus === 'completed' ? 'completed' : 'registered'
+          });
+
+          if (cand.testStatus === 'completed') {
+            const testId = cand.testId || 'test-' + cand.id;
+            store.saveTest({
+              id: testId,
+              candidateId: cand.id,
+              token: 'token-' + cand.id,
+              status: 'completed',
+              timeSpentSeconds: cand.timeSpentSeconds || 0,
+              submittedAt: cand.submittedAt
+            });
+
+            store.saveSubmission({
+              id: cand.submissionId || 'CERT-' + Math.random().toString(36).substring(2, 8).toUpperCase(),
+              candidateId: cand.id,
+              testId: testId,
+              totalScore: cand.totalScore || 0,
+              maxScore: cand.maxScore || 50,
+              percentage: cand.percentage || 0,
+              scholarshipTier: cand.scholarshipTier || 'Certificate of Participation',
+              submittedAt: cand.submittedAt || new Date().toISOString(),
+              categoryScores: {}
+            });
+          }
+        }
+      });
+    }
+
+    // Convert map to sorted array (newest first)
+    const result = Array.from(candidatesMap.values());
+    result.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+    return result;
   }
 };

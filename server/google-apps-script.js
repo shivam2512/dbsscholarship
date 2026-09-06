@@ -155,6 +155,12 @@ function doPost(e) {
       })).setMimeType(ContentService.MimeType.JSON);
     }
 
+    if (data.action === "FETCH_ALL_DATA" || data.action === "GET_ALL_DATA") {
+      var allData = getAllSheetData(ss);
+      return ContentService.createTextOutput(JSON.stringify(allData))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+
     return ContentService.createTextOutput(JSON.stringify({ result: "unknown_action", received: data }))
       .setMimeType(ContentService.MimeType.JSON);
 
@@ -167,11 +173,106 @@ function doPost(e) {
 }
 
 function doGet(e) {
-  return ContentService.createTextOutput(JSON.stringify({
-    status: "online",
-    service: "Scholarship Assessment Google Sheet Hub",
-    timestamp: new Date()
-  })).setMimeType(ContentService.MimeType.JSON);
+  var action = (e && e.parameter && e.parameter.action) ? e.parameter.action : "GET_ALL_DATA";
+
+  if (action === "PING" || action === "STATUS") {
+    return ContentService.createTextOutput(JSON.stringify({
+      status: "online",
+      service: "Scholarship Assessment Google Sheet Hub",
+      timestamp: new Date()
+    })).setMimeType(ContentService.MimeType.JSON);
+  }
+
+  try {
+    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    var allData = getAllSheetData(ss);
+    return ContentService.createTextOutput(JSON.stringify(allData))
+      .setMimeType(ContentService.MimeType.JSON);
+  } catch (err) {
+    return ContentService.createTextOutput(JSON.stringify({
+      status: "error",
+      error: err.toString()
+    })).setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+function getAllSheetData(ss) {
+  var regSheet = ss.getSheetByName("Registrations");
+  var subSheet = ss.getSheetByName("Scorecards & Results");
+  var violSheet = ss.getSheetByName("Proctor Violations");
+
+  var registrations = [];
+  if (regSheet && regSheet.getLastRow() > 1) {
+    var regValues = regSheet.getRange(2, 1, regSheet.getLastRow() - 1, Math.max(regSheet.getLastColumn(), 9)).getValues();
+    for (var i = 0; i < regValues.length; i++) {
+      var r = regValues[i];
+      if (!r[2] && !r[3]) continue;
+      registrations.push({
+        timestamp: r[0] ? new Date(r[0]).toISOString() : new Date().toISOString(),
+        candidateId: String(r[1] || "").trim(),
+        fullName: String(r[2] || "").trim(),
+        email: String(r[3] || "").trim().toLowerCase(),
+        phone: String(r[4] || "").trim(),
+        coach: String(r[5] || "Direct / None").trim(),
+        college: String(r[6] || "").trim(),
+        experience: String(r[7] || "Fresher / Student").trim(),
+        status: String(r[8] || "registered").trim()
+      });
+    }
+  }
+
+  var scorecards = [];
+  if (subSheet && subSheet.getLastRow() > 1) {
+    var subValues = subSheet.getRange(2, 1, subSheet.getLastRow() - 1, Math.max(subSheet.getLastColumn(), 15)).getValues();
+    for (var j = 0; j < subValues.length; j++) {
+      var s = subValues[j];
+      if (!s[2] && !s[3]) continue;
+      scorecards.push({
+        timestamp: s[0] ? new Date(s[0]).toISOString() : new Date().toISOString(),
+        certificateId: String(s[1] || "").trim(),
+        fullName: String(s[2] || "").trim(),
+        email: String(s[3] || "").trim().toLowerCase(),
+        phone: String(s[4] || "").trim(),
+        coach: String(s[5] || "Direct / None").trim(),
+        totalScore: s[6] !== "" ? Number(s[6]) : null,
+        maxScore: s[7] !== "" ? Number(s[7]) : 50,
+        percentage: s[8] !== "" ? Number(String(s[8]).replace("%", "").trim()) : null,
+        scholarshipTier: String(s[9] || "Certificate of Participation").trim(),
+        scholarshipPercentage: s[10] !== "" ? Number(String(s[10]).replace("%", "").trim()) : 0,
+        timeSpent: String(s[11] || "0s").trim(),
+        violationsCount: s[12] !== "" ? Number(s[12]) : 0,
+        college: String(s[13] || "").trim(),
+        experience: String(s[14] || "").trim()
+      });
+    }
+  }
+
+  var violations = [];
+  if (violSheet && violSheet.getLastRow() > 1) {
+    var violValues = violSheet.getRange(2, 1, violSheet.getLastRow() - 1, Math.max(violSheet.getLastColumn(), 7)).getValues();
+    for (var k = 0; k < violValues.length; k++) {
+      var v = violValues[k];
+      violations.push({
+        timestamp: v[0] ? new Date(v[0]).toISOString() : new Date().toISOString(),
+        violationId: String(v[1] || "").trim(),
+        candidateName: String(v[2] || "").trim(),
+        candidateEmail: String(v[3] || "").trim().toLowerCase(),
+        testId: String(v[4] || "").trim(),
+        violationType: String(v[5] || "").trim(),
+        details: String(v[6] || "").trim()
+      });
+    }
+  }
+
+  return {
+    status: "ok",
+    registrationsCount: registrations.length,
+    scorecardsCount: scorecards.length,
+    violationsCount: violations.length,
+    registrations: registrations,
+    scorecards: scorecards,
+    violations: violations
+  };
 }
 
 function getOrCreateSheet(ss, name, headers) {

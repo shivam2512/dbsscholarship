@@ -21,6 +21,39 @@
       "coach": "Direct / None",
       "status": "completed",
       "createdAt": "2026-09-04T12:54:16.886Z"
+    },
+    "fixtest@example.com": {
+      "id": "fixtest@example.com",
+      "fullName": "Fix Verification Test",
+      "email": "fixtest@example.com",
+      "phone": "9876543210",
+      "college": "Test College",
+      "experience": "Fresher / Student",
+      "coach": "Sadanand B",
+      "createdAt": "2026-09-02T16:25:47.753Z",
+      "status": "completed"
+    },
+    "livetest99@example.com": {
+      "id": "livetest99@example.com",
+      "fullName": "Live Sheet Test",
+      "email": "livetest99@example.com",
+      "phone": "9012345678",
+      "college": "Test College",
+      "experience": "Fresher / Student",
+      "coach": "Sadanand B",
+      "createdAt": "2026-09-02T16:28:03.288Z",
+      "status": "registered"
+    },
+    "luckshiv1234@gmail.com": {
+      "id": "luckshiv1234@gmail.com",
+      "fullName": "Test user",
+      "email": "luckshiv1234@gmail.com",
+      "phone": "7748908393",
+      "college": "RGPV",
+      "experience": "Fresher / Student",
+      "coach": "Direct / None",
+      "createdAt": "2026-09-02T16:36:00.257Z",
+      "status": "completed"
     }
   },
   "tests": {
@@ -63,6 +96,24 @@
       },
       "startedAt": "2026-09-04T12:54:16.888Z",
       "submittedAt": "2026-09-04T12:56:23.609Z"
+    },
+    "test-fixtest@example.com": {
+      "id": "test-fixtest@example.com",
+      "candidateId": "fixtest@example.com",
+      "token": "token-fixtest@example.com",
+      "status": "completed",
+      "timeSpentSeconds": 600,
+      "submittedAt": "2026-09-02T16:25:47.760Z",
+      "startedAt": "2026-09-06T05:54:04.539Z"
+    },
+    "test-luckshiv1234@gmail.com": {
+      "id": "test-luckshiv1234@gmail.com",
+      "candidateId": "luckshiv1234@gmail.com",
+      "token": "token-luckshiv1234@gmail.com",
+      "status": "completed",
+      "timeSpentSeconds": 13,
+      "submittedAt": "2026-09-02T16:36:27.937Z",
+      "startedAt": "2026-09-06T05:54:04.557Z"
     }
   },
   "submissions": {
@@ -821,6 +872,50 @@
       "isAutoSubmit": false,
       "submitReason": "candidate_submitted",
       "emailSent": 1
+    },
+    "CERT-FIXTEST": {
+      "id": "CERT-FIXTEST",
+      "candidateId": "fixtest@example.com",
+      "testId": "test-fixtest@example.com",
+      "totalScore": 35,
+      "maxScore": 50,
+      "percentage": 70,
+      "scholarshipTier": "Silver (25% Scholarship)",
+      "submittedAt": "2026-09-02T16:25:47.760Z",
+      "categoryScores": {}
+    },
+    "test-fixtest@example.com": {
+      "id": "CERT-FIXTEST",
+      "candidateId": "fixtest@example.com",
+      "testId": "test-fixtest@example.com",
+      "totalScore": 35,
+      "maxScore": 50,
+      "percentage": 70,
+      "scholarshipTier": "Silver (25% Scholarship)",
+      "submittedAt": "2026-09-02T16:25:47.760Z",
+      "categoryScores": {}
+    },
+    "CERT-ZV2F1N6": {
+      "id": "CERT-ZV2F1N6",
+      "candidateId": "luckshiv1234@gmail.com",
+      "testId": "test-luckshiv1234@gmail.com",
+      "totalScore": 15,
+      "maxScore": 50,
+      "percentage": 30,
+      "scholarshipTier": "Certificate of Participation",
+      "submittedAt": "2026-09-02T16:36:27.937Z",
+      "categoryScores": {}
+    },
+    "test-luckshiv1234@gmail.com": {
+      "id": "CERT-ZV2F1N6",
+      "candidateId": "luckshiv1234@gmail.com",
+      "testId": "test-luckshiv1234@gmail.com",
+      "totalScore": 15,
+      "maxScore": 50,
+      "percentage": 30,
+      "scholarshipTier": "Certificate of Participation",
+      "submittedAt": "2026-09-02T16:36:27.937Z",
+      "categoryScores": {}
     }
   },
   "violations": [],
