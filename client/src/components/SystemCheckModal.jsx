@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Camera, Mic, Maximize2, ShieldAlert, CheckCircle2, XCircle, AlertTriangle, ArrowRight, VideoOff } from 'lucide-react';
 
 export default function SystemCheckModal({ candidate, onStartExam, onBack }) {
@@ -38,7 +38,7 @@ export default function SystemCheckModal({ candidate, onStartExam, onBack }) {
       setPermissionError('');
       const stream = await navigator.mediaDevices.getUserMedia({
         video: { width: { ideal: 640 }, height: { ideal: 480 }, facingMode: 'user' },
-        audio: false
+        audio: true
       });
 
       streamRef.current = stream;
@@ -280,5 +280,3 @@ export default function SystemCheckModal({ candidate, onStartExam, onBack }) {
     </div>
   );
 }
-
-

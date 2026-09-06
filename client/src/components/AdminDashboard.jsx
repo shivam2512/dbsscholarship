@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { api } from '../services/api';
 import {
   Users, Award, ShieldAlert, Download, Search, Filter,
@@ -150,8 +150,8 @@ export default function AdminDashboard() {
       {/* Top Header */}
       <div className="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-3">
         <div>
-          <span className="text-xs font-bold text-indigo-400 uppercase tracking-wider">Administration Suite</span>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-white">Live Proctoring & Candidate Leaderboard</h1>
+          <span className="small fw-bold text-primary text-uppercase">Administration Suite</span>
+          <h1 className="fs-2 fw-bold text-white">Live Proctoring & Candidate Leaderboard</h1>
         </div>
 
         <div className="d-flex align-items-center gap-2">
@@ -199,36 +199,46 @@ export default function AdminDashboard() {
 
       {/* Overview Metric Cards */}
       <div className="row row-cols-2 row-cols-md-5 g-4 mb-3">
-        <div className="card p-3 mb-3">
-          <div className="text-xs text-slate-400 font-semibold uppercase">Total Candidates</div>
-          <div className="text-2xl sm:text-3xl font-extrabold text-white font-mono mt-1">{total}</div>
+        <div className="col">
+          <div className="card p-3 mb-3">
+            <div className="small text-muted text-uppercase fw-semibold">Total Candidates</div>
+            <div className="fs-4 fw-bold text-white mt-1">{total}</div>
+          </div>
         </div>
 
-        <div className="card p-3 mb-3">
-          <div className="text-xs text-slate-400 font-semibold uppercase">Completed Tests</div>
-          <div className="text-2xl sm:text-3xl font-extrabold text-emerald-400 font-mono mt-1">{completed.length}</div>
+        <div className="col">
+          <div className="card p-3 mb-3">
+            <div className="small text-muted text-uppercase fw-semibold">Completed Tests</div>
+            <div className="fs-4 fw-bold text-success mt-1">{completed.length}</div>
+          </div>
         </div>
 
-        <div className="card p-3 mb-3">
-          <div className="text-xs text-slate-400 font-semibold uppercase">Avg Score</div>
-          <div className="text-2xl sm:text-3xl font-extrabold text-sky-400 font-mono mt-1">{avgScore} / 50</div>
+        <div className="col">
+          <div className="card p-3 mb-3">
+            <div className="small text-muted text-uppercase fw-semibold">Avg Score</div>
+            <div className="fs-4 fw-bold text-info mt-1">{avgScore} / 50</div>
+          </div>
         </div>
 
-        <div className="card p-3 mb-3">
-          <div className="text-xs text-slate-400 font-semibold uppercase">Platinum (100%)</div>
-          <div className="text-2xl sm:text-3xl font-extrabold text-purple-400 font-mono mt-1">{platinumCount}</div>
+        <div className="col">
+          <div className="card p-3 mb-3">
+            <div className="small text-muted text-uppercase fw-semibold">Platinum (100%)</div>
+            <div className="fs-4 fw-bold text-primary mt-1">{platinumCount}</div>
+          </div>
         </div>
 
-        <div className="card p-3 mb-3">
-          <div className="text-xs text-slate-400 font-semibold uppercase">Gold + Silver</div>
-          <div className="text-2xl sm:text-3xl font-extrabold text-amber-400 font-mono mt-1">{goldCount + silverCount}</div>
+        <div className="col">
+          <div className="card p-3 mb-3">
+            <div className="small text-muted text-uppercase fw-semibold">Gold + Silver</div>
+            <div className="fs-4 fw-bold text-warning mt-1">{goldCount + silverCount}</div>
+          </div>
         </div>
       </div>
 
       {/* Filters & Search */}
       <div className="card p-3 mb-3 d-flex flex-wrap align-items-center justify-content-between gap-2">
-        <div className="d-flex align-items-center gap-2 d-flex-grow-1">
-          <Search className="w-4 h-4 text-slate-400" />
+        <div className="d-flex align-items-center gap-2 flex-grow-1">
+          <Search className="w-4 h-4 text-muted" />
           <input
             type="text"
             value={searchQuery}
@@ -245,7 +255,7 @@ export default function AdminDashboard() {
           <select
             value={selectedCoach}
             onChange={(e) => setSelectedCoach(e.target.value)}
-            className="form-input text-xs py-2 w-auto"
+            className="form-select form-select-sm w-auto"
           >
             <option value="All">All Coaches</option>
             {coachesList.length > 0 ? (
@@ -277,33 +287,33 @@ export default function AdminDashboard() {
           <select
             value={selectedTier}
             onChange={(e) => setSelectedTier(e.target.value)}
-            className="form-input text-xs py-2 w-auto"
+            className="form-select form-select-sm w-auto"
           >
             <option value="All">All Tiers</option>
             <option value="Platinum">Platinum (100%)</option>
             <option value="Gold">Gold (50%)</option>
             <option value="Silver">Silver (25%)</option>
-            <option value="Scholarship">All Scholarship Winners (â‰¥60%)</option>
+            <option value="Scholarship">All Scholarship Winners (≥60%)</option>
           </select>
         </div>
       </div>
 
       {/* Candidates Table */}
       <div className="glass-panel overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs">
-            <thead className="bg-dark text-muted text-uppercase fw-bold border-bottom border-dark">
+        <div className="table-responsive">
+          <table className="table table-striped table-hover">
+            <thead className="bg-light text-dark">
               <tr>
                 <th className="p-2">Candidate</th>
                 <th className="p-2">Contact & Coach</th>
                 <th className="p-2 text-center">Score / Max</th>
                 <th className="p-2 text-center">Accuracy</th>
-                <th className="p-3.5">Scholarship Tier</th>
-                <th className="p-3.5 text-center">Security Violations</th>
-                <th className="p-3.5 text-right">Actions</th>
+                <th className="p-3">Scholarship Tier</th>
+                <th className="p-3 text-center">Security Violations</th>
+                <th className="p-3 text-end">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-800/60">
+            <tbody>
               {filteredCandidates.length === 0 ? (
                 <tr>
                   <td colSpan="7" className="p-8 text-center text-slate-500">
@@ -312,30 +322,25 @@ export default function AdminDashboard() {
                 </tr>
               ) : (
                 filteredCandidates.map((c) => (
-                  <tr key={c.id} className="hover:bg-slate-900/40 transition-colors">
-                    <td className="p-3.5 font-medium text-white">
-                      <div className="font-bold">{c.fullName}</div>
-                      <div className="text-[11px] text-slate-400">{c.college || 'N/A'}</div>
+                  <tr key={c.id}>
+                    <td className="p-3 font-medium text-white">
+                      <div className="fw-bold">{c.fullName}</div>
+                      <div className="small text-muted">{c.college || 'N/A'}</div>
                     </td>
-                    <td className="p-3.5 text-slate-300">
+                    <td className="p-3 text-muted">
                       <div>{c.email}</div>
-                      <div className="text-[11px] text-slate-400">{c.phone} &bull; Coach: <strong className="text-sky-300">{c.coach || 'None'}</strong></div>
+                      <div className="small text-muted">{c.phone} • Coach: <strong className="text-info">{c.coach || 'None'}</strong></div>
                     </td>
-                    <td className="p-3.5 text-center font-mono font-bold text-sky-400">
-                      {c.totalScore !== null ? `${c.totalScore} / ${c.maxScore || 50}` : <span className="text-slate-500 font-normal">Pending</span>}
+                    <td className="p-3 text-center fw-bold text-primary">
+                      {c.totalScore !== null ? `${c.totalScore} / ${c.maxScore || 50}` : <span className="text-muted">Pending</span>}
                     </td>
-                    <td className="p-3.5 text-center font-mono">
+                    <td className="p-3 text-center">
                       {c.percentage !== null ? (
-                        <span className={`px-2 py-0.5 rounded-full font-bold text-[11px] ${
-                          c.percentage >= 90 ? 'bg-purple-500/20 text-purple-300' :
-                          c.percentage >= 75 ? 'bg-amber-500/20 text-amber-300' :
-                          c.percentage >= 60 ? 'bg-cyan-500/20 text-cyan-300' :
-                          'bg-slate-800 text-slate-400'
-                        }`}>
+                        <span className={`badge bg-${c.percentage >= 90 ? 'primary' : c.percentage >= 75 ? 'warning' : c.percentage >= 60 ? 'info' : 'secondary'} text-white`)}>
                           {c.percentage}%
                         </span>
                       ) : (
-                        <span className="text-slate-500">-</span>
+                        <span className="text-muted">-</span>
                       )}
                     </td>
                     <td className="p-3.5">
@@ -354,11 +359,11 @@ export default function AdminDashboard() {
                         </span>
                       )}
                     </td>
-                    <td className="p-3.5 text-right">
-                      <div className="d-flex align-items-center justify-end gap-2">
+                    <td className="p-3 text-end">
+                      <div className="d-flex align-items-center gap-2">
                         <button
                           onClick={() => handleInspectCandidate(c.id)}
-                          className="btn-secondary py-1.5 px-3 text-[11px] d-flex align-items-center gap-1"
+                          className="btn btn-outline-secondary btn-sm"
                           title="Inspect candidate audit details and webcam snapshots"
                         >
                           <Eye className="w-3.5 h-3.5" /> Inspect
@@ -366,7 +371,7 @@ export default function AdminDashboard() {
 
                         <button
                           onClick={() => handleDeleteCandidate(c)}
-                          className="py-1.5 px-3 text-[11px] font-bold rounded-lg bg-rose-500/15 border border-rose-500/30 text-rose-300 hover:bg-rose-500/30 transition-colors d-flex align-items-center gap-1"
+                          className="btn btn-outline-danger btn-sm"
                           title="Remove entry and allow candidate to take a retest"
                         >
                           <RotateCcw className="w-3.5 h-3.5" /> Allow Retest

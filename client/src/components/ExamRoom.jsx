@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { api } from '../services/api';
 import {
   Clock, ShieldAlert, AlertTriangle, CheckCircle, ChevronLeft, ChevronRight,
@@ -352,7 +352,7 @@ export default function ExamRoom({ candidate, testId, token, onExamCompleted }) 
   const unansweredCount = Math.max(0, questions.length - answeredCount);
 
   return (
-    <div className="vh-100 bg-slate-950 exam-secure-shield position-relative user-select-none">
+    <div className="vh-100 bg-light exam-secure-shield position-relative user-select-none">
 
       {/* Full-screen Submission Loading Overlay */}
       {isSubmitting && (
