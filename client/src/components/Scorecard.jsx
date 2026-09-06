@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import confetti from 'canvas-confetti';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
@@ -111,7 +111,7 @@ export default function Scorecard({ submissionData, candidateData, onRestart }) 
           </div>
 
           {/* Candidate & Verification Meta */}
-          <div className="row row-cols-2 row-cols-sm-4 g-3 py-3 border-bottom border-secondary text-muted">>
+          <div className="row row-cols-2 row-cols-sm-4 g-3 py-3 border-bottom border-secondary text-muted">
             <div>
               <div className="text-muted d-flex align-items-center gap-1.5 mb-1">
                 <User className="w-3.5 h-3.5 text-sky-400" /> Candidate Name
@@ -143,7 +143,7 @@ export default function Scorecard({ submissionData, candidateData, onRestart }) 
           </div>
 
           {/* Score Highlight Grid */}
-          <div className="row row-cols-sm-3 g-3 my-5">>
+          <div className="row row-cols-sm-3 g-3 my-5">
             <div className="p-4 rounded bg-dark border border-secondary text-center">
               <div className="text-xs text-muted font-semibold uppercase tracking-wider">Total Score</div>
               <div className="text-3xl sm:text-4xl font-extrabold text-sky-400 font-mono mt-1">
