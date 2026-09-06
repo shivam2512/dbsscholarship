@@ -12,46 +12,34 @@ try {
 }
 const storeFilePath = path.join(dataDir, 'app_store.json');
 
-// In-memory data structures
+// Statically bundle seed store so esbuild inlines all data into Lambda
+let seedData = { candidates: {}, tests: {}, submissions: {}, violations: [], snapshots: [] };
+try {
+  seedData = require('./seed_store.json');
+} catch (e) {
+  // Seed store optional
+}
+
+// In-memory data structures initialized with seed data
 let store = {
-  candidates: {},   // email -> candidate object
-  tests: {},        // testId -> test session object
-  submissions: {},  // submissionId / testId -> submission object
-  violations: [],   // list of proctor violations
-  snapshots: []     // list of webcam audit snapshots
+  candidates: { ...(seedData.candidates || {}) },
+  tests: { ...(seedData.tests || {}) },
+  submissions: { ...(seedData.submissions || {}) },
+  violations: [ ...(seedData.violations || []) ],
+  snapshots: [ ...(seedData.snapshots || []) ]
 };
 
-// Load existing state from file or bundled seed on boot
+// Overlay any dynamic runtime updates from /tmp or disk
 try {
-  let loaded = false;
   if (fs.existsSync(storeFilePath)) {
     const raw = fs.readFileSync(storeFilePath, 'utf8');
     const parsed = JSON.parse(raw);
-    store = { ...store, ...parsed };
-    loaded = true;
-  }
-  if (!loaded || Object.keys(store.candidates || {}).length === 0) {
-    const seedPaths = [
-      path.join(__dirname, 'seed_store.json'),
-      path.join(__dirname, '..', 'data', 'app_store.json')
-    ];
-    for (const sp of seedPaths) {
-      if (fs.existsSync(sp)) {
-        const raw = fs.readFileSync(sp, 'utf8');
-        const parsed = JSON.parse(raw);
-        store = {
-          ...store,
-          ...parsed,
-          candidates: { ...(store.candidates || {}), ...(parsed.candidates || {}) },
-          tests: { ...(store.tests || {}), ...(parsed.tests || {}) },
-          submissions: { ...(store.submissions || {}), ...(parsed.submissions || {}) }
-        };
-        break;
-      }
-    }
+    store.candidates = { ...store.candidates, ...(parsed.candidates || {}) };
+    store.tests = { ...store.tests, ...(parsed.tests || {}) };
+    store.submissions = { ...store.submissions, ...(parsed.submissions || {}) };
   }
 } catch (err) {
-  console.warn('Note: Initializing data store with seed fallback.');
+  // Continue with in-memory store
 }
 
 // Persist memory store to JSON file asynchronously
