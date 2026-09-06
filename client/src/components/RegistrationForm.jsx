@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { api } from '../services/api';
-import { ShieldCheck, User, Mail, Phone, GraduationCap, Briefcase, UserCheck, AlertCircle, ArrowRight, Lock, CheckCircle2 } from 'lucide-react';
+import {
+  ShieldCheck, User, Mail, Phone, GraduationCap, Briefcase,
+  UserCheck, AlertCircle, ArrowRight, Lock, CheckCircle2,
+  Star, Trophy, Zap, TrendingUp, Award, Clock
+} from 'lucide-react';
 
 export default function RegistrationForm({ onRegistered, onResumeScorecard }) {
   const [formData, setFormData] = useState({
@@ -14,21 +18,10 @@ export default function RegistrationForm({ onRegistered, onResumeScorecard }) {
   });
 
   const [coaches, setCoaches] = useState([
-    "Sadanand B",
-    "Vaishnavi",
-    "Vijaykumar P.",
-    "Ragini",
-    "Dnyneshwari dhamal",
-    "Aaryan",
-    "Jay Dhumal",
-    "Vanshita Pawar",
-    "Saurabh Vispute",
-    "Himanshu Panchal",
-    "Rushikesh Dhanawade",
-    "Gokul",
-    "Darshan Mahajan",
-    "Sivanand",
-    "Siddharth"
+    "Sadanand B", "Vaishnavi", "Vijaykumar P.", "Ragini",
+    "Dnyneshwari dhamal", "Aaryan", "Jay Dhumal", "Vanshita Pawar",
+    "Saurabh Vispute", "Himanshu Panchal", "Rushikesh Dhanawade",
+    "Gokul", "Darshan Mahajan", "Sivanand", "Siddharth"
   ]);
 
   const [loading, setLoading] = useState(false);
@@ -38,19 +31,14 @@ export default function RegistrationForm({ onRegistered, onResumeScorecard }) {
   useEffect(() => {
     api.fetchCoaches()
       .then(data => {
-        if (data.coaches && data.coaches.length > 0) {
-          setCoaches(data.coaches);
-        }
+        if (data.coaches && data.coaches.length > 0) setCoaches(data.coaches);
       })
       .catch(err => console.warn('Could not load coach list:', err));
   }, []);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value
-    }));
+    setFormData(prev => ({ ...prev, [name]: type === 'checkbox' ? checked : value }));
     setErrorMsg('');
     setDuplicateAttemptInfo(null);
   };
@@ -69,12 +57,7 @@ export default function RegistrationForm({ onRegistered, onResumeScorecard }) {
     try {
       const res = await api.registerCandidate(formData);
       if (res.success) {
-        onRegistered({
-          candidate: res.candidate,
-          testId: res.testId,
-          token: res.token,
-          isResume: res.isResume
-        });
+        onRegistered({ candidate: res.candidate, testId: res.testId, token: res.token, isResume: res.isResume });
       }
     } catch (err) {
       if (err.isAttempted) {
@@ -88,47 +71,130 @@ export default function RegistrationForm({ onRegistered, onResumeScorecard }) {
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8 animate-fade-in">
-      {/* Banner */}
-      <div className="text-center mb-8">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-500/10 border border-sky-500/30 text-sky-400 text-xs font-semibold uppercase tracking-wider mb-3">
-          <ShieldCheck className="w-4 h-4" />
-          Single-Attempt Proctored Assessment
+    <div style={{ maxWidth: 1100, margin: '0 auto', padding: '32px 16px 48px' }} className="animate-fade-in">
+
+      {/* ── Hero Banner ── */}
+      <div style={{
+        background: 'linear-gradient(135deg, #1e3a8a 0%, #1d4ed8 50%, #2563eb 100%)',
+        borderRadius: 24,
+        padding: '48px 40px 44px',
+        marginBottom: 32,
+        position: 'relative',
+        overflow: 'hidden',
+        boxShadow: '0 20px 60px rgba(29,78,216,0.35)'
+      }}>
+        {/* Decorative orbs */}
+        <div style={{
+          position: 'absolute', top: -60, right: -60, width: 240, height: 240,
+          borderRadius: '50%', background: 'rgba(255,255,255,0.06)', pointerEvents: 'none'
+        }} />
+        <div style={{
+          position: 'absolute', bottom: -40, left: -40, width: 160, height: 160,
+          borderRadius: '50%', background: 'rgba(217,119,6,0.15)', pointerEvents: 'none'
+        }} />
+        <div style={{
+          position: 'absolute', top: '50%', right: '10%',
+          transform: 'translateY(-50%)', fontSize: 120, opacity: 0.07,
+          pointerEvents: 'none', lineHeight: 1
+        }}>🎓</div>
+
+        <div style={{ position: 'relative', textAlign: 'center' }}>
+          {/* Institute badge */}
+          <div style={{
+            display: 'inline-flex', alignItems: 'center', gap: 8,
+            padding: '6px 18px', borderRadius: 50,
+            background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.25)',
+            marginBottom: 18
+          }}>
+            <Award style={{ width: 15, height: 15, color: '#fbbf24' }} />
+            <span style={{ fontSize: 11, fontWeight: 700, color: '#fde68a', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+              DBS Institute of Technology
+            </span>
+          </div>
+
+          {/* Main headline */}
+          <h1 style={{
+            fontFamily: "'Outfit', sans-serif",
+            fontSize: 'clamp(26px, 5vw, 42px)',
+            fontWeight: 900,
+            color: '#ffffff',
+            lineHeight: 1.15,
+            letterSpacing: '-0.03em',
+            marginBottom: 12
+          }}>
+            IT Scholarship Test 2025
+          </h1>
+
+          {/* Lucrative quote */}
+          <p style={{
+            fontSize: 'clamp(14px, 2.2vw, 18px)',
+            color: 'rgba(255,255,255,0.85)',
+            maxWidth: 680,
+            margin: '0 auto 20px',
+            lineHeight: 1.6,
+            fontStyle: 'italic',
+            fontWeight: 400
+          }}>
+            "Your 20 minutes today could save you lakhs tomorrow —{' '}
+            <strong style={{ color: '#fde68a', fontStyle: 'normal', fontWeight: 700 }}>
+              earn up to 100% tuition scholarship
+            </strong>{' '}
+            and launch your IT career with zero financial barrier."
+          </p>
+
+          {/* CTA chips */}
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, justifyContent: 'center' }}>
+            {[
+              { icon: <Trophy style={{ width: 14, height: 14 }} />, label: '100% Scholarship for Top Scorers' },
+              { icon: <Zap style={{ width: 14, height: 14 }} />, label: 'Results in 60 Seconds' },
+              { icon: <Clock style={{ width: 14, height: 14 }} />, label: 'Only 20 Minutes' },
+              { icon: <TrendingUp style={{ width: 14, height: 14 }} />, label: 'L1 IT Career Launch' },
+            ].map((chip, i) => (
+              <div key={i} style={{
+                display: 'flex', alignItems: 'center', gap: 6,
+                padding: '6px 14px', borderRadius: 30,
+                background: i === 0 ? 'rgba(251,191,36,0.2)' : 'rgba(255,255,255,0.1)',
+                border: i === 0 ? '1px solid rgba(251,191,36,0.5)' : '1px solid rgba(255,255,255,0.18)',
+                color: i === 0 ? '#fde68a' : 'rgba(255,255,255,0.9)',
+                fontSize: 12, fontWeight: 600
+              }}>
+                {chip.icon}
+                {chip.label}
+              </div>
+            ))}
+          </div>
         </div>
-        <h1 className="text-3xl md:text-4xl font-extrabold text-white tracking-tight">
-          IT Career Readiness & Scholarship Assessment
-        </h1>
-        <p className="text-slate-400 mt-2 max-w-2xl mx-auto text-sm md:text-base">
-          Evaluate your technical readiness for L1 IT Support roles and qualify for up to <strong className="text-sky-300">100% Tuition Scholarships</strong>.
-        </p>
       </div>
 
-      {/* Duplicate Attempt Warning Card */}
+      {/* Duplicate Attempt Warning */}
       {duplicateAttemptInfo && (
-        <div className="glass-panel border-amber-500/40 p-6 mb-8 bg-amber-950/20 rounded-2xl shadow-xl">
-          <div className="flex items-start gap-4">
-            <div className="p-3 bg-amber-500/20 rounded-xl text-amber-400">
-              <Lock className="w-7 h-7" />
+        <div style={{
+          background: '#fffbeb', border: '1.5px solid #fbbf24',
+          borderRadius: 16, padding: '20px 24px', marginBottom: 24,
+          boxShadow: '0 4px 16px rgba(217,119,6,0.1)'
+        }}>
+          <div style={{ display: 'flex', gap: 16, alignItems: 'flex-start' }}>
+            <div style={{
+              padding: 10, borderRadius: 10, background: 'rgba(217,119,6,0.1)', flexShrink: 0
+            }}>
+              <Lock style={{ width: 22, height: 22, color: '#d97706' }} />
             </div>
-            <div className="flex-1">
-              <h3 className="text-lg font-bold text-amber-200">Assessment Already Completed</h3>
-              <p className="text-sm text-slate-300 mt-1">
-                Our security record indicates that an assessment was already submitted using the email <strong className="text-white font-mono">{formData.email}</strong>. Per strict examination policies, re-attempts are locked.
+            <div style={{ flex: 1 }}>
+              <h3 style={{ fontSize: 15, fontWeight: 700, color: '#92400e', marginBottom: 6 }}>
+                Assessment Already Completed
+              </h3>
+              <p style={{ fontSize: 13, color: '#78350f', lineHeight: 1.6 }}>
+                Our record shows an assessment was submitted using{' '}
+                <strong style={{ fontFamily: "'JetBrains Mono', monospace" }}>{formData.email}</strong>.
+                Per strict examination policies, re-attempts are locked.
               </p>
-              <div className="mt-4 flex flex-wrap items-center gap-3">
+              <div style={{ display: 'flex', gap: 10, marginTop: 14, flexWrap: 'wrap' }}>
                 {duplicateAttemptInfo.submissionId && (
-                  <button
-                    onClick={() => onResumeScorecard(duplicateAttemptInfo.submissionId)}
-                    className="btn-primary py-2 px-4 text-xs"
-                  >
-                    View Official Verified Scorecard
-                    <ArrowRight className="w-3.5 h-3.5" />
+                  <button onClick={() => onResumeScorecard(duplicateAttemptInfo.submissionId)} className="btn-primary" style={{ fontSize: 12, padding: '8px 16px' }}>
+                    View Official Scorecard <ArrowRight style={{ width: 13, height: 13 }} />
                   </button>
                 )}
-                <button
-                  onClick={() => setDuplicateAttemptInfo(null)}
-                  className="btn-secondary py-2 px-4 text-xs"
-                >
+                <button onClick={() => setDuplicateAttemptInfo(null)} className="btn-secondary" style={{ fontSize: 12, padding: '8px 16px' }}>
                   Register with another email
                 </button>
               </div>
@@ -137,246 +203,283 @@ export default function RegistrationForm({ onRegistered, onResumeScorecard }) {
         </div>
       )}
 
-      {/* Main Form Grid */}
-      <div className="grid md:grid-cols-12 gap-8 items-start">
-        {/* Left Column: Form */}
-        <div className="md:col-span-7 glass-panel-glow p-6 sm:p-8">
-          <h2 className="text-xl font-bold text-white mb-1 flex items-center gap-2">
-            <UserCheck className="w-5 h-5 text-sky-400" />
-            Candidate Registration
-          </h2>
-          <p className="text-xs text-slate-400 mb-6">
-            Ensure details match your official ID for certificate validation.
-          </p>
+      {/* ── Main Grid: Form + Sidebar ── */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 24, alignItems: 'start' }}>
 
-          {errorMsg && (
-            <div className="mb-5 p-3.5 bg-rose-500/15 border border-rose-500/30 rounded-xl flex items-center gap-3 text-rose-300 text-xs font-medium">
-              <AlertCircle className="w-4 h-4 flex-shrink-0" />
-              <span>{errorMsg}</span>
-            </div>
-          )}
-
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Full Name */}
-            <div>
-              <label className="form-label flex items-center gap-1.5">
-                <User className="w-3.5 h-3.5 text-sky-400" />
-                Full Name <span className="text-rose-400">*</span>
-              </label>
-              <input
-                type="text"
-                name="fullName"
-                value={formData.fullName}
-                onChange={handleChange}
-                placeholder="e.g. Alex Kumar"
-                required
-                className="form-input"
-              />
-            </div>
-
-            {/* Email & Phone Grid */}
-            <div className="grid sm:grid-cols-2 gap-4">
+        {/* Left: Registration Form */}
+        <div style={{ gridColumn: 'span 1' }}>
+          <div className="glass-panel-glow" style={{ padding: '32px 28px' }}>
+            {/* Form header */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6 }}>
+              <div style={{
+                width: 36, height: 36, borderRadius: 10,
+                background: 'linear-gradient(135deg, #1d4ed8, #3b82f6)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                boxShadow: '0 4px 10px rgba(29,78,216,0.25)'
+              }}>
+                <UserCheck style={{ width: 18, height: 18, color: '#fff' }} />
+              </div>
               <div>
-                <label className="form-label flex items-center gap-1.5">
-                  <Mail className="w-3.5 h-3.5 text-sky-400" />
-                  Email Address <span className="text-rose-400">*</span>
+                <h2 style={{ fontSize: 17, fontWeight: 800, color: '#0f172a', lineHeight: 1.2 }}>
+                  Candidate Registration
+                </h2>
+                <p style={{ fontSize: 11, color: '#64748b' }}>Secure • Verified • One-Time Attempt</p>
+              </div>
+            </div>
+            <p style={{ fontSize: 12, color: '#94a3b8', marginBottom: 22, paddingTop: 6, borderTop: '1px solid #f0f4ff' }}>
+              Ensure details match your official ID for scholarship certificate validation.
+            </p>
+
+            {/* Error */}
+            {errorMsg && (
+              <div style={{
+                marginBottom: 18, padding: '12px 16px',
+                background: '#fef2f2', border: '1.5px solid #fca5a5',
+                borderRadius: 10, display: 'flex', alignItems: 'center', gap: 10,
+                fontSize: 13, color: '#dc2626'
+              }}>
+                <AlertCircle style={{ width: 16, height: 16, flexShrink: 0 }} />
+                <span>{errorMsg}</span>
+              </div>
+            )}
+
+            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+              {/* Full Name */}
+              <div>
+                <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <User style={{ width: 12, height: 12, color: '#1d4ed8' }} />
+                  Full Name <span style={{ color: '#dc2626' }}>*</span>
                 </label>
                 <input
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  placeholder="name@example.com"
-                  required
+                  type="text" name="fullName" value={formData.fullName}
+                  onChange={handleChange} placeholder="e.g. Rahul Sharma"
+                  required className="form-input"
+                />
+              </div>
+
+              {/* Email & Phone */}
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+                <div>
+                  <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <Mail style={{ width: 12, height: 12, color: '#1d4ed8' }} />
+                    Email <span style={{ color: '#dc2626' }}>*</span>
+                  </label>
+                  <input
+                    type="email" name="email" value={formData.email}
+                    onChange={handleChange} placeholder="name@example.com"
+                    required className="form-input"
+                  />
+                </div>
+                <div>
+                  <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <Phone style={{ width: 12, height: 12, color: '#1d4ed8' }} />
+                    WhatsApp / Phone <span style={{ color: '#dc2626' }}>*</span>
+                  </label>
+                  <input
+                    type="tel" name="phone" value={formData.phone}
+                    onChange={handleChange} placeholder="+91 98765 43210"
+                    required className="form-input"
+                  />
+                </div>
+              </div>
+
+              {/* College */}
+              <div>
+                <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <GraduationCap style={{ width: 12, height: 12, color: '#1d4ed8' }} />
+                  College / University / Highest Degree
+                </label>
+                <input
+                  type="text" name="college" value={formData.college}
+                  onChange={handleChange} placeholder="e.g. B.Tech CS / BCA / MCA"
                   className="form-input"
                 />
               </div>
 
-              <div>
-                <label className="form-label flex items-center gap-1.5">
-                  <Phone className="w-3.5 h-3.5 text-sky-400" />
-                  WhatsApp / Phone <span className="text-rose-400">*</span>
-                </label>
-                <input
-                  type="tel"
-                  name="phone"
-                  value={formData.phone}
-                  onChange={handleChange}
-                  placeholder="+91 98765 43210"
-                  required
-                  className="form-input"
-                />
-              </div>
-            </div>
-
-            {/* College / Institution */}
-            <div>
-              <label className="form-label flex items-center gap-1.5">
-                <GraduationCap className="w-3.5 h-3.5 text-sky-400" />
-                College / University / Highest Degree
-              </label>
-              <input
-                type="text"
-                name="college"
-                value={formData.college}
-                onChange={handleChange}
-                placeholder="e.g. B.Tech CS / BCA / MCA"
-                className="form-input"
-              />
-            </div>
-
-            {/* Experience & Assigned Coach */}
-            <div className="grid sm:grid-cols-2 gap-4">
-              <div>
-                <label className="form-label flex items-center gap-1.5">
-                  <Briefcase className="w-3.5 h-3.5 text-sky-400" />
-                  Experience Level
-                </label>
-                <select
-                  name="experience"
-                  value={formData.experience}
-                  onChange={handleChange}
-                  className="form-input"
-                >
-                  <option value="Fresher / Student">Fresher / Student</option>
-                  <option value="0 - 1 Year">0 - 1 Year</option>
-                  <option value="1 - 3 Years">1 - 3 Years</option>
-                  <option value="3+ Years">3+ Years (Career Transition)</option>
-                </select>
+              {/* Experience & Coach */}
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+                <div>
+                  <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <Briefcase style={{ width: 12, height: 12, color: '#1d4ed8' }} />
+                    Experience Level
+                  </label>
+                  <select name="experience" value={formData.experience} onChange={handleChange} className="form-input">
+                    <option value="Fresher / Student">Fresher / Student</option>
+                    <option value="0 - 1 Year">0 - 1 Year</option>
+                    <option value="1 - 3 Years">1 - 3 Years</option>
+                    <option value="3+ Years">3+ Years (Career Transition)</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <UserCheck style={{ width: 12, height: 12, color: '#1d4ed8' }} />
+                    Career Consultant
+                  </label>
+                  <select name="coach" value={formData.coach} onChange={handleChange} className="form-input">
+                    {coaches.map((c, i) => <option key={i} value={c}>{c}</option>)}
+                  </select>
+                </div>
               </div>
 
-              <div>
-                <label className="form-label flex items-center gap-1.5">
-                  <UserCheck className="w-3.5 h-3.5 text-sky-400" />
-                  Career Consultant / Coach
+              {/* Terms */}
+              <div style={{
+                background: '#f0f6ff', borderRadius: 10, padding: '12px 14px',
+                border: '1px solid #bfdbfe'
+              }}>
+                <label style={{ display: 'flex', alignItems: 'flex-start', gap: 10, cursor: 'pointer', fontSize: 12, color: '#334155' }}>
+                  <input
+                    type="checkbox" name="agreeTerms" checked={formData.agreeTerms}
+                    onChange={handleChange}
+                    style={{ marginTop: 2, accentColor: '#1d4ed8', width: 15, height: 15, flexShrink: 0 }}
+                  />
+                  <span>
+                    I understand this is a <strong style={{ color: '#1d4ed8' }}>strictly proctored CBT</strong>. Exiting full-screen,
+                    switching tabs, or unauthorized actions will be flagged and may result in automatic disqualification.
+                  </span>
                 </label>
-                <select
-                  name="coach"
-                  value={formData.coach}
-                  onChange={handleChange}
-                  className="form-input"
-                >
-                  {coaches.map((c, i) => (
-                    <option key={i} value={c}>{c}</option>
-                  ))}
-                </select>
               </div>
-            </div>
 
-            {/* Terms checkbox */}
-            <div className="pt-2">
-              <label className="flex items-start gap-3 cursor-pointer text-xs text-slate-300">
-                <input
-                  type="checkbox"
-                  name="agreeTerms"
-                  checked={formData.agreeTerms}
-                  onChange={handleChange}
-                  className="mt-0.5 rounded border-slate-700 bg-slate-900 text-sky-500 focus:ring-sky-500"
-                />
-                <span>
-                  I understand this is a <strong className="text-sky-300">strictly proctored CBT</strong>. Exiting full-screen, switching tabs, or unauthorized actions will be flagged and can result in automatic disqualification.
-                </span>
-              </label>
-            </div>
-
-            {/* Submit Button */}
-            <button
-              type="submit"
-              disabled={loading}
-              className="btn-primary w-full py-3.5 text-base mt-4"
-            >
-              {loading ? (
-                <span className="flex items-center gap-2">
-                  <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
-                  Validating Eligibility...
-                </span>
-              ) : (
-                <span className="flex items-center gap-2">
-                  Proceed to Security Pre-Check
-                  <ArrowRight className="w-4 h-4" />
-                </span>
-              )}
-            </button>
-          </form>
+              {/* Submit */}
+              <button type="submit" disabled={loading} className="btn-primary" style={{ width: '100%', padding: '14px', fontSize: 15, marginTop: 4 }}>
+                {loading ? (
+                  <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <span style={{ width: 16, height: 16, border: '2.5px solid rgba(255,255,255,0.3)', borderTop: '2.5px solid #fff', borderRadius: '50%', animation: 'spin 0.7s linear infinite', display: 'inline-block' }} />
+                    Validating Eligibility...
+                  </span>
+                ) : (
+                  <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    Proceed to Security Pre-Check
+                    <ArrowRight style={{ width: 16, height: 16 }} />
+                  </span>
+                )}
+              </button>
+            </form>
+          </div>
         </div>
 
-        {/* Right Column: Scholarship & Test Highlights */}
-        <div className="md:col-span-5 space-y-4">
-          {/* Scholarship Brackets */}
-          <div className="glass-panel p-5">
-            <h3 className="text-sm font-bold text-white uppercase tracking-wider text-slate-300 mb-3 flex items-center justify-between">
-              <span>Scholarship Eligibility</span>
-              <span className="text-xs text-sky-400 font-mono">50 Marks Max</span>
-            </h3>
+        {/* Right: Info Sidebar */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
 
-            <div className="space-y-2.5">
-              <div className="flex items-center justify-between p-3 rounded-xl bg-purple-950/30 border border-purple-500/20">
-                <div className="flex items-center gap-2.5">
-                  <span className="w-2.5 h-2.5 rounded-full bg-purple-400"></span>
+          {/* Scholarship Tiers */}
+          <div className="glass-panel" style={{ padding: '22px 20px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
+              <h3 style={{ fontSize: 13, fontWeight: 800, color: '#0f172a', textTransform: 'uppercase', letterSpacing: '0.05em', display: 'flex', alignItems: 'center', gap: 6 }}>
+                <Trophy style={{ width: 15, height: 15, color: '#d97706' }} />
+                Scholarship Brackets
+              </h3>
+              <span style={{ fontSize: 11, fontWeight: 700, color: '#1d4ed8', background: '#eff6ff', padding: '3px 10px', borderRadius: 20 }}>50 Marks Max</span>
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              {/* Platinum */}
+              <div style={{
+                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                padding: '12px 14px', borderRadius: 12,
+                background: 'linear-gradient(135deg, #f5f3ff, #ede9fe)',
+                border: '1.5px solid #c4b5fd'
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                  <span style={{ fontSize: 18 }}>🥇</span>
                   <div>
-                    <div className="text-xs font-bold text-purple-200">Platinum Tier (90% - 100%)</div>
-                    <div className="text-[11px] text-purple-400/80">45 - 50 Marks</div>
+                    <div style={{ fontSize: 12, fontWeight: 800, color: '#5b21b6' }}>Platinum — 90% to 100%</div>
+                    <div style={{ fontSize: 11, color: '#7c3aed' }}>45 – 50 Marks</div>
                   </div>
                 </div>
-                <span className="text-xs font-extrabold px-2.5 py-1 rounded-md bg-purple-500/20 text-purple-300 border border-purple-500/30">
-                  100% Scholarship
+                <span style={{ fontSize: 11, fontWeight: 800, padding: '4px 10px', borderRadius: 8, background: '#7c3aed', color: '#fff' }}>
+                  100% OFF
                 </span>
               </div>
 
-              <div className="flex items-center justify-between p-3 rounded-xl bg-amber-950/30 border border-amber-500/20">
-                <div className="flex items-center gap-2.5">
-                  <span className="w-2.5 h-2.5 rounded-full bg-amber-400"></span>
+              {/* Gold */}
+              <div style={{
+                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                padding: '12px 14px', borderRadius: 12,
+                background: 'linear-gradient(135deg, #fffbeb, #fef3c7)',
+                border: '1.5px solid #fcd34d'
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                  <span style={{ fontSize: 18 }}>🥈</span>
                   <div>
-                    <div className="text-xs font-bold text-amber-200">Gold Tier (75% - 89%)</div>
-                    <div className="text-[11px] text-amber-400/80">38 - 44 Marks</div>
+                    <div style={{ fontSize: 12, fontWeight: 800, color: '#92400e' }}>Gold — 75% to 89%</div>
+                    <div style={{ fontSize: 11, color: '#b45309' }}>38 – 44 Marks</div>
                   </div>
                 </div>
-                <span className="text-xs font-extrabold px-2.5 py-1 rounded-md bg-amber-500/20 text-amber-300 border border-amber-500/30">
-                  50% Scholarship
+                <span style={{ fontSize: 11, fontWeight: 800, padding: '4px 10px', borderRadius: 8, background: '#d97706', color: '#fff' }}>
+                  50% OFF
                 </span>
               </div>
 
-              <div className="flex items-center justify-between p-3 rounded-xl bg-cyan-950/30 border border-cyan-500/20">
-                <div className="flex items-center gap-2.5">
-                  <span className="w-2.5 h-2.5 rounded-full bg-cyan-400"></span>
+              {/* Silver */}
+              <div style={{
+                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                padding: '12px 14px', borderRadius: 12,
+                background: 'linear-gradient(135deg, #f0f9ff, #e0f2fe)',
+                border: '1.5px solid #7dd3fc'
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                  <span style={{ fontSize: 18 }}>🥉</span>
                   <div>
-                    <div className="text-xs font-bold text-cyan-200">Silver Tier (60% - 74%)</div>
-                    <div className="text-[11px] text-cyan-400/80">30 - 36 Marks</div>
+                    <div style={{ fontSize: 12, fontWeight: 800, color: '#0c4a6e' }}>Silver — 60% to 74%</div>
+                    <div style={{ fontSize: 11, color: '#0369a1' }}>30 – 36 Marks</div>
                   </div>
                 </div>
-                <span className="text-xs font-extrabold px-2.5 py-1 rounded-md bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">
-                  25% Scholarship
+                <span style={{ fontSize: 11, fontWeight: 800, padding: '4px 10px', borderRadius: 8, background: '#0891b2', color: '#fff' }}>
+                  25% OFF
                 </span>
               </div>
             </div>
           </div>
 
-          {/* Test Pattern */}
-          <div className="glass-panel p-5">
-            <h3 className="text-xs font-bold text-slate-300 uppercase tracking-wider mb-3">
-              Assessment Pattern & Rules
+          {/* Why Appear */}
+          <div className="glass-panel" style={{ padding: '20px 20px' }}>
+            <h3 style={{ fontSize: 13, fontWeight: 800, color: '#0f172a', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 14, display: 'flex', alignItems: 'center', gap: 6 }}>
+              <Star style={{ width: 14, height: 14, color: '#d97706', fill: '#d97706' }} />
+              Why Appear?
             </h3>
-            <ul className="space-y-2 text-xs text-slate-300">
-              <li className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0" />
-                <span><strong>10 Scored MCQs</strong> &bull; 20 Minutes Time Limit</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0" />
-                <span><strong>+5 Marks</strong> per correct answer (50 Marks Total) &bull; No negative marking</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0" />
-                <span>Continuous Face & Audio surveillance</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0" />
-                <span>Instant Scorecard & PDF Certificate delivery</span>
-              </li>
+            <ul style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              {[
+                { icon: '🎯', text: 'Score 90%+ and get completely FREE training worth ₹40,000+' },
+                { icon: '⚡', text: 'Instant Scorecard — know your result in under 60 seconds' },
+                { icon: '🏅', text: 'Official digitally-signed Scholarship Certificate' },
+                { icon: '💼', text: 'Launch an L1 IT Support career with industry-ready skills' },
+                { icon: '📊', text: 'No negative marking — every correct answer gets you closer' },
+              ].map((item, i) => (
+                <li key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 10, fontSize: 12.5, color: '#334155' }}>
+                  <span style={{ fontSize: 16, lineHeight: 1.4, flexShrink: 0 }}>{item.icon}</span>
+                  <span>{item.text}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Exam Pattern */}
+          <div className="glass-panel" style={{ padding: '20px 20px' }}>
+            <h3 style={{ fontSize: 13, fontWeight: 800, color: '#0f172a', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 14, display: 'flex', alignItems: 'center', gap: 6 }}>
+              <ShieldCheck style={{ width: 14, height: 14, color: '#059669' }} />
+              Exam Pattern
+            </h3>
+            <ul style={{ display: 'flex', flexDirection: 'column', gap: 9 }}>
+              {[
+                '10 MCQs covering core IT concepts',
+                '+5 marks per correct answer (50 Total)',
+                'No negative marking',
+                '20-minute strict time limit',
+                'AI-proctored webcam & audio monitoring',
+                'One-time attempt only — plan wisely!',
+              ].map((rule, i) => (
+                <li key={i} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12.5, color: '#334155' }}>
+                  <CheckCircle2 style={{ width: 14, height: 14, color: '#059669', flexShrink: 0 }} />
+                  <span>{rule}</span>
+                </li>
+              ))}
             </ul>
           </div>
         </div>
       </div>
+
+      <style>{`
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+      `}</style>
     </div>
   );
 }

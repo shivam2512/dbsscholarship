@@ -46,7 +46,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col justify-between selection:bg-cyan-500 selection:text-white">
+    <div className="min-h-screen flex flex-col justify-between" style={{ background: '#f0f4ff', color: '#0f172a', WebkitUserSelect: 'auto' }}>
       {/* Top Navigation */}
       <Navbar
         currentView={currentView}
@@ -102,14 +102,21 @@ export default function App() {
 
       {/* Footer (hidden during active exam) */}
       {currentView !== 'exam' && (
-        <footer className="border-t border-slate-900 bg-slate-950 py-6 text-center text-xs text-slate-500">
+        <footer style={{
+          borderTop: '1.5px solid #dce8fb',
+          background: 'rgba(255,255,255,0.8)',
+          padding: '18px 0',
+          textAlign: 'center',
+          fontSize: 12,
+          color: '#94a3b8'
+        }}>
           <div className="max-w-7xl mx-auto px-4 flex flex-wrap items-center justify-between gap-4">
-            <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
-              <span>Proctored CBT Engine &bull; Version 1.0</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#059669', display: 'inline-block' }}></span>
+              <span>Proctored CBT Engine &bull; DBS IT Scholarship &bull; v2.0</span>
             </div>
-            <div>
-              &copy; {new Date().getFullYear()} IT Career Readiness & Scholarship Assessment. All Rights Reserved.
+            <div style={{ color: '#94a3b8' }}>
+              &copy; {new Date().getFullYear()} DBS IT Scholarship Test. All Rights Reserved.
             </div>
           </div>
         </footer>
