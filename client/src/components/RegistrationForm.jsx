@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { api } from '../services/api';
 import {
   ShieldCheck, User, Mail, Phone, GraduationCap, Briefcase,
@@ -72,7 +72,7 @@ export default function RegistrationForm({ onRegistered, onResumeScorecard }) {
 
   return (
     <div className="container py-5" style={{ maxWidth: 1100, margin: '0 auto' }}>
-      {/* â”€â”€ Hero Banner â”€â”€ */}
+      {/* ── Hero Banner ── */}
       <div className="bg-primary bg-gradient" style={{
         background: 'linear-gradient(135deg, #1e3a8a 0%, #1d4ed8 50%, #2563eb 100%)',
         borderRadius: 24,
@@ -95,7 +95,7 @@ export default function RegistrationForm({ onRegistered, onResumeScorecard }) {
           position: 'absolute', top: '50%', right: '10%',
           transform: 'translateY(-50%)', fontSize: 120, opacity: 0.07,
           pointerEvents: 'none', lineHeight: 1
-        }}>ðŸŽ“</div>
+        }}>🎓</div>
         <div className="position-relative text-center">
           {/* Institute badge */}
           <div className="d-inline-d-flex align-items-center gap-2 bg-white bg-opacity-20 border border-white rounded-pill py-1 px-3 mb-3">
@@ -106,7 +106,7 @@ export default function RegistrationForm({ onRegistered, onResumeScorecard }) {
           <h1 className="display-5 fw-bold text-white mb-2" style={{ fontFamily: '"Outfit", sans-serif', letterSpacing: '-0.03em' }}>IT Scholarship Test 2025</h1>
           {/* Lucrative quote */}
           <p className="fs-5 text-light fst-italic mb-4" style={{ maxWidth: 680, margin: '0 auto' }}>
-            "Your 20 minutes today could save you lakhs tomorrow â€” <strong className="text-warning">earn up to 100% tuition scholarship</strong> and launch your IT career with zero financial barrier."
+            "Your 20 minutes today could save you lakhs tomorrow — <strong className="text-warning">earn up to 100% tuition scholarship</strong> and launch your IT career with zero financial barrier."
           </p>
           {/* CTA chips */}
           <div className="d-flex flex-wrap justify-content-center gap-2 mb-4">
@@ -150,8 +150,8 @@ export default function RegistrationForm({ onRegistered, onResumeScorecard }) {
       <div className="row g-4">
         {/* Left: Registration Form */}
         <div className="col-md-8">
-          <div className="card shadow-sm">
-            <div className="card-body">
+          <div className="card shadow-sm border-0 rounded-3">
+            <div className="card-body p-4">
               {/* Form header */}
               <div className="d-flex align-items-center gap-2 mb-2">
                 <div className="d-flex align-items-center justify-content-center bg-primary text-white rounded" style={{ width: 36, height: 36, boxShadow: '0 4px 10px rgba(29,78,216,0.25)' }}>
@@ -159,7 +159,7 @@ export default function RegistrationForm({ onRegistered, onResumeScorecard }) {
                 </div>
                 <div>
                   <h2 className="h5 fw-bold text-dark mb-0">Candidate Registration</h2>
-                  <p className="small text-muted mb-0">Secure â€¢ Verified â€¢ One-Time Attempt</p>
+                  <p className="small text-muted mb-0">Secure • Verified • One-Time Attempt</p>
                 </div>
               </div>
               <p className="small text-muted mb-4 pt-2" style={{ borderTop: '1px solid #f0f4ff' }}>Ensure details match your official ID for scholarship certificate validation.</p>
@@ -212,10 +212,10 @@ export default function RegistrationForm({ onRegistered, onResumeScorecard }) {
                 </div>
                 {/* Terms */}
                 <div className="col-12">
-                  <div className="bg-light border border-primary rounded p-3">
+                  <div className="bg-light border border-primary-subtle rounded p-3">
                     <div className="form-check">
                       <input type="checkbox" name="agreeTerms" checked={formData.agreeTerms} onChange={handleChange} className="form-check-input" id="termsCheck" />
-                      <label className="form-check-label small" htmlFor="termsCheck">
+                      <label className="form-check-label small text-dark" htmlFor="termsCheck">
                         I understand this is a <strong className="text-primary">strictly proctored CBT</strong>. Exiting full-screen, switching tabs, or unauthorized actions will be flagged and may result in automatic disqualification.
                       </label>
                     </div>
@@ -225,12 +225,12 @@ export default function RegistrationForm({ onRegistered, onResumeScorecard }) {
                 <div className="col-12">
                   <button type="submit" disabled={loading} className="btn btn-primary w-100" style={{ fontSize: 15, padding: '14px' }}>
                     {loading ? (
-                      <span className="d-flex align-items-center gap-2">
+                      <span className="d-flex align-items-center justify-content-center gap-2">
                         <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                         Validating Eligibility...
                       </span>
                     ) : (
-                      <span className="d-flex align-items-center gap-2">Proceed to Security Pre-Check <ArrowRight style={{ width: 16, height: 16 }} /></span>
+                      <span className="d-flex align-items-center justify-content-center gap-2">Proceed to Security Pre-Check <ArrowRight style={{ width: 16, height: 16 }} /></span>
                     )}
                   </button>
                 </div>
@@ -242,60 +242,60 @@ export default function RegistrationForm({ onRegistered, onResumeScorecard }) {
         <div className="col-md-4">
           <div className="d-flex flex-column gap-3">
             {/* Scholarship Tiers */}
-            <div className="card border-0">
+            <div className="card border-0 shadow-sm rounded-3">
               <div className="card-body p-3">
                 <div className="d-flex justify-content-between align-items-center mb-3">
-                  <h5 className="mb-0 fw-bold text-primary d-flex align-items-center gap-2"><Trophy style={{ width: 15, height: 15, color: '#d97706' }} /> Scholarship Brackets</h5>
+                  <h5 className="mb-0 fw-bold text-primary d-flex align-items-center gap-2" style={{ fontSize: 15 }}><Trophy style={{ width: 15, height: 15, color: '#d97706' }} /> Scholarship Brackets</h5>
                   <span className="badge bg-primary bg-opacity-10 text-primary border border-primary-subtle rounded-pill" style={{ fontSize: 11 }}>50 Marks Max</span>
                 </div>
                 <div className="list-group">
                   {/* Platinum */}
-                  <div className="list-group-item d-flex justify-content-between align-items-center bg-white border border-primary-light rounded mb-2">
+                  <div className="list-group-item d-flex justify-content-between align-items-center bg-white border border-primary-subtle rounded mb-2 p-2.5">
                     <div className="d-flex align-items-center gap-2">
-                      <span style={{ fontSize: 18 }}>ðŸ¥‡</span>
+                      <span style={{ fontSize: 18 }}>🥇</span>
                       <div>
-                        <div className="small fw-bold text-purple">Platinum â€” 90% to 100%</div>
-                        <div className="small text-purple">45 â€“ 50 Marks</div>
+                        <div className="small fw-bold text-primary">Platinum — 90% to 100%</div>
+                        <div className="small text-muted">45 – 50 Marks</div>
                       </div>
                     </div>
-                    <span className="badge bg-purple text-white">100% OFF</span>
+                    <span className="badge bg-primary text-white">100% OFF</span>
                   </div>
                   {/* Gold */}
-                  <div className="list-group-item d-flex justify-content-between align-items-center bg-white border border-warning rounded mb-2">
+                  <div className="list-group-item d-flex justify-content-between align-items-center bg-white border border-warning-subtle rounded mb-2 p-2.5">
                     <div className="d-flex align-items-center gap-2">
-                      <span style={{ fontSize: 18 }}>ðŸ¥ˆ</span>
+                      <span style={{ fontSize: 18 }}>🥈</span>
                       <div>
-                        <div className="small fw-bold text-warning">Gold â€” 75% to 89%</div>
-                        <div className="small text-warning">38 â€“ 44 Marks</div>
+                        <div className="small fw-bold text-warning">Gold — 75% to 89%</div>
+                        <div className="small text-muted">38 – 44 Marks</div>
                       </div>
                     </div>
-                    <span className="badge bg-warning text-white">50% OFF</span>
+                    <span className="badge bg-warning text-dark">50% OFF</span>
                   </div>
                   {/* Silver */}
-                  <div className="list-group-item d-flex justify-content-between align-items-center bg-white border border-info rounded mb-2">
+                  <div className="list-group-item d-flex justify-content-between align-items-center bg-white border border-info-subtle rounded mb-2 p-2.5">
                     <div className="d-flex align-items-center gap-2">
-                      <span style={{ fontSize: 18 }}>ðŸ¥‰</span>
+                      <span style={{ fontSize: 18 }}>🥉</span>
                       <div>
-                        <div className="small fw-bold text-info">Silver â€” 60% to 74%</div>
-                        <div className="small text-info">30 â€“ 36 Marks</div>
+                        <div className="small fw-bold text-info">Silver — 60% to 74%</div>
+                        <div className="small text-muted">30 – 36 Marks</div>
                       </div>
                     </div>
-                    <span className="badge bg-info text-white">25% OFF</span>
+                    <span className="badge bg-info text-dark">25% OFF</span>
                   </div>
                 </div>
               </div>
             </div>
             {/* Why Appear */}
-            <div className="card border-0">
+            <div className="card border-0 shadow-sm rounded-3">
               <div className="card-body p-3">
-                <h5 className="mb-3 fw-bold text-primary d-flex align-items-center gap-2"><Star style={{ width: 14, height: 14, color: '#d97706' }} /> Why Appear?</h5>
-                <ul className="list-unstyled">
+                <h5 className="mb-3 fw-bold text-primary d-flex align-items-center gap-2" style={{ fontSize: 15 }}><Star style={{ width: 14, height: 14, color: '#d97706' }} /> Why Appear?</h5>
+                <ul className="list-unstyled mb-0">
                   {[
-                    { icon: 'ðŸŽ¯', text: 'Score 90%+ and get completely FREE training worth â‚¹40,000+' },
-                    { icon: 'âš¡', text: 'Instant Scorecard â€” know your result in under 60 seconds' },
-                    { icon: 'ðŸ…', text: 'Official digitally-signed Scholarship Certificate' },
-                    { icon: 'ðŸ’¼', text: 'Launch an L1 IT Support career with industry-ready skills' },
-                    { icon: 'ðŸ“Š', text: 'No negative marking â€” every correct answer gets you closer' },
+                    { icon: '🎯', text: 'Score 90%+ and get completely FREE training worth ₹40,000+' },
+                    { icon: '⚡', text: 'Instant Scorecard — know your result in under 60 seconds' },
+                    { icon: '🏅', text: 'Official digitally-signed Scholarship Certificate' },
+                    { icon: '💼', text: 'Launch an L1 IT Support career with industry-ready skills' },
+                    { icon: '📊', text: 'No negative marking — every correct answer gets you closer' },
                   ].map((item, i) => (
                     <li key={i} className="d-flex align-items-start gap-2 mb-2" style={{ fontSize: 13, color: '#334155' }}>
                       <span style={{ fontSize: 16 }}>{item.icon}</span>
@@ -306,17 +306,17 @@ export default function RegistrationForm({ onRegistered, onResumeScorecard }) {
               </div>
             </div>
             {/* Exam Pattern */}
-            <div className="card border-0">
+            <div className="card border-0 shadow-sm rounded-3">
               <div className="card-body p-3">
-                <h5 className="mb-3 fw-bold text-primary d-flex align-items-center gap-2"><ShieldCheck style={{ width: 14, height: 14, color: '#059669' }} /> Exam Pattern</h5>
-                <ul className="list-unstyled">
+                <h5 className="mb-3 fw-bold text-primary d-flex align-items-center gap-2" style={{ fontSize: 15 }}><ShieldCheck style={{ width: 14, height: 14, color: '#059669' }} /> Exam Pattern</h5>
+                <ul className="list-unstyled mb-0">
                   {[
                     '10 MCQs covering core IT concepts',
                     '+5 marks per correct answer (50 Total)',
                     'No negative marking',
                     '20-minute strict time limit',
                     'AI-proctored webcam & audio monitoring',
-                    'One-time attempt only â€” plan wisely!',
+                    'One-time attempt only — plan wisely!',
                   ].map((rule, i) => (
                     <li key={i} className="d-flex align-items-center gap-2 mb-2" style={{ fontSize: 13, color: '#334155' }}>
                       <CheckCircle2 style={{ width: 14, height: 14, color: '#059669' }} />

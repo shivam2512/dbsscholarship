@@ -98,71 +98,72 @@ export default function SystemCheckModal({ candidate, onStartExam, onBack }) {
   };
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-6 animate-fade-in">
-      <div className="glass-panel-glow p-6 sm:p-8">
+    <div className="container py-4" style={{ maxWidth: 840 }}>
+      <div className="card border-0 shadow-sm rounded-4 p-4 p-md-5 bg-white">
         {/* Header */}
-        <div className="text-center pb-6 border-b border-slate-800">
-          <div className="d-inline-d-flex align-items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-400 text-xs font-semibold uppercase tracking-wider mb-2">
+        <div className="text-center pb-4 mb-4 border-bottom">
+          <div className="d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill bg-primary bg-opacity-10 border border-primary-subtle text-primary small fw-bold text-uppercase tracking-wider mb-2">
             <ShieldAlert className="w-4 h-4" />
             Hardware & Environment Diagnostic
           </div>
-          <h2 className="text-2xl font-bold text-white">System Security & Proctoring Pre-Check</h2>
-          <p className="text-slate-400 text-xs sm:text-sm mt-1">
-            Candidate: <strong className="text-sky-300">{candidate?.fullName}</strong> ({candidate?.email})
+          <h2 className="fs-3 fw-bold text-dark mb-1">System Security & Proctoring Pre-Check</h2>
+          <p className="text-muted small mb-0">
+            Candidate: <strong className="text-primary">{candidate?.fullName}</strong> ({candidate?.email})
           </p>
         </div>
 
         {/* Media Verification Grid */}
-        <div className="row row-cols-1 row-cols-md-2 g-3 my-3">
+        <div className="row g-4 mb-4">
           {/* Live Video Preview Box */}
-          <div className="d-flex flex-column align-items-center">
-            <div className="w-full aspect-video bg-slate-950 rounded-xl overflow-hidden relative border border-slate-700/80 shadow-inner d-flex align-items-center justify-content-center">
+          <div className="col-md-6 d-flex flex-column align-items-center">
+            <div className="w-100 aspect-video bg-dark rounded-3 overflow-hidden position-relative border shadow-sm d-flex align-items-center justify-content-center" style={{ minHeight: 220 }}>
               <video
                 ref={videoRef}
                 autoPlay
                 playsInline
                 muted
-                className={`w-full h-full object-cover transform -scale-x-100 ${
-                  cameraStatus === 'granted' ? 'block' : 'hidden'
+                className={`w-100 h-100 object-cover ${
+                  cameraStatus === 'granted' ? 'd-block' : 'd-none'
                 }`}
+                style={{ transform: 'scaleX(-1)' }}
               />
 
               {cameraStatus === 'pending' && (
-                <div className="d-flex flex-column align-items-center text-slate-400 text-xs">
-                  <div className="w-6 h-6 border-2 border-sky-400 border-t-transparent rounded-full animate-spin mb-2"></div>
+                <div className="d-flex flex-column align-items-center text-light small">
+                  <div className="spinner-border spinner-border-sm text-primary mb-2" role="status"></div>
                   <span>Connecting to camera...</span>
                 </div>
               )}
 
               {cameraStatus === 'denied' && (
-                <div className="d-flex flex-column align-items-center text-rose-400 text-xs p-4 text-center">
+                <div className="d-flex flex-column align-items-center text-danger small p-4 text-center">
                   <VideoOff className="w-8 h-8 mb-2" />
-                  <span className="font-semibold">Camera Access Required</span>
-                  <p className="text-[11px] text-slate-400 mt-1">Please allow camera permissions in browser settings.</p>
+                  <span className="fw-semibold">Camera Access Required</span>
+                  <p className="small text-muted mt-1 mb-0">Please allow camera permissions in browser settings.</p>
                 </div>
               )}
 
               {cameraStatus === 'granted' && (
-                <div className="absolute top-2 left-2 d-flex align-items-center gap-1.5 px-2 py-0.5 rounded-md bg-emerald-950/80 border border-emerald-500/40 text-emerald-300 text-[10px] font-bold uppercase tracking-wider">
-                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                <div className="position-absolute top-0 start-0 m-2 d-flex align-items-center gap-1.5 px-2 py-1 rounded bg-dark bg-opacity-75 text-success small fw-bold text-uppercase">
+                  <span className="pulse-indicator"></span>
                   Face Feed Ready
                 </div>
               )}
             </div>
 
-            <div className="w-full d-flex align-items-center justify-content-between mt-2.5 px-1">
-              <span className="text-xs text-slate-400 d-flex align-items-center gap-1.5">
-                <Camera className="w-3.5 h-3.5 text-sky-400" />
+            <div className="w-100 d-flex align-items-center justify-content-between mt-2.5 px-1">
+              <span className="small text-muted d-flex align-items-center gap-1.5">
+                <Camera className="w-4 h-4 text-primary" />
                 Webcam Sensor
               </span>
               {cameraStatus === 'granted' ? (
-                <span className="text-xs text-emerald-400 font-semibold d-flex align-items-center gap-1">
-                  <CheckCircle2 className="w-3.5 h-3.5" /> Passed
+                <span className="small text-success fw-bold d-flex align-items-center gap-1">
+                  <CheckCircle2 className="w-4 h-4" /> Passed
                 </span>
               ) : (
                 <button
                   onClick={initMedia}
-                  className="text-xs text-sky-400 hover:underline"
+                  className="btn btn-link btn-sm text-primary p-0"
                 >
                   Retry Access
                 </button>
@@ -171,109 +172,109 @@ export default function SystemCheckModal({ candidate, onStartExam, onBack }) {
           </div>
 
           {/* System Check Status Cards */}
-          <div className="space-y-3 d-flex flex-column justify-content-center">
+          <div className="col-md-6 d-flex flex-column justify-content-center gap-3">
             {/* Audio Check */}
-            <div className="p-3.5 rounded-xl bg-slate-900/60 border border-slate-800 d-flex align-items-center justify-content-between">
+            <div className="p-3 rounded-3 bg-light border d-flex align-items-center justify-content-between">
               <div className="d-flex align-items-center gap-3">
-                <div className="p-2 rounded-lg bg-sky-500/10 text-sky-400">
-                  <Mic className="w-4 h-4" />
+                <div className="p-2 rounded-3 bg-primary bg-opacity-10 text-primary">
+                  <Mic className="w-5 h-5" />
                 </div>
                 <div>
-                  <div className="text-xs font-bold text-white">Microphone Level</div>
-                  <div className="w-24 sm:w-32 h-1.5 bg-slate-800 rounded-full overflow-hidden mt-1.5">
+                  <div className="small fw-bold text-dark">Microphone Level</div>
+                  <div className="progress mt-1.5" style={{ width: 140, height: 6 }}>
                     <div
-                      className="h-full bg-gradient-to-r from-emerald-500 to-sky-400 transition-all duration-100"
+                      className="progress-bar bg-success"
                       style={{ width: `${Math.min(100, audioLevel * 2)}%` }}
                     ></div>
                   </div>
                 </div>
               </div>
               {micStatus === 'granted' ? (
-                <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                <CheckCircle2 className="w-5 h-5 text-success" />
               ) : (
-                <XCircle className="w-4 h-4 text-rose-400" />
+                <XCircle className="w-5 h-5 text-danger" />
               )}
             </div>
 
             {/* Fullscreen Mode */}
-            <div className="p-3.5 rounded-xl bg-slate-900/60 border border-slate-800 d-flex align-items-center justify-content-between">
+            <div className="p-3 rounded-3 bg-light border d-flex align-items-center justify-content-between">
               <div className="d-flex align-items-center gap-3">
-                <div className="p-2 rounded-lg bg-indigo-500/10 text-indigo-400">
-                  <Maximize2 className="w-4 h-4" />
+                <div className="p-2 rounded-3 bg-primary bg-opacity-10 text-primary">
+                  <Maximize2 className="w-5 h-5" />
                 </div>
                 <div>
-                  <div className="text-xs font-bold text-white">Full-Screen Secure Lockdown</div>
-                  <div className="text-[11px] text-slate-400">Exiting full-screen records a strike</div>
+                  <div className="small fw-bold text-dark">Full-Screen Secure Lockdown</div>
+                  <div className="small text-muted">Exiting full-screen records a strike</div>
                 </div>
               </div>
-              <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+              <CheckCircle2 className="w-5 h-5 text-success" />
             </div>
 
             {/* Anti-Cheat Guard */}
-            <div className="p-3.5 rounded-xl bg-slate-900/60 border border-slate-800 d-flex align-items-center justify-content-between">
+            <div className="p-3 rounded-3 bg-light border d-flex align-items-center justify-content-between">
               <div className="d-flex align-items-center gap-3">
-                <div className="p-2 rounded-lg bg-purple-500/10 text-purple-400">
-                  <ShieldAlert className="w-4 h-4" />
+                <div className="p-2 rounded-3 bg-primary bg-opacity-10 text-primary">
+                  <ShieldAlert className="w-5 h-5" />
                 </div>
                 <div>
-                  <div className="text-xs font-bold text-white">Anti-Cheat Surveillance</div>
-                  <div className="text-[11px] text-slate-400">Tab switches & devtools strictly blocked</div>
+                  <div className="small fw-bold text-dark">Anti-Cheat Surveillance</div>
+                  <div className="small text-muted">Tab switches & devtools strictly blocked</div>
                 </div>
               </div>
-              <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+              <CheckCircle2 className="w-5 h-5 text-success" />
             </div>
           </div>
         </div>
 
         {/* Permission Error Message */}
         {permissionError && (
-          <div className="mb-4 p-3 bg-rose-950/40 border border-rose-500/40 rounded-xl text-rose-300 text-xs d-flex align-items-center gap-2">
-            <AlertTriangle className="w-4 h-4 d-flex-shrink-0" />
-            <span>{permissionError}</span>
+          <div className="alert alert-danger d-flex align-items-center gap-2 mb-4 p-3 rounded-3">
+            <AlertTriangle className="w-5 h-5 flex-shrink-0" />
+            <span className="small">{permissionError}</span>
           </div>
         )}
 
         {/* Proctoring Rules Checklist */}
-        <div className="bg-slate-900/40 p-4 rounded-xl border border-slate-800 mb-6">
-          <h4 className="text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">
+        <div className="bg-light p-4 rounded-3 border mb-4">
+          <h6 className="fw-bold text-dark text-uppercase small tracking-wider mb-2">
             Mandatory Exam Security Protocol
-          </h4>
-          <ul className="text-xs text-slate-400 space-y-1.5 list-disc pl-4">
-            <li>Keep your face clearly positioned in the webcam frame throughout the 20 minutes.</li>
-            <li>Do not switch tabs, minimize the browser window, or open search engines.</li>
-            <li>No secondary devices (phones, tablets, dual screens) or outside assistance is permitted.</li>
-            <li>A total of <strong>3 violation strikes</strong> will result in immediate automatic test submission.</li>
+          </h6>
+          <ul className="small text-muted mb-0 ps-3">
+            <li className="mb-1">Keep your face clearly positioned in the webcam frame throughout the 20 minutes.</li>
+            <li className="mb-1">Do not switch tabs, minimize the browser window, or open search engines.</li>
+            <li className="mb-1">No secondary devices (phones, tablets, dual screens) or outside assistance is permitted.</li>
+            <li>A total of <strong className="text-danger">3 violation strikes</strong> will result in immediate automatic test submission.</li>
           </ul>
 
-          <label className="d-flex align-items-center gap-2.5 mt-3.5 pt-3 border-t border-slate-800/80 cursor-pointer">
+          <div className="form-check mt-3 pt-3 border-top">
             <input
               type="checkbox"
+              id="agreeCheck"
               checked={agreementChecked}
               onChange={(e) => setAgreementChecked(e.target.checked)}
-              className="rounded border-slate-700 bg-slate-900 text-sky-500 focus:ring-sky-500"
+              className="form-check-input"
             />
-            <span className="text-xs text-sky-200 font-medium">
-              I certify that I am the registered candidate and accept all proctored examination rules.
-            </span>
-          </label>
+            <label htmlFor="agreeCheck" className="form-check-label small fw-semibold text-dark cursor-pointer">
+              I certify that my camera and mic are working and I agree to adhere to all exam security rules.
+            </label>
+          </div>
         </div>
 
-        {/* Actions */}
-        <div className="d-flex align-items-center justify-content-between gap-4 pt-2">
+        {/* Navigation / Action Buttons */}
+        <div className="d-flex align-items-center justify-content-between gap-3 pt-2">
           <button
             onClick={onBack}
-            className="btn-secondary py-2.5 px-4 text-xs"
+            className="btn btn-outline-secondary py-2.5 px-4 fw-semibold"
           >
-            Back to Edit Details
+            &larr; Back to Details
           </button>
 
           <button
             onClick={handleEnterExam}
             disabled={cameraStatus !== 'granted' || !agreementChecked}
-            className="btn-primary py-3 px-6 text-sm"
+            className="btn btn-primary py-2.5 px-5 fw-bold d-flex align-items-center gap-2 shadow"
           >
-            <span>Launch Proctored Assessment</span>
-            <ArrowRight className="w-4 h-4" />
+            Start Exam in Fullscreen <ArrowRight className="w-4 h-4" />
           </button>
         </div>
       </div>

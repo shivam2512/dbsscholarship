@@ -1,4 +1,4 @@
-﻿import React, { useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Award, Download, ShieldCheck, X, CheckCircle2 } from 'lucide-react';
 import { toPng } from 'html-to-image';
 import jsPDF from 'jspdf';
@@ -60,32 +60,34 @@ export default function CertificateModal({ candidate, submission, onClose }) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-xl d-flex flex-column align-items-center justify-start overflow-y-auto p-2 sm:p-6 animate-fade-in">
-      {/* Top Modal Control Header */}
-      <div className="w-full max-w-5xl d-flex align-items-center justify-content-between gap-4 mb-4">
-        <div className="d-flex align-items-center gap-2 text-white">
-          <Award className="w-6 h-6 text-amber-400" />
-          <h2 className="text-base sm:text-lg font-bold">A4 Official Scholarship Certificate Preview</h2>
-        </div>
+    <div className="modal show d-block" style={{ backgroundColor: 'rgba(15, 23, 42, 0.85)', backdropFilter: 'blur(12px)', zIndex: 1050 }} tabIndex="-1">
+      <div className="container-fluid min-vh-100 d-flex flex-column align-items-center justify-content-start py-4 overflow-y-auto">
+        {/* Top Modal Control Header */}
+        <div className="w-100 max-w-5xl d-flex align-items-center justify-content-between gap-3 mb-3 text-white px-2" style={{ maxWidth: 1123 }}>
+          <div className="d-flex align-items-center gap-2">
+            <Award className="w-6 h-6 text-warning" />
+            <h2 className="fs-5 fw-bold text-white mb-0">A4 Official Scholarship Certificate Preview</h2>
+          </div>
 
-        <div className="d-flex align-items-center gap-3">
-          <button
-            onClick={handleDownloadPDF}
-            disabled={isExporting}
-            className="btn-primary py-2.5 px-6 text-sm font-bold shadow-lg d-flex align-items-center gap-2 bg-gradient-to-r from-amber-500 to-yellow-500 text-slate-950 hover:brightness-110"
-          >
-            <Download className="w-4 h-4 text-slate-950" />
-            {isExporting ? 'Downloading PDF...' : 'Download Certificate PDF'}
-          </button>
+          <div className="d-flex align-items-center gap-2">
+            <button
+              onClick={handleDownloadPDF}
+              disabled={isExporting}
+              className="btn btn-warning py-2 px-4 fw-bold shadow-sm d-flex align-items-center gap-2 text-dark"
+            >
+              <Download className="w-4 h-4" />
+              {isExporting ? 'Downloading PDF...' : 'Download Certificate PDF'}
+            </button>
 
-          <button
-            onClick={onClose}
-            className="p-2 rounded-lg bg-slate-800 text-slate-400 hover:text-white transition-colors"
-          >
-            <X className="w-5 h-5" />
-          </button>
+            <button
+              onClick={onClose}
+              className="btn btn-outline-light btn-sm p-2"
+              aria-label="Close"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
         </div>
-      </div>
 
       {/* Formal A4 Landscape Certificate Template Container */}
       <div className="w-full max-w-5xl d-flex justify-content-center align-items-center overflow-x-auto py-2">
@@ -117,15 +119,15 @@ export default function CertificateModal({ candidate, submission, onClose }) {
                 <ShieldCheck className="w-4.5 h-4.5" />
               </div>
               <span className="text-xs font-mono font-bold tracking-[0.3em] text-amber-400 uppercase">
-                NATIONAL IT CAREER READINESS & SCHOLARSHIP BOARD
+                NATIONAL IT CAREER READINESS &amp; SCHOLARSHIP BOARD
               </span>
             </div>
 
             <h1 className="text-4xl font-black uppercase tracking-wider text-amber-200 font-serif mt-2">
-              Certificate of Scholarship & Achievement
+              Certificate of Scholarship &amp; Achievement
             </h1>
             <p className="text-xs text-slate-400 uppercase tracking-[0.2em] font-mono mt-1">
-              Proctored Computer-Based Assessment &bull; L1 IT Support Role Competency
+              Proctored Computer-Based Assessment • L1 IT Support Role Competency
             </p>
           </div>
 
@@ -140,7 +142,7 @@ export default function CertificateModal({ candidate, submission, onClose }) {
             </div>
 
             <p className="text-xs sm:text-sm text-slate-300 max-w-2xl mx-auto leading-relaxed pt-2 text-center">
-              has successfully qualified in the national proctored assessment for <strong className="text-sky-300 font-semibold">L1 IT Support & Technical Operations</strong>, demonstrating verified excellence across required domain competencies.
+              has successfully qualified in the national proctored assessment for <strong className="text-sky-300 font-semibold">L1 IT Support &amp; Technical Operations</strong>, demonstrating verified excellence across required domain competencies.
             </p>
           </div>
 
@@ -212,11 +214,9 @@ export default function CertificateModal({ candidate, submission, onClose }) {
               </div>
             </div>
           </div>
-
         </div>
       </div>
     </div>
-  );
+  </div>
+);
 }
-
-
