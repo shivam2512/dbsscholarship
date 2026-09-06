@@ -1,7 +1,845 @@
 {
-  "candidates": {},
-  "tests": {},
-  "submissions": {},
+  "candidates": {
+    "shivamshinde159357@gmail.com": {
+      "id": "af26144c-53db-4413-a012-3eea0890a085",
+      "fullName": "A",
+      "email": "shivamshinde159357@gmail.com",
+      "phone": "6758789890",
+      "college": "Diploma (CS / IT)",
+      "experience": "1-2 years",
+      "coach": "Ragini",
+      "status": "completed",
+      "createdAt": "2026-09-06T19:07:11.167Z"
+    },
+    "shivamshinde786@gmail.com": {
+      "id": "4647c703-0c2a-4dc3-bff1-9142e852f7f5",
+      "fullName": "B",
+      "email": "shivamshinde786@gmail.com",
+      "phone": "7748908393",
+      "college": "Diploma (CS / IT)",
+      "experience": "1-2 years",
+      "coach": "Sivanand",
+      "status": "completed",
+      "createdAt": "2026-09-06T19:12:29.955Z"
+    }
+  },
+  "tests": {
+    "2c81e5af-32c2-44ff-b29b-d6842d95c9bb": {
+      "id": "2c81e5af-32c2-44ff-b29b-d6842d95c9bb",
+      "candidateId": "af26144c-53db-4413-a012-3eea0890a085",
+      "token": "e33adbf4-3873-468b-aa41-5e4a616cf50b",
+      "status": "completed",
+      "timeSpentSeconds": 27,
+      "currentAnswers": {
+        "1": 0,
+        "2": 2,
+        "3": 1,
+        "4": 0,
+        "5": 3,
+        "6": 1,
+        "7": 2,
+        "8": 2,
+        "9": 3,
+        "10": 2
+      },
+      "startedAt": "2026-09-06T19:07:11.167Z",
+      "submittedAt": "2026-09-06T19:07:49.986Z"
+    },
+    "7e618455-7050-4ceb-8a7d-280b118efba3": {
+      "id": "7e618455-7050-4ceb-8a7d-280b118efba3",
+      "candidateId": "4647c703-0c2a-4dc3-bff1-9142e852f7f5",
+      "token": "9b105fe6-08e9-4b93-bf74-2f629caf4f71",
+      "status": "completed",
+      "timeSpentSeconds": 20,
+      "currentAnswers": {
+        "1": 1,
+        "2": 1,
+        "3": 1,
+        "4": 1,
+        "5": 1,
+        "6": 1,
+        "7": 1,
+        "8": 1,
+        "9": 1,
+        "10": 2
+      },
+      "startedAt": "2026-09-06T19:12:29.955Z",
+      "submittedAt": "2026-09-06T19:12:54.917Z"
+    }
+  },
+  "submissions": {
+    "CERT-6JGJX0U": {
+      "id": "CERT-6JGJX0U",
+      "candidateId": "af26144c-53db-4413-a012-3eea0890a085",
+      "testId": "2c81e5af-32c2-44ff-b29b-d6842d95c9bb",
+      "totalScore": 15,
+      "maxScore": 50,
+      "percentage": 30,
+      "scholarshipTier": "Certificate of Participation",
+      "scholarshipPercentage": 0,
+      "categoryScores": {
+        "Problem Solving & Logic": {
+          "totalQuestions": 1,
+          "correct": 1,
+          "totalPoints": 5,
+          "pointsScored": 5,
+          "percentage": 100
+        },
+        "IT Support & Troubleshooting": {
+          "totalQuestions": 1,
+          "correct": 0,
+          "totalPoints": 5,
+          "pointsScored": 0,
+          "percentage": 0
+        },
+        "Data & Query Logic": {
+          "totalQuestions": 1,
+          "correct": 0,
+          "totalPoints": 5,
+          "pointsScored": 0,
+          "percentage": 0
+        },
+        "Syntax & Pattern Recognition": {
+          "totalQuestions": 1,
+          "correct": 0,
+          "totalPoints": 5,
+          "pointsScored": 0,
+          "percentage": 0
+        },
+        "Career Mindset & Problem Solving": {
+          "totalQuestions": 1,
+          "correct": 0,
+          "totalPoints": 5,
+          "pointsScored": 0,
+          "percentage": 0
+        },
+        "Database & Storage Concepts": {
+          "totalQuestions": 1,
+          "correct": 0,
+          "totalPoints": 5,
+          "pointsScored": 0,
+          "percentage": 0
+        },
+        "Career Transition & Growth": {
+          "totalQuestions": 1,
+          "correct": 0,
+          "totalPoints": 5,
+          "pointsScored": 0,
+          "percentage": 0
+        },
+        "IT Support Roles & Operations": {
+          "totalQuestions": 1,
+          "correct": 0,
+          "totalPoints": 5,
+          "pointsScored": 0,
+          "percentage": 0
+        },
+        "Ticketing, SLA & Prioritization": {
+          "totalQuestions": 1,
+          "correct": 1,
+          "totalPoints": 5,
+          "pointsScored": 5,
+          "percentage": 100
+        },
+        "Learning Commitment": {
+          "totalQuestions": 1,
+          "correct": 1,
+          "totalPoints": 5,
+          "pointsScored": 5,
+          "percentage": 100
+        }
+      },
+      "answers": {
+        "1": {
+          "questionText": "If you need to find a 'Java' book among 10,000 books in a library, what is the fastest method?",
+          "selected": 0,
+          "selectedOptionText": "Arranging books by category (Programming, History, etc.) and then searching.",
+          "correct": 0,
+          "correctOptionText": "Arranging books by category (Programming, History, etc.) and then searching.",
+          "isCorrect": true,
+          "pointsAwarded": 5,
+          "explanation": "Categorizing and indexing data (similar to indexing in databases) drastically reduces search complexity from linear O(N) to rapid lookup."
+        },
+        "2": {
+          "questionText": "What is the first step an IT Support Engineer should take when a software error occurs?",
+          "selected": 2,
+          "selectedOptionText": "Ignore the error if the system is still running.",
+          "correct": 1,
+          "correctOptionText": "Carefully read the error message and identify the root cause.",
+          "isCorrect": false,
+          "pointsAwarded": 0,
+          "explanation": "Reading and analyzing error logs and error codes is the critical first step to diagnose and isolate the root cause before taking corrective action."
+        },
+        "3": {
+          "questionText": "If you have a list of 1000 students and you only need to see students from 'Pune', what command would you give the computer?",
+          "selected": 1,
+          "selectedOptionText": "Show all data.",
+          "correct": 0,
+          "correctOptionText": "Show only the data where the city is 'Pune'.",
+          "isCorrect": false,
+          "pointsAwarded": 0,
+          "explanation": "Filtering records using a conditional clause (equivalent to SQL: SELECT * FROM students WHERE city = 'Pune') isolates the required subset."
+        },
+        "4": {
+          "questionText": "In IT, 'Syntax' (the way of writing code) is very important. Which of these patterns is different?\nUSER_123, USER_456, user_789, USER_000",
+          "selected": 0,
+          "selectedOptionText": "USER_456",
+          "correct": 2,
+          "correctOptionText": "user_789",
+          "isCorrect": false,
+          "pointsAwarded": 0,
+          "explanation": "'user_789' is in lowercase, whereas all the other identifiers are in UPPERCASE format."
+        },
+        "5": {
+          "questionText": "What is the most essential factor for switching from a Non-IT to an IT career?",
+          "selected": 3,
+          "selectedOptionText": "Only speaking English.",
+          "correct": 1,
+          "correctOptionText": "Solving problems using logical steps.",
+          "isCorrect": false,
+          "pointsAwarded": 0,
+          "explanation": "Logical problem-solving and structured algorithmic thinking are the core foundation skills for success in IT."
+        },
+        "6": {
+          "questionText": "In a bank, your balance 'Updates' when you withdraw money. Where is this data permanently saved?",
+          "selected": 1,
+          "selectedOptionText": "In an Excel sheet.",
+          "correct": 0,
+          "correctOptionText": "In a Secure Database (SQL).",
+          "isCorrect": false,
+          "pointsAwarded": 0,
+          "explanation": "Mission-critical financial transactions and ACID-compliant updates are stored permanently and reliably in secure Relational Database Management Systems (SQL)."
+        },
+        "7": {
+          "questionText": "If you have a 2-3 year career gap, what will an IT company look for in you during hiring?",
+          "selected": 2,
+          "selectedOptionText": "A letter of recommendation from a non-IT boss.",
+          "correct": 3,
+          "correctOptionText": "Logical thinking and the passion to learn new technologies (SQL/UNIX).",
+          "isCorrect": false,
+          "pointsAwarded": 0,
+          "explanation": "IT hiring managers value strong fundamentals, structured problem-solving skills, and a demonstrated hunger to upskill in technologies like SQL, Linux/Unix, and scripting."
+        },
+        "8": {
+          "questionText": "What does 'L1 Support' mean in the IT industry?",
+          "selected": 2,
+          "selectedOptionText": "Managing the company's marketing.",
+          "correct": 1,
+          "correctOptionText": "Solving and monitoring customers' technical problems.",
+          "isCorrect": false,
+          "pointsAwarded": 0,
+          "explanation": "L1 (Level 1) Support Engineers provide first-line technical incident resolution, monitoring, ticket triage, and user assistance."
+        },
+        "9": {
+          "questionText": "If you receive 5 tickets (tasks) at once, which one will you do first?",
+          "selected": 3,
+          "selectedOptionText": "The one that is most 'Urgent' and 'Important'.",
+          "correct": 3,
+          "correctOptionText": "The one that is most 'Urgent' and 'Important'.",
+          "isCorrect": true,
+          "pointsAwarded": 5,
+          "explanation": "ITIL service management dictates prioritizing incidents based on Impact and Urgency (Severity/SLA) rather than order of arrival."
+        },
+        "10": {
+          "questionText": "Are you ready to take SQL and UNIX training for 2-3 hours daily in a disciplined manner for the next 3 months?",
+          "selected": 2,
+          "selectedOptionText": "Yes, I am fully committed.",
+          "correct": 2,
+          "correctOptionText": "Yes, I am fully committed.",
+          "isCorrect": true,
+          "pointsAwarded": 5,
+          "explanation": "Consistent daily effort and structured practice in SQL and UNIX are essential for securing high-paying L1/L2 IT support roles."
+        }
+      },
+      "violationsCount": 0,
+      "submittedAt": "2026-09-06T19:07:49.986Z",
+      "isAutoSubmit": false,
+      "submitReason": "candidate_submitted"
+    },
+    "2c81e5af-32c2-44ff-b29b-d6842d95c9bb": {
+      "id": "CERT-6JGJX0U",
+      "candidateId": "af26144c-53db-4413-a012-3eea0890a085",
+      "testId": "2c81e5af-32c2-44ff-b29b-d6842d95c9bb",
+      "totalScore": 15,
+      "maxScore": 50,
+      "percentage": 30,
+      "scholarshipTier": "Certificate of Participation",
+      "scholarshipPercentage": 0,
+      "categoryScores": {
+        "Problem Solving & Logic": {
+          "totalQuestions": 1,
+          "correct": 1,
+          "totalPoints": 5,
+          "pointsScored": 5,
+          "percentage": 100
+        },
+        "IT Support & Troubleshooting": {
+          "totalQuestions": 1,
+          "correct": 0,
+          "totalPoints": 5,
+          "pointsScored": 0,
+          "percentage": 0
+        },
+        "Data & Query Logic": {
+          "totalQuestions": 1,
+          "correct": 0,
+          "totalPoints": 5,
+          "pointsScored": 0,
+          "percentage": 0
+        },
+        "Syntax & Pattern Recognition": {
+          "totalQuestions": 1,
+          "correct": 0,
+          "totalPoints": 5,
+          "pointsScored": 0,
+          "percentage": 0
+        },
+        "Career Mindset & Problem Solving": {
+          "totalQuestions": 1,
+          "correct": 0,
+          "totalPoints": 5,
+          "pointsScored": 0,
+          "percentage": 0
+        },
+        "Database & Storage Concepts": {
+          "totalQuestions": 1,
+          "correct": 0,
+          "totalPoints": 5,
+          "pointsScored": 0,
+          "percentage": 0
+        },
+        "Career Transition & Growth": {
+          "totalQuestions": 1,
+          "correct": 0,
+          "totalPoints": 5,
+          "pointsScored": 0,
+          "percentage": 0
+        },
+        "IT Support Roles & Operations": {
+          "totalQuestions": 1,
+          "correct": 0,
+          "totalPoints": 5,
+          "pointsScored": 0,
+          "percentage": 0
+        },
+        "Ticketing, SLA & Prioritization": {
+          "totalQuestions": 1,
+          "correct": 1,
+          "totalPoints": 5,
+          "pointsScored": 5,
+          "percentage": 100
+        },
+        "Learning Commitment": {
+          "totalQuestions": 1,
+          "correct": 1,
+          "totalPoints": 5,
+          "pointsScored": 5,
+          "percentage": 100
+        }
+      },
+      "answers": {
+        "1": {
+          "questionText": "If you need to find a 'Java' book among 10,000 books in a library, what is the fastest method?",
+          "selected": 0,
+          "selectedOptionText": "Arranging books by category (Programming, History, etc.) and then searching.",
+          "correct": 0,
+          "correctOptionText": "Arranging books by category (Programming, History, etc.) and then searching.",
+          "isCorrect": true,
+          "pointsAwarded": 5,
+          "explanation": "Categorizing and indexing data (similar to indexing in databases) drastically reduces search complexity from linear O(N) to rapid lookup."
+        },
+        "2": {
+          "questionText": "What is the first step an IT Support Engineer should take when a software error occurs?",
+          "selected": 2,
+          "selectedOptionText": "Ignore the error if the system is still running.",
+          "correct": 1,
+          "correctOptionText": "Carefully read the error message and identify the root cause.",
+          "isCorrect": false,
+          "pointsAwarded": 0,
+          "explanation": "Reading and analyzing error logs and error codes is the critical first step to diagnose and isolate the root cause before taking corrective action."
+        },
+        "3": {
+          "questionText": "If you have a list of 1000 students and you only need to see students from 'Pune', what command would you give the computer?",
+          "selected": 1,
+          "selectedOptionText": "Show all data.",
+          "correct": 0,
+          "correctOptionText": "Show only the data where the city is 'Pune'.",
+          "isCorrect": false,
+          "pointsAwarded": 0,
+          "explanation": "Filtering records using a conditional clause (equivalent to SQL: SELECT * FROM students WHERE city = 'Pune') isolates the required subset."
+        },
+        "4": {
+          "questionText": "In IT, 'Syntax' (the way of writing code) is very important. Which of these patterns is different?\nUSER_123, USER_456, user_789, USER_000",
+          "selected": 0,
+          "selectedOptionText": "USER_456",
+          "correct": 2,
+          "correctOptionText": "user_789",
+          "isCorrect": false,
+          "pointsAwarded": 0,
+          "explanation": "'user_789' is in lowercase, whereas all the other identifiers are in UPPERCASE format."
+        },
+        "5": {
+          "questionText": "What is the most essential factor for switching from a Non-IT to an IT career?",
+          "selected": 3,
+          "selectedOptionText": "Only speaking English.",
+          "correct": 1,
+          "correctOptionText": "Solving problems using logical steps.",
+          "isCorrect": false,
+          "pointsAwarded": 0,
+          "explanation": "Logical problem-solving and structured algorithmic thinking are the core foundation skills for success in IT."
+        },
+        "6": {
+          "questionText": "In a bank, your balance 'Updates' when you withdraw money. Where is this data permanently saved?",
+          "selected": 1,
+          "selectedOptionText": "In an Excel sheet.",
+          "correct": 0,
+          "correctOptionText": "In a Secure Database (SQL).",
+          "isCorrect": false,
+          "pointsAwarded": 0,
+          "explanation": "Mission-critical financial transactions and ACID-compliant updates are stored permanently and reliably in secure Relational Database Management Systems (SQL)."
+        },
+        "7": {
+          "questionText": "If you have a 2-3 year career gap, what will an IT company look for in you during hiring?",
+          "selected": 2,
+          "selectedOptionText": "A letter of recommendation from a non-IT boss.",
+          "correct": 3,
+          "correctOptionText": "Logical thinking and the passion to learn new technologies (SQL/UNIX).",
+          "isCorrect": false,
+          "pointsAwarded": 0,
+          "explanation": "IT hiring managers value strong fundamentals, structured problem-solving skills, and a demonstrated hunger to upskill in technologies like SQL, Linux/Unix, and scripting."
+        },
+        "8": {
+          "questionText": "What does 'L1 Support' mean in the IT industry?",
+          "selected": 2,
+          "selectedOptionText": "Managing the company's marketing.",
+          "correct": 1,
+          "correctOptionText": "Solving and monitoring customers' technical problems.",
+          "isCorrect": false,
+          "pointsAwarded": 0,
+          "explanation": "L1 (Level 1) Support Engineers provide first-line technical incident resolution, monitoring, ticket triage, and user assistance."
+        },
+        "9": {
+          "questionText": "If you receive 5 tickets (tasks) at once, which one will you do first?",
+          "selected": 3,
+          "selectedOptionText": "The one that is most 'Urgent' and 'Important'.",
+          "correct": 3,
+          "correctOptionText": "The one that is most 'Urgent' and 'Important'.",
+          "isCorrect": true,
+          "pointsAwarded": 5,
+          "explanation": "ITIL service management dictates prioritizing incidents based on Impact and Urgency (Severity/SLA) rather than order of arrival."
+        },
+        "10": {
+          "questionText": "Are you ready to take SQL and UNIX training for 2-3 hours daily in a disciplined manner for the next 3 months?",
+          "selected": 2,
+          "selectedOptionText": "Yes, I am fully committed.",
+          "correct": 2,
+          "correctOptionText": "Yes, I am fully committed.",
+          "isCorrect": true,
+          "pointsAwarded": 5,
+          "explanation": "Consistent daily effort and structured practice in SQL and UNIX are essential for securing high-paying L1/L2 IT support roles."
+        }
+      },
+      "violationsCount": 0,
+      "submittedAt": "2026-09-06T19:07:49.986Z",
+      "isAutoSubmit": false,
+      "submitReason": "candidate_submitted"
+    },
+    "CERT-W4QDBUX": {
+      "id": "CERT-W4QDBUX",
+      "candidateId": "4647c703-0c2a-4dc3-bff1-9142e852f7f5",
+      "testId": "7e618455-7050-4ceb-8a7d-280b118efba3",
+      "totalScore": 20,
+      "maxScore": 50,
+      "percentage": 40,
+      "scholarshipTier": "Certificate of Participation",
+      "scholarshipPercentage": 0,
+      "categoryScores": {
+        "Problem Solving & Logic": {
+          "totalQuestions": 1,
+          "correct": 0,
+          "totalPoints": 5,
+          "pointsScored": 0,
+          "percentage": 0
+        },
+        "IT Support & Troubleshooting": {
+          "totalQuestions": 1,
+          "correct": 1,
+          "totalPoints": 5,
+          "pointsScored": 5,
+          "percentage": 100
+        },
+        "Data & Query Logic": {
+          "totalQuestions": 1,
+          "correct": 0,
+          "totalPoints": 5,
+          "pointsScored": 0,
+          "percentage": 0
+        },
+        "Syntax & Pattern Recognition": {
+          "totalQuestions": 1,
+          "correct": 0,
+          "totalPoints": 5,
+          "pointsScored": 0,
+          "percentage": 0
+        },
+        "Career Mindset & Problem Solving": {
+          "totalQuestions": 1,
+          "correct": 1,
+          "totalPoints": 5,
+          "pointsScored": 5,
+          "percentage": 100
+        },
+        "Database & Storage Concepts": {
+          "totalQuestions": 1,
+          "correct": 0,
+          "totalPoints": 5,
+          "pointsScored": 0,
+          "percentage": 0
+        },
+        "Career Transition & Growth": {
+          "totalQuestions": 1,
+          "correct": 0,
+          "totalPoints": 5,
+          "pointsScored": 0,
+          "percentage": 0
+        },
+        "IT Support Roles & Operations": {
+          "totalQuestions": 1,
+          "correct": 1,
+          "totalPoints": 5,
+          "pointsScored": 5,
+          "percentage": 100
+        },
+        "Ticketing, SLA & Prioritization": {
+          "totalQuestions": 1,
+          "correct": 0,
+          "totalPoints": 5,
+          "pointsScored": 0,
+          "percentage": 0
+        },
+        "Learning Commitment": {
+          "totalQuestions": 1,
+          "correct": 1,
+          "totalPoints": 5,
+          "pointsScored": 5,
+          "percentage": 100
+        }
+      },
+      "answers": {
+        "1": {
+          "questionText": "If you need to find a 'Java' book among 10,000 books in a library, what is the fastest method?",
+          "selected": 1,
+          "selectedOptionText": "Checking every book one by one.",
+          "correct": 0,
+          "correctOptionText": "Arranging books by category (Programming, History, etc.) and then searching.",
+          "isCorrect": false,
+          "pointsAwarded": 0,
+          "explanation": "Categorizing and indexing data (similar to indexing in databases) drastically reduces search complexity from linear O(N) to rapid lookup."
+        },
+        "2": {
+          "questionText": "What is the first step an IT Support Engineer should take when a software error occurs?",
+          "selected": 1,
+          "selectedOptionText": "Carefully read the error message and identify the root cause.",
+          "correct": 1,
+          "correctOptionText": "Carefully read the error message and identify the root cause.",
+          "isCorrect": true,
+          "pointsAwarded": 5,
+          "explanation": "Reading and analyzing error logs and error codes is the critical first step to diagnose and isolate the root cause before taking corrective action."
+        },
+        "3": {
+          "questionText": "If you have a list of 1000 students and you only need to see students from 'Pune', what command would you give the computer?",
+          "selected": 1,
+          "selectedOptionText": "Show all data.",
+          "correct": 0,
+          "correctOptionText": "Show only the data where the city is 'Pune'.",
+          "isCorrect": false,
+          "pointsAwarded": 0,
+          "explanation": "Filtering records using a conditional clause (equivalent to SQL: SELECT * FROM students WHERE city = 'Pune') isolates the required subset."
+        },
+        "4": {
+          "questionText": "In IT, 'Syntax' (the way of writing code) is very important. Which of these patterns is different?\nUSER_123, USER_456, user_789, USER_000",
+          "selected": 1,
+          "selectedOptionText": "USER_000",
+          "correct": 2,
+          "correctOptionText": "user_789",
+          "isCorrect": false,
+          "pointsAwarded": 0,
+          "explanation": "'user_789' is in lowercase, whereas all the other identifiers are in UPPERCASE format."
+        },
+        "5": {
+          "questionText": "What is the most essential factor for switching from a Non-IT to an IT career?",
+          "selected": 1,
+          "selectedOptionText": "Solving problems using logical steps.",
+          "correct": 1,
+          "correctOptionText": "Solving problems using logical steps.",
+          "isCorrect": true,
+          "pointsAwarded": 5,
+          "explanation": "Logical problem-solving and structured algorithmic thinking are the core foundation skills for success in IT."
+        },
+        "6": {
+          "questionText": "In a bank, your balance 'Updates' when you withdraw money. Where is this data permanently saved?",
+          "selected": 1,
+          "selectedOptionText": "In an Excel sheet.",
+          "correct": 0,
+          "correctOptionText": "In a Secure Database (SQL).",
+          "isCorrect": false,
+          "pointsAwarded": 0,
+          "explanation": "Mission-critical financial transactions and ACID-compliant updates are stored permanently and reliably in secure Relational Database Management Systems (SQL)."
+        },
+        "7": {
+          "questionText": "If you have a 2-3 year career gap, what will an IT company look for in you during hiring?",
+          "selected": 1,
+          "selectedOptionText": "Your previous salary slip.",
+          "correct": 3,
+          "correctOptionText": "Logical thinking and the passion to learn new technologies (SQL/UNIX).",
+          "isCorrect": false,
+          "pointsAwarded": 0,
+          "explanation": "IT hiring managers value strong fundamentals, structured problem-solving skills, and a demonstrated hunger to upskill in technologies like SQL, Linux/Unix, and scripting."
+        },
+        "8": {
+          "questionText": "What does 'L1 Support' mean in the IT industry?",
+          "selected": 1,
+          "selectedOptionText": "Solving and monitoring customers' technical problems.",
+          "correct": 1,
+          "correctOptionText": "Solving and monitoring customers' technical problems.",
+          "isCorrect": true,
+          "pointsAwarded": 5,
+          "explanation": "L1 (Level 1) Support Engineers provide first-line technical incident resolution, monitoring, ticket triage, and user assistance."
+        },
+        "9": {
+          "questionText": "If you receive 5 tickets (tasks) at once, which one will you do first?",
+          "selected": 1,
+          "selectedOptionText": "The one that arrived last.",
+          "correct": 3,
+          "correctOptionText": "The one that is most 'Urgent' and 'Important'.",
+          "isCorrect": false,
+          "pointsAwarded": 0,
+          "explanation": "ITIL service management dictates prioritizing incidents based on Impact and Urgency (Severity/SLA) rather than order of arrival."
+        },
+        "10": {
+          "questionText": "Are you ready to take SQL and UNIX training for 2-3 hours daily in a disciplined manner for the next 3 months?",
+          "selected": 2,
+          "selectedOptionText": "Yes, I am fully committed.",
+          "correct": 2,
+          "correctOptionText": "Yes, I am fully committed.",
+          "isCorrect": true,
+          "pointsAwarded": 5,
+          "explanation": "Consistent daily effort and structured practice in SQL and UNIX are essential for securing high-paying L1/L2 IT support roles."
+        }
+      },
+      "violationsCount": 0,
+      "submittedAt": "2026-09-06T19:12:54.924Z",
+      "isAutoSubmit": false,
+      "submitReason": "candidate_submitted"
+    },
+    "7e618455-7050-4ceb-8a7d-280b118efba3": {
+      "id": "CERT-W4QDBUX",
+      "candidateId": "4647c703-0c2a-4dc3-bff1-9142e852f7f5",
+      "testId": "7e618455-7050-4ceb-8a7d-280b118efba3",
+      "totalScore": 20,
+      "maxScore": 50,
+      "percentage": 40,
+      "scholarshipTier": "Certificate of Participation",
+      "scholarshipPercentage": 0,
+      "categoryScores": {
+        "Problem Solving & Logic": {
+          "totalQuestions": 1,
+          "correct": 0,
+          "totalPoints": 5,
+          "pointsScored": 0,
+          "percentage": 0
+        },
+        "IT Support & Troubleshooting": {
+          "totalQuestions": 1,
+          "correct": 1,
+          "totalPoints": 5,
+          "pointsScored": 5,
+          "percentage": 100
+        },
+        "Data & Query Logic": {
+          "totalQuestions": 1,
+          "correct": 0,
+          "totalPoints": 5,
+          "pointsScored": 0,
+          "percentage": 0
+        },
+        "Syntax & Pattern Recognition": {
+          "totalQuestions": 1,
+          "correct": 0,
+          "totalPoints": 5,
+          "pointsScored": 0,
+          "percentage": 0
+        },
+        "Career Mindset & Problem Solving": {
+          "totalQuestions": 1,
+          "correct": 1,
+          "totalPoints": 5,
+          "pointsScored": 5,
+          "percentage": 100
+        },
+        "Database & Storage Concepts": {
+          "totalQuestions": 1,
+          "correct": 0,
+          "totalPoints": 5,
+          "pointsScored": 0,
+          "percentage": 0
+        },
+        "Career Transition & Growth": {
+          "totalQuestions": 1,
+          "correct": 0,
+          "totalPoints": 5,
+          "pointsScored": 0,
+          "percentage": 0
+        },
+        "IT Support Roles & Operations": {
+          "totalQuestions": 1,
+          "correct": 1,
+          "totalPoints": 5,
+          "pointsScored": 5,
+          "percentage": 100
+        },
+        "Ticketing, SLA & Prioritization": {
+          "totalQuestions": 1,
+          "correct": 0,
+          "totalPoints": 5,
+          "pointsScored": 0,
+          "percentage": 0
+        },
+        "Learning Commitment": {
+          "totalQuestions": 1,
+          "correct": 1,
+          "totalPoints": 5,
+          "pointsScored": 5,
+          "percentage": 100
+        }
+      },
+      "answers": {
+        "1": {
+          "questionText": "If you need to find a 'Java' book among 10,000 books in a library, what is the fastest method?",
+          "selected": 1,
+          "selectedOptionText": "Checking every book one by one.",
+          "correct": 0,
+          "correctOptionText": "Arranging books by category (Programming, History, etc.) and then searching.",
+          "isCorrect": false,
+          "pointsAwarded": 0,
+          "explanation": "Categorizing and indexing data (similar to indexing in databases) drastically reduces search complexity from linear O(N) to rapid lookup."
+        },
+        "2": {
+          "questionText": "What is the first step an IT Support Engineer should take when a software error occurs?",
+          "selected": 1,
+          "selectedOptionText": "Carefully read the error message and identify the root cause.",
+          "correct": 1,
+          "correctOptionText": "Carefully read the error message and identify the root cause.",
+          "isCorrect": true,
+          "pointsAwarded": 5,
+          "explanation": "Reading and analyzing error logs and error codes is the critical first step to diagnose and isolate the root cause before taking corrective action."
+        },
+        "3": {
+          "questionText": "If you have a list of 1000 students and you only need to see students from 'Pune', what command would you give the computer?",
+          "selected": 1,
+          "selectedOptionText": "Show all data.",
+          "correct": 0,
+          "correctOptionText": "Show only the data where the city is 'Pune'.",
+          "isCorrect": false,
+          "pointsAwarded": 0,
+          "explanation": "Filtering records using a conditional clause (equivalent to SQL: SELECT * FROM students WHERE city = 'Pune') isolates the required subset."
+        },
+        "4": {
+          "questionText": "In IT, 'Syntax' (the way of writing code) is very important. Which of these patterns is different?\nUSER_123, USER_456, user_789, USER_000",
+          "selected": 1,
+          "selectedOptionText": "USER_000",
+          "correct": 2,
+          "correctOptionText": "user_789",
+          "isCorrect": false,
+          "pointsAwarded": 0,
+          "explanation": "'user_789' is in lowercase, whereas all the other identifiers are in UPPERCASE format."
+        },
+        "5": {
+          "questionText": "What is the most essential factor for switching from a Non-IT to an IT career?",
+          "selected": 1,
+          "selectedOptionText": "Solving problems using logical steps.",
+          "correct": 1,
+          "correctOptionText": "Solving problems using logical steps.",
+          "isCorrect": true,
+          "pointsAwarded": 5,
+          "explanation": "Logical problem-solving and structured algorithmic thinking are the core foundation skills for success in IT."
+        },
+        "6": {
+          "questionText": "In a bank, your balance 'Updates' when you withdraw money. Where is this data permanently saved?",
+          "selected": 1,
+          "selectedOptionText": "In an Excel sheet.",
+          "correct": 0,
+          "correctOptionText": "In a Secure Database (SQL).",
+          "isCorrect": false,
+          "pointsAwarded": 0,
+          "explanation": "Mission-critical financial transactions and ACID-compliant updates are stored permanently and reliably in secure Relational Database Management Systems (SQL)."
+        },
+        "7": {
+          "questionText": "If you have a 2-3 year career gap, what will an IT company look for in you during hiring?",
+          "selected": 1,
+          "selectedOptionText": "Your previous salary slip.",
+          "correct": 3,
+          "correctOptionText": "Logical thinking and the passion to learn new technologies (SQL/UNIX).",
+          "isCorrect": false,
+          "pointsAwarded": 0,
+          "explanation": "IT hiring managers value strong fundamentals, structured problem-solving skills, and a demonstrated hunger to upskill in technologies like SQL, Linux/Unix, and scripting."
+        },
+        "8": {
+          "questionText": "What does 'L1 Support' mean in the IT industry?",
+          "selected": 1,
+          "selectedOptionText": "Solving and monitoring customers' technical problems.",
+          "correct": 1,
+          "correctOptionText": "Solving and monitoring customers' technical problems.",
+          "isCorrect": true,
+          "pointsAwarded": 5,
+          "explanation": "L1 (Level 1) Support Engineers provide first-line technical incident resolution, monitoring, ticket triage, and user assistance."
+        },
+        "9": {
+          "questionText": "If you receive 5 tickets (tasks) at once, which one will you do first?",
+          "selected": 1,
+          "selectedOptionText": "The one that arrived last.",
+          "correct": 3,
+          "correctOptionText": "The one that is most 'Urgent' and 'Important'.",
+          "isCorrect": false,
+          "pointsAwarded": 0,
+          "explanation": "ITIL service management dictates prioritizing incidents based on Impact and Urgency (Severity/SLA) rather than order of arrival."
+        },
+        "10": {
+          "questionText": "Are you ready to take SQL and UNIX training for 2-3 hours daily in a disciplined manner for the next 3 months?",
+          "selected": 2,
+          "selectedOptionText": "Yes, I am fully committed.",
+          "correct": 2,
+          "correctOptionText": "Yes, I am fully committed.",
+          "isCorrect": true,
+          "pointsAwarded": 5,
+          "explanation": "Consistent daily effort and structured practice in SQL and UNIX are essential for securing high-paying L1/L2 IT support roles."
+        }
+      },
+      "violationsCount": 0,
+      "submittedAt": "2026-09-06T19:12:54.924Z",
+      "isAutoSubmit": false,
+      "submitReason": "candidate_submitted"
+    }
+  },
   "violations": [],
-  "snapshots": []
+  "snapshots": [],
+  "deletedEmails": [
+    "b@gmail.com",
+    "a@gmail.com",
+    "livetest99@example.com",
+    "luckshiv1234@gmail.com",
+    "fixtest@example.com"
+  ],
+  "deletedCandidateIds": [
+    "1b00fc55-22da-403f-af43-460f7d8e352c",
+    "shivamshinde159357@gmail.com",
+    "be2e135d-74c6-4079-b21c-073ce160a696",
+    "b@gmail.com",
+    "89f1114b-0312-4f35-b880-4cc345c3e127",
+    "a@gmail.com",
+    "livetest99@example.com",
+    "luckshiv1234@gmail.com",
+    "fixtest@example.com",
+    "f2ddc078-6443-4af6-b759-6f769006a018"
+  ]
 }

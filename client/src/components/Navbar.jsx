@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { ShieldCheck, Award, Lock, UserCheck } from 'lucide-react';
 
 export default function Navbar({ currentView, setView, isExamActive, candidate }) {
@@ -13,7 +13,7 @@ export default function Navbar({ currentView, setView, isExamActive, candidate }
           <div>
             <div className="d-flex align-items-center gap-2">
               <span className="fw-bold text-primary" style={{ fontSize: 17, letterSpacing: '-0.02em' }}>
-                DBS IT Scholarship Test
+                DBS IT PUNE Scholarship Test
               </span>
               <span className="badge bg-primary bg-opacity-10 text-primary border border-primary-subtle rounded-pill text-uppercase" style={{ fontSize: 10, padding: '2px 8px' }}>
                 Proctored

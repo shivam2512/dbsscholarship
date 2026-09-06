@@ -55,15 +55,22 @@ global.__deletedCandidateIds = new Set(store.deletedCandidateIds);
 store.deletedEmails.forEach(email => { delete store.candidates[email]; });
 
 // Persist memory store to JSON file asynchronously
+let persistTimer = null;
 function persist() {
-  try {
-    // Sync globals back to store before persisting
-    store.deletedEmails = Array.from(global.__deletedEmails || []);
-    store.deletedCandidateIds = Array.from(global.__deletedCandidateIds || []);
-    fs.writeFileSync(storeFilePath, JSON.stringify(store, null, 2), 'utf8');
-  } catch (err) {
-    console.error('Error writing store JSON:', err.message);
+  // Sync globals back to store before persisting
+  store.deletedEmails = Array.from(global.__deletedEmails || []);
+  store.deletedCandidateIds = Array.from(global.__deletedCandidateIds || []);
+  if (persistTimer) {
+    clearTimeout(persistTimer);
   }
+  // Batch writes to reduce filesystem I/O; write after 200ms of inactivity
+  persistTimer = setTimeout(() => {
+    fs.promises.writeFile(storeFilePath, JSON.stringify(store, null, 2), 'utf8')
+      .catch(err => {
+        console.error('Error writing store JSON:', err.message);
+      });
+    persistTimer = null;
+  }, 200);
 }
 
 module.exports = {

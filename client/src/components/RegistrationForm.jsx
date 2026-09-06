@@ -12,7 +12,7 @@ export default function RegistrationForm({ onRegistered, onResumeScorecard }) {
     email: '',
     phone: '',
     college: '',
-    experience: 'Fresher / Student',
+    experience: 'Fresher',
     coach: 'Direct / None',
     agreeTerms: true
   });
@@ -47,7 +47,7 @@ export default function RegistrationForm({ onRegistered, onResumeScorecard }) {
     e.preventDefault();
     if (!formData.fullName.trim()) return setErrorMsg('Please enter your full name.');
     if (!formData.email.trim() || !formData.email.includes('@')) return setErrorMsg('Please provide a valid email address.');
-    if (!formData.phone.trim() || formData.phone.length < 8) return setErrorMsg('Please provide a valid phone number.');
+    if (!formData.phone.trim() || !/^\d{10}$/.test(formData.phone)) return setErrorMsg('Please provide a valid 10-digit phone number.');
     if (!formData.agreeTerms) return setErrorMsg('You must agree to the proctoring guidelines to proceed.');
 
     setLoading(true);
@@ -100,7 +100,7 @@ export default function RegistrationForm({ onRegistered, onResumeScorecard }) {
           {/* Institute badge */}
           <div className="d-inline-d-flex align-items-center gap-2 bg-white bg-opacity-20 border border-white rounded-pill py-1 px-3 mb-3">
             <Award style={{ width: 15, height: 15, color: '#fbbf24' }} />
-            <span className="fs-6 fw-bold text-warning text-uppercase" style={{ letterSpacing: '0.1em' }}>DBS Institute of Technology</span>
+            <span className="fs-6 fw-bold text-warning text-uppercase" style={{ letterSpacing: '0.1em' }}>DBS IT PUNE</span>
           </div>
           {/* Main headline */}
           <h1 className="display-5 fw-bold text-white mb-2" style={{ fontFamily: '"Outfit", sans-serif', letterSpacing: '-0.03em' }}>IT Scholarship Test 2025</h1>
@@ -114,7 +114,7 @@ export default function RegistrationForm({ onRegistered, onResumeScorecard }) {
               { icon: <Trophy style={{ width: 14, height: 14 }} />, label: '100% Scholarship for Top Scorers' },
               { icon: <Zap style={{ width: 14, height: 14 }} />, label: 'Results in 60 Seconds' },
               { icon: <Clock style={{ width: 14, height: 14 }} />, label: 'Only 20 Minutes' },
-              { icon: <TrendingUp style={{ width: 14, height: 14 }} />, label: 'L1 IT Career Launch' },
+              { icon: <TrendingUp style={{ width: 14, height: 14 }} />, label: 'IT Carrier Transition Program' },
             ].map((chip, i) => (
               <div key={i} className={`d-flex align-items-center gap-2 px-3 py-2 rounded-pill ${i===0 ? 'bg-warning text-dark' : 'bg-light text-muted'}`}>
                 {chip.icon}
@@ -186,21 +186,31 @@ export default function RegistrationForm({ onRegistered, onResumeScorecard }) {
                 {/* Phone */}
                 <div className="col-md-6">
                   <label className="form-label fw-bold"><Phone style={{ width: 12, height: 12, color: '#1d4ed8' }} /> WhatsApp / Phone <span className="text-danger">*</span></label>
-                  <input type="tel" name="phone" value={formData.phone} onChange={handleChange} placeholder="+91 98765 43210" required className="form-control" />
+                  <input type="tel" name="phone" value={formData.phone} onChange={handleChange} placeholder="9876543210" required className="form-control" pattern="\d{10}" maxLength="10" minLength="10" />
                 </div>
-                {/* College */}
+                {/* Degree */}
                 <div className="col-12">
-                  <label className="form-label fw-bold"><GraduationCap style={{ width: 12, height: 12, color: '#1d4ed8' }} /> College / University / Highest Degree</label>
-                  <input type="text" name="college" value={formData.college} onChange={handleChange} placeholder="e.g. B.Tech CS / BCA / MCA" className="form-control" />
+                  <label className="form-label fw-bold"><GraduationCap style={{ width: 12, height: 12, color: '#1d4ed8' }} /> Highest Degree</label>
+                  <select name="college" value={formData.college} onChange={handleChange} className="form-select">
+                    <option value="" disabled>Select your degree</option>
+                    <option value="B.Tech / B.E. (CS / IT)">B.Tech / B.E. (Computer Science / IT)</option>
+                    <option value="B.Tech / B.E. (Other)">B.Tech / B.E. (Other Branches)</option>
+                    <option value="BCA">BCA</option>
+                    <option value="MCA">MCA</option>
+                    <option value="B.Sc (CS / IT)">B.Sc (Computer Science / IT)</option>
+                    <option value="M.Sc (CS / IT)">M.Sc (Computer Science / IT)</option>
+                    <option value="Diploma (CS / IT)">Diploma (Computer Engineering / IT)</option>
+                    <option value="Other">Other</option>
+                  </select>
                 </div>
                 {/* Experience */}
                 <div className="col-md-6">
                   <label className="form-label fw-bold"><Briefcase style={{ width: 12, height: 12, color: '#1d4ed8' }} /> Experience Level</label>
                   <select name="experience" value={formData.experience} onChange={handleChange} className="form-select">
-                    <option value="Fresher / Student">Fresher / Student</option>
-                    <option value="0 - 1 Year">0 - 1 Year</option>
-                    <option value="1 - 3 Years">1 - 3 Years</option>
-                    <option value="3+ Years">3+ Years (Career Transition)</option>
+                    <option value="Fresher">Fresher</option>
+                    <option value="0-1 years">0-1 years</option>
+                    <option value="1-2 years">1-2 years</option>
+                    <option value="2+ years">2+ years</option>
                   </select>
                 </div>
                 {/* Coach */}
@@ -291,10 +301,9 @@ export default function RegistrationForm({ onRegistered, onResumeScorecard }) {
                 <h5 className="mb-3 fw-bold text-primary d-flex align-items-center gap-2" style={{ fontSize: 15 }}><Star style={{ width: 14, height: 14, color: '#d97706' }} /> Why Appear?</h5>
                 <ul className="list-unstyled mb-0">
                   {[
-                    { icon: '🎯', text: 'Score 90%+ and get completely FREE training worth ₹40,000+' },
                     { icon: '⚡', text: 'Instant Scorecard — know your result in under 60 seconds' },
                     { icon: '🏅', text: 'Official digitally-signed Scholarship Certificate' },
-                    { icon: '💼', text: 'Launch an L1 IT Support career with industry-ready skills' },
+                    { icon: '💼', text: 'IT Carrier Transition Program with industry-ready skills' },
                     { icon: '📊', text: 'No negative marking — every correct answer gets you closer' },
                   ].map((item, i) => (
                     <li key={i} className="d-flex align-items-start gap-2 mb-2" style={{ fontSize: 13, color: '#334155' }}>

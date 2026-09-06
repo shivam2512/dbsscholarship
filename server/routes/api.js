@@ -6,9 +6,10 @@ const path = require('path');
 const fs = require('fs');
 
 const store = require('../store');
+const backgroundQueue = require('../backgroundQueue');
 const googleSheets = require('../googleSheets');
 const { questions, coaches } = require('../data/questions');
-const { sendScorecardEmail } = require('../mailer');
+// sendScorecardEmail now handled via backgroundQueue
 
 // Multer Storage Configuration for Webcam Proctor Snapshots
 const storage = multer.diskStorage({
@@ -129,9 +130,9 @@ router.post('/register', async (req, res) => {
 
     // Log registration directly to Google Sheet
     try {
-      await googleSheets.appendCandidate(newCandidate);
+      backgroundQueue.enqueueGoogleSheets('CANDIDATE', newCandidate);
     } catch (err) {
-      console.warn('Google Sheet Registration Sync Notice:', err.message);
+      console.warn('Background Queue Registration enqueue warning:', err.message);
     }
 
     res.json({
@@ -240,9 +241,9 @@ router.post('/violation', async (req, res) => {
 
     const candidate = store.getCandidateById(test.candidateId);
     try {
-      await googleSheets.appendViolation(violation, candidate);
+      backgroundQueue.enqueueGoogleSheets('VIOLATION', { violation, candidate });
     } catch (err) {
-      console.warn('Google Sheet Violation Sync Notice:', err.message);
+      console.warn('Background Queue Violation enqueue warning:', err.message);
     }
 
     const violations = store.getViolationsByTestId(testId);
@@ -408,20 +409,16 @@ router.post('/submit-test', async (req, res) => {
 
     // 📊 Sync Final Submission & Scorecard to Google Sheet
     try {
-      await googleSheets.appendSubmission(candidate, submissionPayload, test);
+      backgroundQueue.enqueueGoogleSheets('SUBMISSION', { candidate, submission: submissionPayload, test });
     } catch (err) {
-      console.warn('Google Sheet Submission Sync Notice:', err.message);
+      console.warn('Background Queue Submission enqueue warning:', err.message);
     }
 
     // Email Dispatch (Scorecard & Scholarship Certificate)
     try {
-      const emailResult = await sendScorecardEmail(candidate, submissionPayload, test);
-      if (emailResult && emailResult.success) {
-        submissionPayload.emailSent = 1;
-        store.saveSubmission(submissionPayload);
-      }
+      backgroundQueue.enqueueEmail(candidate, submissionPayload, test);
     } catch (err) {
-      console.error('Email Dispatch Error:', err);
+      console.warn('Background Queue Email enqueue warning:', err.message);
     }
 
     res.json({

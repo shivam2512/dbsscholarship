@@ -139,6 +139,13 @@ export default function ExamRoom({ candidate, testId, token, onExamCompleted }) 
     }
   };
 
+  const stopCamera = () => {
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach(t => t.stop());
+      streamRef.current = null;
+    }
+  };
+
   // 4. Record Cheat Violation
   const recordCheatViolation = async (violationType, details) => {
     if (isSubmittingRef.current) return;
@@ -290,6 +297,7 @@ export default function ExamRoom({ candidate, testId, token, onExamCompleted }) 
     removeAntiCheatListeners();
     clearInterval(timerIntervalRef.current);
     clearInterval(snapshotIntervalRef.current);
+    stopCamera();
     try {
       const res = await api.submitTest({
         token,
@@ -318,6 +326,7 @@ export default function ExamRoom({ candidate, testId, token, onExamCompleted }) 
     removeAntiCheatListeners();
     clearInterval(timerIntervalRef.current);
     clearInterval(snapshotIntervalRef.current);
+    stopCamera();
     try {
       const res = await api.submitTest({
         token,

@@ -66,7 +66,7 @@ export default function CertificateModal({ candidate, submission, onClose }) {
         <div className="w-100 d-flex align-items-center justify-content-between gap-3 mb-3 text-white px-2" style={{ maxWidth: 1123 }}>
           <div className="d-flex align-items-center gap-2">
             <Award className="w-6 h-6 text-warning" />
-            <h2 className="fs-5 fw-bold text-white mb-0">DBS IT Institute — A4 Official Scholarship Certificate</h2>
+            <h2 className="fs-5 fw-bold text-white mb-0">DBS IT PUNE — A4 Official Scholarship Certificate</h2>
           </div>
 
           <div className="d-flex align-items-center gap-2">
@@ -121,10 +121,10 @@ export default function CertificateModal({ candidate, submission, onClose }) {
                 </div>
                 <div className="text-start">
                   <span className="fw-black text-primary text-uppercase d-block" style={{ fontSize: 20, letterSpacing: '0.12em', fontFamily: '"Outfit", sans-serif', lineHeight: 1.1 }}>
-                    DBS INSTITUTE OF TECHNOLOGY
+                    DBS IT PUNE
                   </span>
                   <span className="fw-bold text-warning text-uppercase font-monospace d-block" style={{ fontSize: 10, letterSpacing: '0.2em' }}>
-                    National IT Career Readiness &amp; Scholarship Board
+                    IT Career Readiness &amp; Scholarship Assessment
                   </span>
                 </div>
               </div>
@@ -135,7 +135,7 @@ export default function CertificateModal({ candidate, submission, onClose }) {
                 Certificate of Scholarship &amp; Excellence
               </h1>
               <p className="small text-muted uppercase font-monospace mt-1 mb-0" style={{ letterSpacing: '0.15em', fontSize: 11 }}>
-                Proctored Computer-Based Assessment • L1 IT Support Role Competency
+                Proctored Computer-Based Assessment • IT Carrier Transition Program
               </p>
             </div>
 
@@ -152,7 +152,7 @@ export default function CertificateModal({ candidate, submission, onClose }) {
               </div>
 
               <p className="small text-secondary max-w-2xl mx-auto leading-relaxed pt-1 text-center" style={{ maxWidth: 740, fontSize: 13.5 }}>
-                has successfully qualified in the national proctored assessment conducted by <strong className="text-primary fw-bold">DBS Institute of Technology</strong> for <strong className="text-dark fw-bold">L1 IT Support &amp; Technical Operations</strong>, demonstrating verified technical proficiency and domain excellence across required competency modules.
+                has successfully qualified in the national proctored assessment conducted by <strong className="text-primary fw-bold">DBS IT PUNE</strong> for <strong className="text-dark fw-bold">IT Carrier Transition Program</strong>, demonstrating verified technical proficiency and domain excellence across required competency modules.
               </p>
             </div>
 
@@ -211,11 +211,13 @@ export default function CertificateModal({ candidate, submission, onClose }) {
               {/* Right: Signature Lines */}
               <div className="d-flex align-items-center gap-4 text-center" style={{ width: 320 }}>
                 <div className="flex-fill">
-                  <div className="font-serif italic fs-6 fw-bold text-dark border-bottom border-dark pb-1 px-2">
-                    Sadanand B.
-                  </div>
-                  <div className="text-muted mt-1 uppercase fw-semibold" style={{ fontSize: 9, letterSpacing: '0.05em' }}>Head of Evaluation</div>
-                  <div className="text-primary fw-bold" style={{ fontSize: 8 }}>DBS IT Institute</div>
+                    <div className="font-serif italic fs-6 fw-bold text-dark border-bottom border-dark pb-1 px-2">
+                      Biplob Mandal
+                    </div>
+                    <div className="text-muted mt-1 uppercase fw-semibold" style={{ fontSize: 9, letterSpacing: '0.05em' }}>
+                      Head of Evaluation
+                    </div>
+                    <div className="text-primary fw-bold" style={{ fontSize: 8 }}>DBS IT PUNE</div>
                 </div>
 
                 <div className="flex-fill">
@@ -223,7 +225,7 @@ export default function CertificateModal({ candidate, submission, onClose }) {
                     Scholarship Board
                   </div>
                   <div className="text-muted mt-1 uppercase fw-semibold" style={{ fontSize: 9, letterSpacing: '0.05em' }}>Authorized Signatory</div>
-                  <div className="text-primary fw-bold" style={{ fontSize: 8 }}>DBS Institute of Technology</div>
+                  <div className="text-primary fw-bold" style={{ fontSize: 8 }}>DBS IT PUNE</div>
                 </div>
               </div>
             </div>

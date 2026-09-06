@@ -1,11 +1,1 @@
 Type,Timestamp,Name,Email,Phone,College,Experience,Coach,Status
-"REGISTER","2026-09-02T16:25:47.753Z","Fix Verification Test","fixtest@example.com","9876543210","Test College","Fresher / Student","Sadanand B","registered"
-"SCORECARD","2026-09-02T16:25:47.760Z","CERT-FIXTEST","Fix Verification Test","fixtest@example.com","9876543210","Sadanand B","Test College",35,50,70,"Silver (25% Scholarship)",0,600
-"REGISTER","2026-09-02T16:28:03.288Z","Live Sheet Test","livetest99@example.com","9012345678","Test College","Fresher / Student","Sadanand B","registered"
-"REGISTER","2026-09-02T16:36:00.257Z","Test user","luckshiv1234@gmail.com","7748908393","RGPV","Fresher / Student","Direct / None","registered"
-"SCORECARD","2026-09-02T16:36:27.937Z","CERT-ZV2F1N6","Test user","luckshiv1234@gmail.com","7748908393","Direct / None","RGPV",15,50,30,"Certificate of Participation",0,13
-"REGISTER","2026-09-02T17:23:33.127Z","Live Sheet Test Retest","livetest99@example.com","9012345678","Test College","Fresher / Student","Sadanand B","registered"
-"REGISTER","2026-09-02T20:06:08.847Z","A","a@gmail.com","7748908393","RGPV","Fresher / Student","Vaishnavi","registered"
-"SCORECARD","2026-09-02T20:06:30.261Z","CERT-JXF9M5D","A","a@gmail.com","7748908393","Vaishnavi","RGPV",20,50,40,"Certificate of Participation",0,11
-"REGISTER","2026-09-04T12:54:16.889Z","Test user","shivamshinde159357@gmail.com","7748908393","RGPV","Fresher / Student","Direct / None","registered"
-"SCORECARD","2026-09-04T12:56:23.880Z","CERT-4OUA3NP","Test user","shivamshinde159357@gmail.com","7748908393","Direct / None","RGPV",20,50,40,"Certificate of Participation",0,28
