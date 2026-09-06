@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+﻿import React, { useState, useEffect, useRef } from 'react';
 import { Camera, Mic, Maximize2, ShieldAlert, CheckCircle2, XCircle, AlertTriangle, ArrowRight, VideoOff } from 'lucide-react';
 
 export default function SystemCheckModal({ candidate, onStartExam, onBack }) {
@@ -102,7 +102,7 @@ export default function SystemCheckModal({ candidate, onStartExam, onBack }) {
       <div className="glass-panel-glow p-6 sm:p-8">
         {/* Header */}
         <div className="text-center pb-6 border-b border-slate-800">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-400 text-xs font-semibold uppercase tracking-wider mb-2">
+          <div className="d-inline-d-flex align-items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-400 text-xs font-semibold uppercase tracking-wider mb-2">
             <ShieldAlert className="w-4 h-4" />
             Hardware & Environment Diagnostic
           </div>
@@ -113,10 +113,10 @@ export default function SystemCheckModal({ candidate, onStartExam, onBack }) {
         </div>
 
         {/* Media Verification Grid */}
-        <div className="grid md:grid-cols-2 gap-6 my-6">
+        <div className="row row-cols-1 row-cols-md-2 g-3 my-3">
           {/* Live Video Preview Box */}
-          <div className="flex flex-col items-center">
-            <div className="w-full aspect-video bg-slate-950 rounded-xl overflow-hidden relative border border-slate-700/80 shadow-inner flex items-center justify-center">
+          <div className="d-flex flex-column align-items-center">
+            <div className="w-full aspect-video bg-slate-950 rounded-xl overflow-hidden relative border border-slate-700/80 shadow-inner d-flex align-items-center justify-content-center">
               <video
                 ref={videoRef}
                 autoPlay
@@ -128,14 +128,14 @@ export default function SystemCheckModal({ candidate, onStartExam, onBack }) {
               />
 
               {cameraStatus === 'pending' && (
-                <div className="flex flex-col items-center text-slate-400 text-xs">
+                <div className="d-flex flex-column align-items-center text-slate-400 text-xs">
                   <div className="w-6 h-6 border-2 border-sky-400 border-t-transparent rounded-full animate-spin mb-2"></div>
                   <span>Connecting to camera...</span>
                 </div>
               )}
 
               {cameraStatus === 'denied' && (
-                <div className="flex flex-col items-center text-rose-400 text-xs p-4 text-center">
+                <div className="d-flex flex-column align-items-center text-rose-400 text-xs p-4 text-center">
                   <VideoOff className="w-8 h-8 mb-2" />
                   <span className="font-semibold">Camera Access Required</span>
                   <p className="text-[11px] text-slate-400 mt-1">Please allow camera permissions in browser settings.</p>
@@ -143,20 +143,20 @@ export default function SystemCheckModal({ candidate, onStartExam, onBack }) {
               )}
 
               {cameraStatus === 'granted' && (
-                <div className="absolute top-2 left-2 flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-emerald-950/80 border border-emerald-500/40 text-emerald-300 text-[10px] font-bold uppercase tracking-wider">
+                <div className="absolute top-2 left-2 d-flex align-items-center gap-1.5 px-2 py-0.5 rounded-md bg-emerald-950/80 border border-emerald-500/40 text-emerald-300 text-[10px] font-bold uppercase tracking-wider">
                   <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
                   Face Feed Ready
                 </div>
               )}
             </div>
 
-            <div className="w-full flex items-center justify-between mt-2.5 px-1">
-              <span className="text-xs text-slate-400 flex items-center gap-1.5">
+            <div className="w-full d-flex align-items-center justify-content-between mt-2.5 px-1">
+              <span className="text-xs text-slate-400 d-flex align-items-center gap-1.5">
                 <Camera className="w-3.5 h-3.5 text-sky-400" />
                 Webcam Sensor
               </span>
               {cameraStatus === 'granted' ? (
-                <span className="text-xs text-emerald-400 font-semibold flex items-center gap-1">
+                <span className="text-xs text-emerald-400 font-semibold d-flex align-items-center gap-1">
                   <CheckCircle2 className="w-3.5 h-3.5" /> Passed
                 </span>
               ) : (
@@ -171,10 +171,10 @@ export default function SystemCheckModal({ candidate, onStartExam, onBack }) {
           </div>
 
           {/* System Check Status Cards */}
-          <div className="space-y-3 flex flex-col justify-center">
+          <div className="space-y-3 d-flex flex-column justify-content-center">
             {/* Audio Check */}
-            <div className="p-3.5 rounded-xl bg-slate-900/60 border border-slate-800 flex items-center justify-between">
-              <div className="flex items-center gap-3">
+            <div className="p-3.5 rounded-xl bg-slate-900/60 border border-slate-800 d-flex align-items-center justify-content-between">
+              <div className="d-flex align-items-center gap-3">
                 <div className="p-2 rounded-lg bg-sky-500/10 text-sky-400">
                   <Mic className="w-4 h-4" />
                 </div>
@@ -196,8 +196,8 @@ export default function SystemCheckModal({ candidate, onStartExam, onBack }) {
             </div>
 
             {/* Fullscreen Mode */}
-            <div className="p-3.5 rounded-xl bg-slate-900/60 border border-slate-800 flex items-center justify-between">
-              <div className="flex items-center gap-3">
+            <div className="p-3.5 rounded-xl bg-slate-900/60 border border-slate-800 d-flex align-items-center justify-content-between">
+              <div className="d-flex align-items-center gap-3">
                 <div className="p-2 rounded-lg bg-indigo-500/10 text-indigo-400">
                   <Maximize2 className="w-4 h-4" />
                 </div>
@@ -210,8 +210,8 @@ export default function SystemCheckModal({ candidate, onStartExam, onBack }) {
             </div>
 
             {/* Anti-Cheat Guard */}
-            <div className="p-3.5 rounded-xl bg-slate-900/60 border border-slate-800 flex items-center justify-between">
-              <div className="flex items-center gap-3">
+            <div className="p-3.5 rounded-xl bg-slate-900/60 border border-slate-800 d-flex align-items-center justify-content-between">
+              <div className="d-flex align-items-center gap-3">
                 <div className="p-2 rounded-lg bg-purple-500/10 text-purple-400">
                   <ShieldAlert className="w-4 h-4" />
                 </div>
@@ -227,8 +227,8 @@ export default function SystemCheckModal({ candidate, onStartExam, onBack }) {
 
         {/* Permission Error Message */}
         {permissionError && (
-          <div className="mb-4 p-3 bg-rose-950/40 border border-rose-500/40 rounded-xl text-rose-300 text-xs flex items-center gap-2">
-            <AlertTriangle className="w-4 h-4 flex-shrink-0" />
+          <div className="mb-4 p-3 bg-rose-950/40 border border-rose-500/40 rounded-xl text-rose-300 text-xs d-flex align-items-center gap-2">
+            <AlertTriangle className="w-4 h-4 d-flex-shrink-0" />
             <span>{permissionError}</span>
           </div>
         )}
@@ -245,7 +245,7 @@ export default function SystemCheckModal({ candidate, onStartExam, onBack }) {
             <li>A total of <strong>3 violation strikes</strong> will result in immediate automatic test submission.</li>
           </ul>
 
-          <label className="flex items-center gap-2.5 mt-3.5 pt-3 border-t border-slate-800/80 cursor-pointer">
+          <label className="d-flex align-items-center gap-2.5 mt-3.5 pt-3 border-t border-slate-800/80 cursor-pointer">
             <input
               type="checkbox"
               checked={agreementChecked}
@@ -259,7 +259,7 @@ export default function SystemCheckModal({ candidate, onStartExam, onBack }) {
         </div>
 
         {/* Actions */}
-        <div className="flex items-center justify-between gap-4 pt-2">
+        <div className="d-flex align-items-center justify-content-between gap-4 pt-2">
           <button
             onClick={onBack}
             className="btn-secondary py-2.5 px-4 text-xs"
@@ -280,3 +280,5 @@ export default function SystemCheckModal({ candidate, onStartExam, onBack }) {
     </div>
   );
 }
+
+

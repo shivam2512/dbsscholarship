@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { api } from '../services/api';
 import {
   ShieldCheck, User, Mail, Phone, GraduationCap, Briefcase,
@@ -72,7 +72,7 @@ export default function RegistrationForm({ onRegistered, onResumeScorecard }) {
 
   return (
     <div className="container py-5" style={{ maxWidth: 1100, margin: '0 auto' }}>
-      {/* ── Hero Banner ── */}
+      {/* â”€â”€ Hero Banner â”€â”€ */}
       <div className="bg-primary bg-gradient" style={{
         background: 'linear-gradient(135deg, #1e3a8a 0%, #1d4ed8 50%, #2563eb 100%)',
         borderRadius: 24,
@@ -95,10 +95,10 @@ export default function RegistrationForm({ onRegistered, onResumeScorecard }) {
           position: 'absolute', top: '50%', right: '10%',
           transform: 'translateY(-50%)', fontSize: 120, opacity: 0.07,
           pointerEvents: 'none', lineHeight: 1
-        }}>🎓</div>
+        }}>ðŸŽ“</div>
         <div className="position-relative text-center">
           {/* Institute badge */}
-          <div className="d-inline-flex align-items-center gap-2 bg-white bg-opacity-20 border border-white rounded-pill py-1 px-3 mb-3">
+          <div className="d-inline-d-flex align-items-center gap-2 bg-white bg-opacity-20 border border-white rounded-pill py-1 px-3 mb-3">
             <Award style={{ width: 15, height: 15, color: '#fbbf24' }} />
             <span className="fs-6 fw-bold text-warning text-uppercase" style={{ letterSpacing: '0.1em' }}>DBS Institute of Technology</span>
           </div>
@@ -106,7 +106,7 @@ export default function RegistrationForm({ onRegistered, onResumeScorecard }) {
           <h1 className="display-5 fw-bold text-white mb-2" style={{ fontFamily: '"Outfit", sans-serif', letterSpacing: '-0.03em' }}>IT Scholarship Test 2025</h1>
           {/* Lucrative quote */}
           <p className="fs-5 text-light fst-italic mb-4" style={{ maxWidth: 680, margin: '0 auto' }}>
-            "Your 20 minutes today could save you lakhs tomorrow — <strong className="text-warning">earn up to 100% tuition scholarship</strong> and launch your IT career with zero financial barrier."
+            "Your 20 minutes today could save you lakhs tomorrow â€” <strong className="text-warning">earn up to 100% tuition scholarship</strong> and launch your IT career with zero financial barrier."
           </p>
           {/* CTA chips */}
           <div className="d-flex flex-wrap justify-content-center gap-2 mb-4">
@@ -129,10 +129,10 @@ export default function RegistrationForm({ onRegistered, onResumeScorecard }) {
       {duplicateAttemptInfo && (
         <div className="alert alert-warning border border-warning rounded-3 p-4 mb-4 shadow-sm">
           <div className="d-flex gap-3 align-items-start">
-            <div className="p-2 bg-warning bg-opacity-10 rounded-2 flex-shrink-0">
+            <div className="p-2 bg-warning bg-opacity-10 rounded-2 d-flex-shrink-0">
               <Lock style={{ width: 22, height: 22, color: '#d97706' }} />
             </div>
-            <div className="flex-grow-1">
+            <div className="d-flex-grow-1">
               <h3 className="fs-5 fw-bold text-danger mb-2">Assessment Already Completed</h3>
               <p className="fs-6 text-danger">Our record shows an assessment was submitted using <strong className="font-monospace">{formData.email}</strong>. Per strict examination policies, re-attempts are locked.</p>
               <div className="d-flex flex-wrap gap-2 mt-3">
@@ -159,7 +159,7 @@ export default function RegistrationForm({ onRegistered, onResumeScorecard }) {
                 </div>
                 <div>
                   <h2 className="h5 fw-bold text-dark mb-0">Candidate Registration</h2>
-                  <p className="small text-muted mb-0">Secure • Verified • One-Time Attempt</p>
+                  <p className="small text-muted mb-0">Secure â€¢ Verified â€¢ One-Time Attempt</p>
                 </div>
               </div>
               <p className="small text-muted mb-4 pt-2" style={{ borderTop: '1px solid #f0f4ff' }}>Ensure details match your official ID for scholarship certificate validation.</p>
@@ -252,10 +252,10 @@ export default function RegistrationForm({ onRegistered, onResumeScorecard }) {
                   {/* Platinum */}
                   <div className="list-group-item d-flex justify-content-between align-items-center bg-white border border-primary-light rounded mb-2">
                     <div className="d-flex align-items-center gap-2">
-                      <span style={{ fontSize: 18 }}>🥇</span>
+                      <span style={{ fontSize: 18 }}>ðŸ¥‡</span>
                       <div>
-                        <div className="small fw-bold text-purple">Platinum — 90% to 100%</div>
-                        <div className="small text-purple">45 – 50 Marks</div>
+                        <div className="small fw-bold text-purple">Platinum â€” 90% to 100%</div>
+                        <div className="small text-purple">45 â€“ 50 Marks</div>
                       </div>
                     </div>
                     <span className="badge bg-purple text-white">100% OFF</span>
@@ -263,10 +263,10 @@ export default function RegistrationForm({ onRegistered, onResumeScorecard }) {
                   {/* Gold */}
                   <div className="list-group-item d-flex justify-content-between align-items-center bg-white border border-warning rounded mb-2">
                     <div className="d-flex align-items-center gap-2">
-                      <span style={{ fontSize: 18 }}>🥈</span>
+                      <span style={{ fontSize: 18 }}>ðŸ¥ˆ</span>
                       <div>
-                        <div className="small fw-bold text-warning">Gold — 75% to 89%</div>
-                        <div className="small text-warning">38 – 44 Marks</div>
+                        <div className="small fw-bold text-warning">Gold â€” 75% to 89%</div>
+                        <div className="small text-warning">38 â€“ 44 Marks</div>
                       </div>
                     </div>
                     <span className="badge bg-warning text-white">50% OFF</span>
@@ -274,10 +274,10 @@ export default function RegistrationForm({ onRegistered, onResumeScorecard }) {
                   {/* Silver */}
                   <div className="list-group-item d-flex justify-content-between align-items-center bg-white border border-info rounded mb-2">
                     <div className="d-flex align-items-center gap-2">
-                      <span style={{ fontSize: 18 }}>🥉</span>
+                      <span style={{ fontSize: 18 }}>ðŸ¥‰</span>
                       <div>
-                        <div className="small fw-bold text-info">Silver — 60% to 74%</div>
-                        <div className="small text-info">30 – 36 Marks</div>
+                        <div className="small fw-bold text-info">Silver â€” 60% to 74%</div>
+                        <div className="small text-info">30 â€“ 36 Marks</div>
                       </div>
                     </div>
                     <span className="badge bg-info text-white">25% OFF</span>
@@ -291,11 +291,11 @@ export default function RegistrationForm({ onRegistered, onResumeScorecard }) {
                 <h5 className="mb-3 fw-bold text-primary d-flex align-items-center gap-2"><Star style={{ width: 14, height: 14, color: '#d97706' }} /> Why Appear?</h5>
                 <ul className="list-unstyled">
                   {[
-                    { icon: '🎯', text: 'Score 90%+ and get completely FREE training worth ₹40,000+' },
-                    { icon: '⚡', text: 'Instant Scorecard — know your result in under 60 seconds' },
-                    { icon: '🏅', text: 'Official digitally-signed Scholarship Certificate' },
-                    { icon: '💼', text: 'Launch an L1 IT Support career with industry-ready skills' },
-                    { icon: '📊', text: 'No negative marking — every correct answer gets you closer' },
+                    { icon: 'ðŸŽ¯', text: 'Score 90%+ and get completely FREE training worth â‚¹40,000+' },
+                    { icon: 'âš¡', text: 'Instant Scorecard â€” know your result in under 60 seconds' },
+                    { icon: 'ðŸ…', text: 'Official digitally-signed Scholarship Certificate' },
+                    { icon: 'ðŸ’¼', text: 'Launch an L1 IT Support career with industry-ready skills' },
+                    { icon: 'ðŸ“Š', text: 'No negative marking â€” every correct answer gets you closer' },
                   ].map((item, i) => (
                     <li key={i} className="d-flex align-items-start gap-2 mb-2" style={{ fontSize: 13, color: '#334155' }}>
                       <span style={{ fontSize: 16 }}>{item.icon}</span>
@@ -316,7 +316,7 @@ export default function RegistrationForm({ onRegistered, onResumeScorecard }) {
                     'No negative marking',
                     '20-minute strict time limit',
                     'AI-proctored webcam & audio monitoring',
-                    'One-time attempt only — plan wisely!',
+                    'One-time attempt only â€” plan wisely!',
                   ].map((rule, i) => (
                     <li key={i} className="d-flex align-items-center gap-2 mb-2" style={{ fontSize: 13, color: '#334155' }}>
                       <CheckCircle2 style={{ width: 14, height: 14, color: '#059669' }} />
@@ -332,3 +332,5 @@ export default function RegistrationForm({ onRegistered, onResumeScorecard }) {
     </div>
   );
 }
+
+

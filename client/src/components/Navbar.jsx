@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { ShieldCheck, Award, Lock, UserCheck } from 'lucide-react';
 
 export default function Navbar({ currentView, setView, isExamActive, candidate }) {
@@ -80,3 +80,5 @@ export default function Navbar({ currentView, setView, isExamActive, candidate }
     </header>
   );
 }
+
+

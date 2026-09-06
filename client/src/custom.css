@@ -1,0 +1,15 @@
+/* src/custom.css - Tailwind fallback utilities for the migrated project */
+
+/* Animation fallback */
+.custom-animate-fade-in {
+  animation: fadeIn 0.4s ease-in;
+}
+
+/* Color fallbacks */
+.text-custom-sky-400 { color: #38bdf8; }
+.bg-custom-slate-950 { background-color: #0f172a; }
+.text-custom-slate-200 { color: #e2e8f0; }
+.text-custom-slate-400 { color: #94a3b8; }
+.bg-primary-opacity-30 { background-color: rgba(var(--bs-primary-rgb), 0.3); }
+
+/* Additional needed utilities can be added here */

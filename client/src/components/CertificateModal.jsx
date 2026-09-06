@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+﻿import React, { useRef, useState } from 'react';
 import { Award, Download, ShieldCheck, X, CheckCircle2 } from 'lucide-react';
 import { toPng } from 'html-to-image';
 import jsPDF from 'jspdf';
@@ -60,19 +60,19 @@ export default function CertificateModal({ candidate, submission, onClose }) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-xl flex flex-col items-center justify-start overflow-y-auto p-2 sm:p-6 animate-fade-in">
+    <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-xl d-flex flex-column align-items-center justify-start overflow-y-auto p-2 sm:p-6 animate-fade-in">
       {/* Top Modal Control Header */}
-      <div className="w-full max-w-5xl flex items-center justify-between gap-4 mb-4">
-        <div className="flex items-center gap-2 text-white">
+      <div className="w-full max-w-5xl d-flex align-items-center justify-content-between gap-4 mb-4">
+        <div className="d-flex align-items-center gap-2 text-white">
           <Award className="w-6 h-6 text-amber-400" />
           <h2 className="text-base sm:text-lg font-bold">A4 Official Scholarship Certificate Preview</h2>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="d-flex align-items-center gap-3">
           <button
             onClick={handleDownloadPDF}
             disabled={isExporting}
-            className="btn-primary py-2.5 px-6 text-sm font-bold shadow-lg flex items-center gap-2 bg-gradient-to-r from-amber-500 to-yellow-500 text-slate-950 hover:brightness-110"
+            className="btn-primary py-2.5 px-6 text-sm font-bold shadow-lg d-flex align-items-center gap-2 bg-gradient-to-r from-amber-500 to-yellow-500 text-slate-950 hover:brightness-110"
           >
             <Download className="w-4 h-4 text-slate-950" />
             {isExporting ? 'Downloading PDF...' : 'Download Certificate PDF'}
@@ -88,11 +88,11 @@ export default function CertificateModal({ candidate, submission, onClose }) {
       </div>
 
       {/* Formal A4 Landscape Certificate Template Container */}
-      <div className="w-full max-w-5xl flex justify-center items-center overflow-x-auto py-2">
+      <div className="w-full max-w-5xl d-flex justify-content-center align-items-center overflow-x-auto py-2">
         <div
           ref={certRef}
           id="official-a4-certificate"
-          className="bg-slate-950 text-white border-4 border-amber-500 relative overflow-hidden shadow-2xl flex flex-col justify-between items-center text-center box-border shrink-0"
+          className="bg-slate-950 text-white border-4 border-amber-500 relative overflow-hidden shadow-2xl d-flex flex-column justify-content-between align-items-center text-center box-border shrink-0"
           style={{
             width: '1123px',
             height: '794px', // Exact 96 DPI A4 Landscape (297mm x 210mm)
@@ -112,8 +112,8 @@ export default function CertificateModal({ candidate, submission, onClose }) {
 
           {/* Header Banner */}
           <div className="w-full text-center relative z-10 pt-2">
-            <div className="flex items-center justify-center gap-2 mb-1.5">
-              <div className="w-8 h-8 rounded-full bg-amber-500/20 border border-amber-400/50 flex items-center justify-center text-amber-400 shadow-inner">
+            <div className="d-flex align-items-center justify-content-center gap-2 mb-1.5">
+              <div className="w-8 h-8 rounded-full bg-amber-500/20 border border-amber-400/50 d-flex align-items-center justify-content-center text-amber-400 shadow-inner">
                 <ShieldCheck className="w-4.5 h-4.5" />
               </div>
               <span className="text-xs font-mono font-bold tracking-[0.3em] text-amber-400 uppercase">
@@ -130,7 +130,7 @@ export default function CertificateModal({ candidate, submission, onClose }) {
           </div>
 
           {/* Candidate Recipient Section */}
-          <div className="w-full text-center my-2 relative z-10 space-y-2 flex flex-col items-center">
+          <div className="w-full text-center my-2 relative z-10 space-y-2 d-flex flex-column align-items-center">
             <p className="text-xs text-slate-300 italic font-serif tracking-widest">This is to officially certify that</p>
 
             <div className="py-1 border-b-2 border-amber-400/60 inline-block px-14">
@@ -145,9 +145,9 @@ export default function CertificateModal({ candidate, submission, onClose }) {
           </div>
 
           {/* Award Tier & Performance Ribbon Box (Perfectly Centered) */}
-          <div className="w-[860px] bg-slate-900/95 border border-amber-500/50 rounded-xl p-4 flex items-center justify-between gap-6 relative z-10 shadow-xl" style={{ backgroundColor: '#0f172a' }}>
+          <div className="w-[860px] bg-slate-900/95 border border-amber-500/50 rounded-xl p-4 d-flex align-items-center justify-content-between gap-6 relative z-10 shadow-xl" style={{ backgroundColor: '#0f172a' }}>
             {/* Left: Honor Tier */}
-            <div className="flex items-center gap-3.5 text-left min-w-[280px]">
+            <div className="d-flex align-items-center gap-3.5 text-left min-w-[280px]">
               <div className={`p-3 rounded-xl bg-gradient-to-br ${badgeInfo.bg} border ${badgeInfo.border} text-white shadow-md shrink-0`}>
                 <Award className="w-7 h-7 text-amber-300" />
               </div>
@@ -172,14 +172,14 @@ export default function CertificateModal({ candidate, submission, onClose }) {
             {/* Right: Security Audit */}
             <div className="text-right min-w-[180px]">
               <div className="text-[9px] uppercase font-bold tracking-wider text-slate-400">Security Audit</div>
-              <div className="text-xs font-bold text-emerald-400 flex items-center justify-end gap-1 mt-0.5">
+              <div className="text-xs font-bold text-emerald-400 d-flex align-items-center justify-end gap-1 mt-0.5">
                 <CheckCircle2 className="w-4 h-4" /> AI Verified
               </div>
             </div>
           </div>
 
           {/* Footer Metadata & Dual Signatures */}
-          <div className="w-full pt-4 pb-1 border-t border-slate-800 flex items-end justify-between text-xs relative z-10">
+          <div className="w-full pt-4 pb-1 border-t border-slate-800 d-flex items-end justify-content-between text-xs relative z-10">
             {/* Left: Certificate Metadata */}
             <div className="text-left space-y-1 text-[10px] text-slate-400" style={{ width: '260px' }}>
               <div>Certificate ID: <strong className="text-sky-300 font-mono">{certId}</strong></div>
@@ -188,23 +188,23 @@ export default function CertificateModal({ candidate, submission, onClose }) {
             </div>
 
             {/* Center: Golden Embossed Seal */}
-            <div className="flex flex-col items-center justify-center">
-              <div className="w-14 h-14 rounded-full border-2 border-amber-400 bg-amber-500/15 flex flex-col items-center justify-center text-amber-300 shadow-md">
+            <div className="d-flex flex-column align-items-center justify-content-center">
+              <div className="w-14 h-14 rounded-full border-2 border-amber-400 bg-amber-500/15 d-flex flex-column align-items-center justify-content-center text-amber-300 shadow-md">
                 <ShieldCheck className="w-6 h-6 text-amber-400" />
                 <span className="text-[7px] font-bold font-mono tracking-tighter uppercase mt-0.5">AUTHENTIC</span>
               </div>
             </div>
 
             {/* Right: Signature Lines */}
-            <div className="flex items-center gap-8 text-center" style={{ width: '300px', justifySelf: 'end' }}>
-              <div className="flex-1">
+            <div className="d-flex align-items-center gap-8 text-center" style={{ width: '300px', justifySelf: 'end' }}>
+              <div className="d-flex-1">
                 <div className="font-serif italic text-sm font-bold text-slate-200 border-b border-slate-700 pb-0.5 px-2">
                   Sadanand B.
                 </div>
                 <div className="text-[9px] text-slate-400 mt-1 uppercase tracking-wider font-semibold">Head of Evaluation</div>
               </div>
 
-              <div className="flex-1">
+              <div className="d-flex-1">
                 <div className="font-serif italic text-xs font-bold text-amber-300 border-b border-slate-700 pb-0.5 px-2">
                   Scholarship Board
                 </div>
@@ -218,3 +218,5 @@ export default function CertificateModal({ candidate, submission, onClose }) {
     </div>
   );
 }
+
+

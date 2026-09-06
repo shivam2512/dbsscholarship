@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { api } from '../services/api';
 import {
   Users, Award, ShieldAlert, Download, Search, Filter,
@@ -113,30 +113,30 @@ export default function AdminDashboard() {
 
   if (!isAuthenticated) {
     return (
-      <div className="max-w-md mx-auto px-4 py-16 animate-fade-in">
-        <div className="glass-panel-glow p-8 text-center">
-          <div className="w-12 h-12 rounded-2xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center mx-auto mb-4 border border-indigo-500/30">
+      <div className="container py-5">
+        <div className="card p-4 text-center">
+          <div className="d-flex align-items-center justify-content-center mx-auto mb-4 border rounded">
             <Key className="w-6 h-6" />
           </div>
-          <h2 className="text-2xl font-bold text-white mb-1">Admin & Coach Portal</h2>
-          <p className="text-xs text-slate-400 mb-6">Enter security PIN to access proctoring audits and candidate scorecards.</p>
+          <h2 className="fs-4 fw-bold text-white mb-1">Admin & Coach Portal</h2>
+          <p className="fs-6 text-muted mb-3">Enter security PIN to access proctoring audits and candidate scorecards.</p>
 
           {pinError && (
-            <div className="p-3 bg-rose-500/15 border border-rose-500/30 text-rose-300 text-xs rounded-xl mb-4">
+            <div className="alert alert-danger border border-danger rounded mb-3 p-3">
               {pinError}
             </div>
           )}
 
-          <form onSubmit={handleLogin} className="space-y-4">
+          <form onSubmit={handleLogin} className="d-grid gap-3">
             <input
               type="password"
               value={pin}
               onChange={(e) => setPin(e.target.value)}
               placeholder="Enter PIN (admin123)"
-              className="form-input text-center tracking-widest text-lg font-mono"
+              className="form-control text-center fs-5"
               autoFocus
             />
-            <button type="submit" className="btn-primary w-full py-3 text-xs font-bold">
+            <button type="submit" className="btn btn-primary w-100 py-2 fs-6 fw-bold">
               Unlock Dashboard <ArrowRight className="w-4 h-4" />
             </button>
           </form>
@@ -146,7 +146,7 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8 animate-fade-in">
+    <div className="container py-5">
       {/* Top Header */}
       <div className="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-3">
         <div>
@@ -154,18 +154,18 @@ export default function AdminDashboard() {
           <h1 className="text-2xl sm:text-3xl font-extrabold text-white">Live Proctoring & Candidate Leaderboard</h1>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="d-flex align-items-center gap-2">
           <a
             href="/api/admin/export-csv"
             download="scholarship_results.csv"
-            className="btn-secondary py-2.5 px-4 text-xs font-bold"
+            className="btn btn-secondary py-2 px-3 fs-6 fw-bold"
           >
             <Download className="w-4 h-4" />
             Export CSV
           </a>
           <button
             onClick={loadCandidates}
-            className="btn-primary py-2.5 px-4 text-xs font-bold"
+            className="btn btn-primary py-2 px-3 fs-6 fw-bold"
           >
             Refresh Data
           </button>
@@ -173,12 +173,12 @@ export default function AdminDashboard() {
       </div>
 
       {/* Google Sheets Operating Status Banner */}
-      <div className="glass-panel p-3.5 mb-6 flex flex-wrap items-center justify-between gap-3 bg-emerald-950/20 border-emerald-500/30 rounded-xl">
-        <div className="flex items-center gap-2.5">
+      <div className="alert alert-success d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3 p-3 border">
+        <div className="d-flex align-items-center gap-2">
           <div className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></div>
           <div>
-            <span className="text-xs font-bold text-emerald-200">Google Sheets Operating Backend: </span>
-            <span className="text-xs text-slate-300">
+            <span className="fs-6 fw-bold text-success">Google Sheets Operating Backend: </span>
+            <span className="fs-6 text-muted">
               {googleSheetStatus?.isConfigured 
                 ? 'Active Webhook Connected (Registrations & Scorecards auto-sync in real-time)' 
                 : 'Zero-Database Mode (Connect Apps Script Webhook in server/.env to sync to Google Sheets)'}
@@ -190,7 +190,7 @@ export default function AdminDashboard() {
             href={googleSheetStatus.sheetViewUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="btn-secondary py-1 px-3 text-[11px] font-bold text-emerald-300 border-emerald-500/40 hover:bg-emerald-500/10"
+            className="btn btn-outline-success py-1 px-2 fs-6 fw-bold"
           >
             Open Live Google Sheet &rarr;
           </a>
@@ -198,48 +198,48 @@ export default function AdminDashboard() {
       </div>
 
       {/* Overview Metric Cards */}
-      <div className="row row-cols-2 row-cols-md-5 g-4 mb-8">
-        <div className="glass-panel p-4">
+      <div className="row row-cols-2 row-cols-md-5 g-4 mb-3">
+        <div className="card p-3 mb-3">
           <div className="text-xs text-slate-400 font-semibold uppercase">Total Candidates</div>
           <div className="text-2xl sm:text-3xl font-extrabold text-white font-mono mt-1">{total}</div>
         </div>
 
-        <div className="glass-panel p-4">
+        <div className="card p-3 mb-3">
           <div className="text-xs text-slate-400 font-semibold uppercase">Completed Tests</div>
           <div className="text-2xl sm:text-3xl font-extrabold text-emerald-400 font-mono mt-1">{completed.length}</div>
         </div>
 
-        <div className="glass-panel p-4">
+        <div className="card p-3 mb-3">
           <div className="text-xs text-slate-400 font-semibold uppercase">Avg Score</div>
           <div className="text-2xl sm:text-3xl font-extrabold text-sky-400 font-mono mt-1">{avgScore} / 50</div>
         </div>
 
-        <div className="glass-panel p-4">
+        <div className="card p-3 mb-3">
           <div className="text-xs text-slate-400 font-semibold uppercase">Platinum (100%)</div>
           <div className="text-2xl sm:text-3xl font-extrabold text-purple-400 font-mono mt-1">{platinumCount}</div>
         </div>
 
-        <div className="glass-panel p-4 col-span-2 md:col-span-1">
+        <div className="card p-3 mb-3">
           <div className="text-xs text-slate-400 font-semibold uppercase">Gold + Silver</div>
           <div className="text-2xl sm:text-3xl font-extrabold text-amber-400 font-mono mt-1">{goldCount + silverCount}</div>
         </div>
       </div>
 
       {/* Filters & Search */}
-      <div className="glass-panel p-4 mb-6 flex flex-wrap items-center justify-between gap-4">
-        <div className="flex items-center gap-2 flex-1 min-w-[240px]">
+      <div className="card p-3 mb-3 d-flex flex-wrap align-items-center justify-content-between gap-2">
+        <div className="d-flex align-items-center gap-2 d-flex-grow-1">
           <Search className="w-4 h-4 text-slate-400" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search candidate by name, email, or phone..."
-            className="form-input text-xs py-2"
+            className="form-control fs-6 py-2"
           />
         </div>
 
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-1.5 text-xs text-slate-400">
+        <div className="d-flex align-items-center gap-2">
+          <div className="d-flex align-items-center gap-1 text-muted fs-6">
             <Filter className="w-3.5 h-3.5" /> Coach:
           </div>
           <select
@@ -283,7 +283,7 @@ export default function AdminDashboard() {
             <option value="Platinum">Platinum (100%)</option>
             <option value="Gold">Gold (50%)</option>
             <option value="Silver">Silver (25%)</option>
-            <option value="Scholarship">All Scholarship Winners (≥60%)</option>
+            <option value="Scholarship">All Scholarship Winners (â‰¥60%)</option>
           </select>
         </div>
       </div>
@@ -292,12 +292,12 @@ export default function AdminDashboard() {
       <div className="glass-panel overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
-            <thead className="bg-slate-900/90 text-slate-400 uppercase font-bold text-[11px] border-b border-slate-800">
+            <thead className="bg-dark text-muted text-uppercase fw-bold border-bottom border-dark">
               <tr>
-                <th className="p-3.5">Candidate</th>
-                <th className="p-3.5">Contact & Coach</th>
-                <th className="p-3.5 text-center">Score / Max</th>
-                <th className="p-3.5 text-center">Accuracy</th>
+                <th className="p-2">Candidate</th>
+                <th className="p-2">Contact & Coach</th>
+                <th className="p-2 text-center">Score / Max</th>
+                <th className="p-2 text-center">Accuracy</th>
                 <th className="p-3.5">Scholarship Tier</th>
                 <th className="p-3.5 text-center">Security Violations</th>
                 <th className="p-3.5 text-right">Actions</th>
@@ -345,20 +345,20 @@ export default function AdminDashboard() {
                     </td>
                     <td className="p-3.5 text-center">
                       {c.violationsCount > 0 ? (
-                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 font-bold font-mono text-[11px]">
+                        <span className="inline-d-flex align-items-center gap-1 px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 font-bold font-mono text-[11px]">
                           <AlertTriangle className="w-3 h-3" /> {c.violationsCount} Flags
                         </span>
                       ) : (
-                        <span className="inline-flex items-center gap-1 text-emerald-400 text-[11px]">
+                        <span className="inline-d-flex align-items-center gap-1 text-emerald-400 text-[11px]">
                           <CheckCircle className="w-3 h-3" /> Clean
                         </span>
                       )}
                     </td>
                     <td className="p-3.5 text-right">
-                      <div className="flex items-center justify-end gap-2">
+                      <div className="d-flex align-items-center justify-end gap-2">
                         <button
                           onClick={() => handleInspectCandidate(c.id)}
-                          className="btn-secondary py-1.5 px-3 text-[11px] flex items-center gap-1"
+                          className="btn-secondary py-1.5 px-3 text-[11px] d-flex align-items-center gap-1"
                           title="Inspect candidate audit details and webcam snapshots"
                         >
                           <Eye className="w-3.5 h-3.5" /> Inspect
@@ -366,7 +366,7 @@ export default function AdminDashboard() {
 
                         <button
                           onClick={() => handleDeleteCandidate(c)}
-                          className="py-1.5 px-3 text-[11px] font-bold rounded-lg bg-rose-500/15 border border-rose-500/30 text-rose-300 hover:bg-rose-500/30 transition-colors flex items-center gap-1"
+                          className="py-1.5 px-3 text-[11px] font-bold rounded-lg bg-rose-500/15 border border-rose-500/30 text-rose-300 hover:bg-rose-500/30 transition-colors d-flex align-items-center gap-1"
                           title="Remove entry and allow candidate to take a retest"
                         >
                           <RotateCcw className="w-3.5 h-3.5" /> Allow Retest
@@ -383,9 +383,9 @@ export default function AdminDashboard() {
 
       {/* Candidate Audit Detail Modal */}
       {selectedCandidateId && candidateDetail && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md d-flex align-items-center justify-content-center p-4 overflow-y-auto">
           <div className="glass-panel-glow max-w-3xl w-full p-6 my-8 animate-fade-in max-h-[90vh] overflow-y-auto">
-            <div className="flex items-start justify-between pb-4 border-b border-slate-800">
+            <div className="d-flex items-start justify-content-between pb-4 border-b border-slate-800">
               <div>
                 <span className="text-xs font-bold text-sky-400 uppercase tracking-wider">Proctoring & Assessment Audit</span>
                 <h3 className="text-xl font-bold text-white mt-0.5">{candidateDetail.candidate?.fullName}</h3>
@@ -394,14 +394,14 @@ export default function AdminDashboard() {
                 </p>
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className="d-flex align-items-center gap-2">
                 <button
                   onClick={() => {
                     handleDeleteCandidate(candidateDetail.candidate);
                     setSelectedCandidateId(null);
                     setCandidateDetail(null);
                   }}
-                  className="py-1.5 px-3 text-xs font-bold rounded-lg bg-rose-500/20 border border-rose-500/40 text-rose-300 hover:bg-rose-500/30 transition-colors flex items-center gap-1.5"
+                  className="py-1.5 px-3 text-xs font-bold rounded-lg bg-rose-500/20 border border-rose-500/40 text-rose-300 hover:bg-rose-500/30 transition-colors d-flex align-items-center gap-1.5"
                   title="Remove candidate record & reset attempt so they can retake the exam"
                 >
                   <RotateCcw className="w-3.5 h-3.5" /> Allow Retest
@@ -418,7 +418,7 @@ export default function AdminDashboard() {
 
             {/* Scorecard Summary */}
             {candidateDetail.submission ? (
-              <div className="my-6 grid grid-cols-3 gap-3 p-4 bg-slate-900/80 rounded-xl border border-slate-800 text-center text-xs">
+              <div className="my-6 row row-cols-3 g-3 p-4 bg-slate-900/80 rounded-xl border border-slate-800 text-center text-xs">
                 <div>
                   <div className="text-slate-400 uppercase font-semibold">Total Score</div>
                   <div className="text-2xl font-extrabold text-sky-400 font-mono mt-1">
@@ -446,7 +446,7 @@ export default function AdminDashboard() {
 
             {/* Proctoring Violations Log */}
             <div className="my-6">
-              <h4 className="text-xs font-bold text-slate-300 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+              <h4 className="text-xs font-bold text-slate-300 uppercase tracking-wider mb-2 d-flex align-items-center gap-1.5">
                 <ShieldAlert className="w-4 h-4 text-amber-400" />
                 Security Infraction Timeline ({candidateDetail.violations?.length || 0})
               </h4>
@@ -457,7 +457,7 @@ export default function AdminDashboard() {
               ) : (
                 <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
                   {candidateDetail.violations.map((v, i) => (
-                    <div key={i} className="p-2.5 rounded-lg bg-amber-950/30 border border-amber-500/30 text-xs flex items-center justify-between">
+                    <div key={i} className="p-2.5 rounded-lg bg-amber-950/30 border border-amber-500/30 text-xs d-flex align-items-center justify-content-between">
                       <div>
                         <span className="font-bold text-amber-300 uppercase mr-2 font-mono">[{v.violationType}]</span>
                         <span className="text-slate-300">{v.details}</span>
@@ -472,11 +472,11 @@ export default function AdminDashboard() {
             {/* Proctor Snapshots Gallery */}
             {candidateDetail.snapshots?.length > 0 && (
               <div className="my-6">
-                <h4 className="text-xs font-bold text-slate-300 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                <h4 className="text-xs font-bold text-slate-300 uppercase tracking-wider mb-2 d-flex align-items-center gap-1.5">
                   <Camera className="w-4 h-4 text-sky-400" />
                   Webcam Surveillance Snapshots ({candidateDetail.snapshots.length})
                 </h4>
-                <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
+                <div className="row row-cols-3 row-cols-sm-4 g-3">
                   {candidateDetail.snapshots.map((s, idx) => (
                     <div key={idx} className="rounded-lg overflow-hidden border border-slate-800 bg-slate-950">
                       <img
@@ -498,3 +498,5 @@ export default function AdminDashboard() {
     </div>
   );
 }
+
+
