@@ -336,7 +336,7 @@ export default function AdminDashboard() {
                     </td>
                     <td className="p-3 text-center">
                       {c.percentage !== null ? (
-                        <span className={`badge bg-${c.percentage >= 90 ? 'primary' : c.percentage >= 75 ? 'warning' : c.percentage >= 60 ? 'info' : 'secondary'} text-white`)}>
+                        <span className={`badge bg-${c.percentage >= 90 ? 'primary' : c.percentage >= 75 ? 'warning' : c.percentage >= 60 ? 'info' : 'secondary'} text-white`}>
                           {c.percentage}%
                         </span>
                       ) : (
