@@ -529,33 +529,35 @@ router.get('/admin/export-csv', async (req, res) => {
 router.delete('/admin/candidate/:id', async (req, res) => {
   try {
     const candidateId = req.params.id;
-    const candidate = store.getCandidateById(candidateId);
-    if (!candidate) {
-      return res.status(404).json({ error: 'Candidate not found.' });
+    let candidate = store.getCandidateById(candidateId) || store.getCandidateByEmail(candidateId);
+    const candidateName = candidate ? candidate.fullName : 'Candidate';
+    const candidateEmail = candidate ? candidate.email : (candidateId.includes('@') ? candidateId : '');
+
+    // 1. Mark as deleted in store and remove associations
+    store.markCandidateDeleted(candidateEmail, candidateId);
+    store.deleteCandidateAndResetTest(candidateId);
+    if (candidateEmail) {
+      store.deleteCandidateAndResetTest(candidateEmail);
     }
 
-    const candidateName = candidate.fullName;
-    const candidateEmail = candidate.email;
-
-    // 1. Delete from in-memory and local JSON store
-    const success = store.deleteCandidateAndResetTest(candidateId);
-    if (success) {
-      console.log(`🗑️ [Admin Action] Candidate entry deleted and reset for retest: ${candidateName} (${candidateEmail})`);
-
-      // 2. Synchronously notify Google Sheets and Local CSV
-      try {
-        await googleSheets.deleteCandidate(candidateEmail, candidateId);
-      } catch (sheetErr) {
-        console.warn('⚠️ Google Sheet deletion sync warning:', sheetErr.message);
-      }
-
-      return res.json({
-        success: true,
-        message: `Candidate ${candidateName} (${candidateEmail}) has been removed and synchronized with Google Sheets. Retest is now allowed.`
-      });
-    } else {
-      return res.status(500).json({ error: 'Failed to delete candidate entry.' });
+    // 2. Clear cache in googleSheets module
+    if (typeof googleSheets.clearCacheForCandidate === 'function') {
+      googleSheets.clearCacheForCandidate(candidateEmail, candidateId);
     }
+
+    console.log(`🗑️ [Admin Action] Candidate entry deleted and reset for retest: ${candidateName} (${candidateEmail || candidateId})`);
+
+    // 3. Synchronously notify Google Sheets and Local CSV
+    try {
+      await googleSheets.deleteCandidate(candidateEmail, candidateId);
+    } catch (sheetErr) {
+      console.warn('⚠️ Google Sheet deletion sync warning:', sheetErr.message);
+    }
+
+    return res.json({
+      success: true,
+      message: `Candidate ${candidateName} (${candidateEmail || candidateId}) has been removed and synchronized with Google Sheets. Retest is now allowed.`
+    });
   } catch (error) {
     console.error('Delete Candidate Error:', error);
     res.status(500).json({ error: error.message });

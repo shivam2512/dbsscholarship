@@ -26,7 +26,9 @@ let store = {
   tests: { ...(seedData.tests || {}) },
   submissions: { ...(seedData.submissions || {}) },
   violations: [ ...(seedData.violations || []) ],
-  snapshots: [ ...(seedData.snapshots || []) ]
+  snapshots: [ ...(seedData.snapshots || []) ],
+  deletedEmails: [],
+  deletedCandidateIds: []
 };
 
 // Overlay any dynamic runtime updates from /tmp or disk
@@ -37,14 +39,27 @@ try {
     store.candidates = { ...store.candidates, ...(parsed.candidates || {}) };
     store.tests = { ...store.tests, ...(parsed.tests || {}) };
     store.submissions = { ...store.submissions, ...(parsed.submissions || {}) };
+    // Restore tombstones
+    store.deletedEmails = Array.isArray(parsed.deletedEmails) ? parsed.deletedEmails : [];
+    store.deletedCandidateIds = Array.isArray(parsed.deletedCandidateIds) ? parsed.deletedCandidateIds : [];
   }
 } catch (err) {
   // Continue with in-memory store
 }
 
+// Sync tombstone globals from persisted store on startup
+global.__deletedEmails = new Set(store.deletedEmails);
+global.__deletedCandidateIds = new Set(store.deletedCandidateIds);
+
+// Remove any pre-seeded candidates that were later deleted
+store.deletedEmails.forEach(email => { delete store.candidates[email]; });
+
 // Persist memory store to JSON file asynchronously
 function persist() {
   try {
+    // Sync globals back to store before persisting
+    store.deletedEmails = Array.from(global.__deletedEmails || []);
+    store.deletedCandidateIds = Array.from(global.__deletedCandidateIds || []);
     fs.writeFileSync(storeFilePath, JSON.stringify(store, null, 2), 'utf8');
   } catch (err) {
     console.error('Error writing store JSON:', err.message);
@@ -64,6 +79,13 @@ module.exports = {
 
   saveCandidate(candidate) {
     const emailKey = candidate.email.trim().toLowerCase();
+    
+    // Clear tombstone if candidate is re-registering
+    global.__deletedEmails = global.__deletedEmails || new Set();
+    global.__deletedCandidateIds = global.__deletedCandidateIds || new Set();
+    global.__deletedEmails.delete(emailKey);
+    if (candidate.id) global.__deletedCandidateIds.delete(candidate.id);
+
     store.candidates[emailKey] = {
       ...candidate,
       createdAt: candidate.createdAt || new Date().toISOString()
@@ -76,19 +98,37 @@ module.exports = {
     return Object.values(store.candidates);
   },
 
+  markCandidateDeleted(email, id) {
+    global.__deletedEmails = global.__deletedEmails || new Set();
+    global.__deletedCandidateIds = global.__deletedCandidateIds || new Set();
+    if (email) global.__deletedEmails.add(email.trim().toLowerCase());
+    if (id) global.__deletedCandidateIds.add(id);
+  },
+
+  isCandidateDeleted(email, id) {
+    global.__deletedEmails = global.__deletedEmails || new Set();
+    global.__deletedCandidateIds = global.__deletedCandidateIds || new Set();
+    const cleanEmail = email ? email.trim().toLowerCase() : '';
+    return (cleanEmail && global.__deletedEmails.has(cleanEmail)) || (id && global.__deletedCandidateIds.has(id));
+  },
+
   deleteCandidateAndResetTest(candidateId) {
-    const candidate = Object.values(store.candidates).find(c => c.id === candidateId);
-    if (!candidate) return false;
+    const candidate = Object.values(store.candidates).find(c => c.id === candidateId || c.email === candidateId);
+    const emailKey = candidate ? candidate.email.trim().toLowerCase() : (candidateId.includes('@') ? candidateId.trim().toLowerCase() : '');
 
-    const emailKey = candidate.email.trim().toLowerCase();
+    // 1. Mark as tombstone so sync never resurrects them
+    this.markCandidateDeleted(emailKey, candidateId);
 
-    // 1. Delete Candidate Registration Record
-    delete store.candidates[emailKey];
+    // 2. Delete Candidate Registration Record
+    if (emailKey) {
+      delete store.candidates[emailKey];
+    }
+    const realId = candidate ? candidate.id : candidateId;
 
-    // 2. Delete Associated Test Sessions & Submissions
+    // 3. Delete Associated Test Sessions & Submissions
     Object.keys(store.tests).forEach(testId => {
       const test = store.tests[testId];
-      if (test.candidateId === candidateId) {
+      if (test.candidateId === realId || (emailKey && test.candidateId === emailKey)) {
         delete store.tests[testId];
         delete store.submissions[testId];
       }
@@ -96,14 +136,14 @@ module.exports = {
 
     Object.keys(store.submissions).forEach(subId => {
       const sub = store.submissions[subId];
-      if (sub.candidateId === candidateId) {
+      if (sub.candidateId === realId || (emailKey && sub.candidateId === emailKey)) {
         delete store.submissions[subId];
       }
     });
 
-    // 3. Delete Violations & Snapshots
-    store.violations = store.violations.filter(v => v.candidateId !== candidateId);
-    store.snapshots = store.snapshots.filter(s => s.candidateId !== candidateId);
+    // 4. Delete Violations & Snapshots
+    store.violations = store.violations.filter(v => v.candidateId !== realId && v.candidateId !== emailKey);
+    store.snapshots = store.snapshots.filter(s => s.candidateId !== realId && s.candidateId !== emailKey);
 
     persist();
     return true;

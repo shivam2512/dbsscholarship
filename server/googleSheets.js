@@ -49,20 +49,33 @@ function writeLocalCSV(type, data) {
   }
 }
 
-/** Remove entries from the local CSV fallback matching candidate email */
+/** Remove entries from all local CSV fallback files matching candidate email */
 function removeLocalCSV(email) {
   try {
-    if (!fs.existsSync(CSV_PATH) || !email) return;
-    const content = fs.readFileSync(CSV_PATH, 'utf8');
-    const lines = content.split('\n');
+    if (!email) return;
     const lowerEmail = email.trim().toLowerCase();
-    const filtered = lines.filter(line => {
-      if (!line.trim()) return false;
-      if (line.startsWith('Type,') || line.startsWith('"Type",')) return true;
-      return !line.toLowerCase().includes(lowerEmail);
+    const paths = [
+      CSV_PATH,
+      path.join(__dirname, 'submissions_local.csv'),
+      path.join(__dirname, '..', 'submissions_local.csv'),
+      path.join('/tmp', 'submissions_local.csv')
+    ];
+    paths.forEach(p => {
+      try {
+        if (!fs.existsSync(p)) return;
+        const content = fs.readFileSync(p, 'utf8');
+        const lines = content.split('\n');
+        const filtered = lines.filter(line => {
+          if (!line.trim()) return false;
+          if (line.startsWith('Type,') || line.startsWith('"Type",')) return true;
+          return !line.toLowerCase().includes(lowerEmail);
+        });
+        fs.writeFileSync(p, filtered.join('\n') + '\n', 'utf8');
+        console.log(`💾 [Local CSV] Removed records matching ${email} from ${p}`);
+      } catch (e) {
+        // Ignored
+      }
     });
-    fs.writeFileSync(CSV_PATH, filtered.join('\n') + '\n', 'utf8');
-    console.log(`💾 [Local CSV] Removed records matching ${email}`);
   } catch (e) {
     console.warn('Local CSV removal warning:', e.message);
   }
@@ -317,60 +330,73 @@ module.exports = {
   /**
    * Returns unified candidates list synced between Google Sheets, Local CSV, and In-Memory Store
    */
+  clearCacheForCandidate(email, candidateId) {
+    // Invalidate the full cache so next fetch won't include the deleted candidate
+    global.__candidatesCache = null;
+    global.__candidatesCacheTime = 0;
+    console.log(`🗑️ [Cache] Cleared candidates cache after deletion of ${email || candidateId}`);
+  },
+
+  clearCache() {
+    global.__candidatesCache = null;
+    global.__candidatesCacheTime = 0;
+  },
+
   async fetchUnifiedCandidates(store, forceRefresh = false) {
-    // Check in-memory cache (15s TTL)
-    if (!forceRefresh && global.__candidatesCache && (Date.now() - global.__candidatesCacheTime < 15000)) {
+    // Check in-memory cache (5s TTL — short enough to reflect recent deletions/registrations)
+    if (!forceRefresh && global.__candidatesCache && (Date.now() - global.__candidatesCacheTime < 5000)) {
       return global.__candidatesCache;
     }
 
     const candidatesMap = new Map();
 
-    // Step A: Pre-populate map with any previously cached candidates
-    if (global.__candidatesCache && Array.isArray(global.__candidatesCache)) {
-      global.__candidatesCache.forEach(c => {
-        if (c.email) candidatesMap.set(c.email.toLowerCase(), { ...c });
-      });
-    }
+    // Helper: check if email/id is deleted
+    const isDeleted = (email, id) => {
+      if (store && typeof store.isCandidateDeleted === 'function') {
+        return store.isCandidateDeleted(email, id);
+      }
+      return false;
+    };
 
-    // Step B: Pre-populate with in-memory store
+    // Step B: Pre-populate with in-memory store (live source of truth)
     if (store && typeof store.getAllCandidates === 'function') {
       const memoryCandidates = store.getAllCandidates();
       memoryCandidates.forEach(c => {
         const lowerEmail = (c.email || '').toLowerCase();
         if (!lowerEmail) return;
 
+        // Skip deleted candidates
+        if (isDeleted(lowerEmail, c.id)) return;
+
         const test = store.getCompletedTestByCandidateId(c.id) || store.getActiveTestByCandidateId(c.id) || {};
         const submission = test.id ? (store.getSubmissionByTestId(test.id) || {}) : {};
         const violations = test.id ? store.getViolationsByTestId(test.id) : [];
         const snapshots = test.id ? store.getSnapshotsByTestId(test.id) : [];
 
-        let existing = candidatesMap.get(lowerEmail);
-        if (!existing) {
-          candidatesMap.set(lowerEmail, {
-            id: c.id,
-            fullName: c.fullName,
-            email: lowerEmail,
-            phone: c.phone,
-            college: c.college,
-            experience: c.experience,
-            coach: c.coach,
-            createdAt: c.createdAt,
-            candidateStatus: c.status,
-            testId: test.id || null,
-            startedAt: test.startedAt || null,
-            submittedAt: test.submittedAt || null,
-            timeSpentSeconds: test.timeSpentSeconds || 0,
-            testStatus: test.status || 'registered',
-            submissionId: submission.id || null,
-            totalScore: submission.totalScore !== undefined ? submission.totalScore : null,
-            maxScore: submission.maxScore || 50,
-            percentage: submission.percentage !== undefined ? submission.percentage : null,
-            scholarshipTier: submission.scholarshipTier || null,
-            emailSent: submission.emailSent || 0,
-            violationsCount: violations.length,
-            snapshotsCount: snapshots.length
-          });
-        }
+        candidatesMap.set(lowerEmail, {
+          id: c.id,
+          fullName: c.fullName,
+          email: lowerEmail,
+          phone: c.phone,
+          college: c.college,
+          experience: c.experience,
+          coach: c.coach,
+          createdAt: c.createdAt,
+          candidateStatus: c.status,
+          testId: test.id || null,
+          startedAt: test.startedAt || null,
+          submittedAt: test.submittedAt || null,
+          timeSpentSeconds: test.timeSpentSeconds || 0,
+          testStatus: test.status || 'registered',
+          submissionId: submission.id || null,
+          totalScore: submission.totalScore !== undefined ? submission.totalScore : null,
+          maxScore: submission.maxScore || 50,
+          percentage: submission.percentage !== undefined ? submission.percentage : null,
+          scholarshipTier: submission.scholarshipTier || null,
+          emailSent: submission.emailSent || 0,
+          violationsCount: violations.length,
+          snapshotsCount: snapshots.length
+        });
       });
     }
 
@@ -402,7 +428,8 @@ module.exports = {
         if (type === 'REGISTER') {
           const [, timestamp, name, email, phone, college, experience, coach] = cells.map(c => c.replace(/^"|"$/g, ''));
           const lowerEmail = (email || '').toLowerCase();
-          if (lowerEmail && !candidatesMap.has(lowerEmail)) {
+          // Skip deleted candidates
+          if (lowerEmail && !candidatesMap.has(lowerEmail) && !isDeleted(lowerEmail, '')) {
             candidatesMap.set(lowerEmail, {
               id: lowerEmail,
               fullName: name,
@@ -431,7 +458,8 @@ module.exports = {
         } else if (type === 'SCORECARD') {
           const [, timestamp, certId, name, email, phone, coach, college, score, maxScore, pct, tier, viol, timeSpent] = cells.map(c => c.replace(/^"|"$/g, ''));
           const lowerEmail = (email || '').toLowerCase();
-          if (lowerEmail) {
+          // Skip deleted candidates
+          if (lowerEmail && !isDeleted(lowerEmail, '')) {
             let cand = candidatesMap.get(lowerEmail);
             if (!cand) {
               cand = {
@@ -471,6 +499,8 @@ module.exports = {
         (registrations || []).forEach(r => {
           const email = (r.email || '').trim().toLowerCase();
           if (!email) return;
+          // Skip deleted candidates
+          if (isDeleted(email, r.candidateId)) return;
 
           let cand = candidatesMap.get(email);
           if (!cand) {
@@ -512,6 +542,8 @@ module.exports = {
         (scorecards || []).forEach(s => {
           const email = (s.email || '').trim().toLowerCase();
           if (!email) return;
+          // Skip deleted candidates
+          if (isDeleted(email, s.candidateId)) return;
 
           let cand = candidatesMap.get(email);
           if (!cand) {
@@ -566,53 +598,14 @@ module.exports = {
     const result = Array.from(candidatesMap.values());
     result.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
 
-    // Update in-memory cache for ultra-fast subsequent calls
+    // Update in-memory cache
     global.__candidatesCache = result;
     global.__candidatesCacheTime = Date.now();
 
-    // Hydrate in-memory store with any records that were missing
-    if (store && typeof store.saveCandidate === 'function') {
-      result.forEach(cand => {
-        const existingInStore = store.getCandidateByEmail(cand.email);
-        if (!existingInStore) {
-          store.saveCandidate({
-            id: cand.id,
-            fullName: cand.fullName,
-            email: cand.email,
-            phone: cand.phone,
-            college: cand.college,
-            experience: cand.experience,
-            coach: cand.coach,
-            createdAt: cand.createdAt,
-            status: cand.testStatus === 'completed' ? 'completed' : 'registered'
-          });
-
-          if (cand.testStatus === 'completed') {
-            const testId = cand.testId || 'test-' + cand.id;
-            store.saveTest({
-              id: testId,
-              candidateId: cand.id,
-              token: 'token-' + cand.id,
-              status: 'completed',
-              timeSpentSeconds: cand.timeSpentSeconds || 0,
-              submittedAt: cand.submittedAt
-            });
-
-            store.saveSubmission({
-              id: cand.submissionId || 'CERT-' + Math.random().toString(36).substring(2, 8).toUpperCase(),
-              candidateId: cand.id,
-              testId: testId,
-              totalScore: cand.totalScore || 0,
-              maxScore: cand.maxScore || 50,
-              percentage: cand.percentage || 0,
-              scholarshipTier: cand.scholarshipTier || 'Certificate of Participation',
-              submittedAt: cand.submittedAt || new Date().toISOString(),
-              categoryScores: {}
-            });
-          }
-        }
-      });
-    }
+    // NOTE: We intentionally do NOT hydrate the in-memory store from Google Sheets data here.
+    // Hydrating the store from Sheets would cause deleted candidates to re-appear after reset,
+    // because the Sheets still have their rows until explicitly deleted there.
+    // The store is the write-authoritative source; Google Sheets is append-log + read-display.
 
     return result;
   }
