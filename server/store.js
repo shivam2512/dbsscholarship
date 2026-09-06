@@ -21,15 +21,37 @@ let store = {
   snapshots: []     // list of webcam audit snapshots
 };
 
-// Load existing state from file on boot if exists
+// Load existing state from file or bundled seed on boot
 try {
+  let loaded = false;
   if (fs.existsSync(storeFilePath)) {
     const raw = fs.readFileSync(storeFilePath, 'utf8');
     const parsed = JSON.parse(raw);
     store = { ...store, ...parsed };
+    loaded = true;
+  }
+  if (!loaded || Object.keys(store.candidates || {}).length === 0) {
+    const seedPaths = [
+      path.join(__dirname, 'seed_store.json'),
+      path.join(__dirname, '..', 'data', 'app_store.json')
+    ];
+    for (const sp of seedPaths) {
+      if (fs.existsSync(sp)) {
+        const raw = fs.readFileSync(sp, 'utf8');
+        const parsed = JSON.parse(raw);
+        store = {
+          ...store,
+          ...parsed,
+          candidates: { ...(store.candidates || {}), ...(parsed.candidates || {}) },
+          tests: { ...(store.tests || {}), ...(parsed.tests || {}) },
+          submissions: { ...(store.submissions || {}), ...(parsed.submissions || {}) }
+        };
+        break;
+      }
+    }
   }
 } catch (err) {
-  console.warn('Note: Initializing fresh in-memory data store.');
+  console.warn('Note: Initializing data store with seed fallback.');
 }
 
 // Persist memory store to JSON file asynchronously

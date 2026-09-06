@@ -8,7 +8,7 @@
 
 [functions]
   node_bundler = "esbuild"
-  included_files = ["server/**"]
+  included_files = ["server/**", "data/**", "submissions_local.csv"]
 
 [[redirects]]
   from = "/api/*"

@@ -253,7 +253,7 @@ module.exports = {
   },
 
   /**
-   * Fetch live data directly from Google Apps Script Web App
+   * Fetch live data directly from Google Apps Script Web App (with 5s timeout guard)
    */
   async fetchSheetData() {
     const url = getWebhookUrl();
@@ -261,19 +261,31 @@ module.exports = {
       return { success: false, error: 'Google Sheet Webhook not configured' };
     }
 
-    // Try GET request with redirect following
-    const getResult = await getRedirectTarget(url);
-    if (getResult && Array.isArray(getResult.registrations)) {
-      return { success: true, data: getResult };
-    }
+    const timeoutPromise = new Promise(resolve => {
+      setTimeout(() => resolve({ success: false, timeout: true }), 5000);
+    });
 
-    // If doGet returned default status, try POST with action 'FETCH_ALL_DATA'
-    const postResult = await postToGoogleSheets({ action: 'FETCH_ALL_DATA' }, url);
-    if (postResult && Array.isArray(postResult.registrations)) {
-      return { success: true, data: postResult };
-    }
+    const fetchPromise = (async () => {
+      try {
+        // Try GET request with redirect following
+        const getResult = await getRedirectTarget(url);
+        if (getResult && Array.isArray(getResult.registrations)) {
+          return { success: true, data: getResult };
+        }
 
-    return { success: false, raw: getResult || postResult };
+        // If doGet returned default status, try POST with action 'FETCH_ALL_DATA'
+        const postResult = await postToGoogleSheets({ action: 'FETCH_ALL_DATA' }, url);
+        if (postResult && Array.isArray(postResult.registrations)) {
+          return { success: true, data: postResult };
+        }
+
+        return { success: false, raw: getResult || postResult };
+      } catch (err) {
+        return { success: false, error: err.message };
+      }
+    })();
+
+    return Promise.race([fetchPromise, timeoutPromise]);
   },
 
   /**
@@ -282,6 +294,7 @@ module.exports = {
   readLocalCSVRecords() {
     const pathsToTry = [
       CSV_PATH,
+      path.join(__dirname, 'submissions_local.csv'),
       path.join(__dirname, '..', 'submissions_local.csv'),
       path.join('/tmp', 'submissions_local.csv')
     ];
@@ -304,99 +317,64 @@ module.exports = {
   /**
    * Returns unified candidates list synced between Google Sheets, Local CSV, and In-Memory Store
    */
-  async fetchUnifiedCandidates(store) {
-    const candidatesMap = new Map();
-
-    // 1. Try to fetch live data from Google Sheets Web App
-    try {
-      const sheetRes = await this.fetchSheetData();
-      if (sheetRes.success && sheetRes.data) {
-        const { registrations, scorecards, violations } = sheetRes.data;
-
-        (registrations || []).forEach(r => {
-          const email = (r.email || '').trim().toLowerCase();
-          if (!email) return;
-
-          candidatesMap.set(email, {
-            id: r.candidateId || email,
-            fullName: r.fullName,
-            email: email,
-            phone: r.phone,
-            college: r.college,
-            experience: r.experience,
-            coach: r.coach,
-            createdAt: r.timestamp,
-            candidateStatus: r.status || 'registered',
-            testId: null,
-            startedAt: null,
-            submittedAt: null,
-            timeSpentSeconds: 0,
-            testStatus: 'registered',
-            submissionId: null,
-            totalScore: null,
-            maxScore: 50,
-            percentage: null,
-            scholarshipTier: null,
-            emailSent: 0,
-            violationsCount: 0,
-            snapshotsCount: 0
-          });
-        });
-
-        (scorecards || []).forEach(s => {
-          const email = (s.email || '').trim().toLowerCase();
-          if (!email) return;
-
-          let cand = candidatesMap.get(email);
-          if (!cand) {
-            cand = {
-              id: email,
-              fullName: s.fullName,
-              email: email,
-              phone: s.phone,
-              college: s.college,
-              experience: s.experience,
-              coach: s.coach,
-              createdAt: s.timestamp,
-              candidateStatus: 'completed',
-              snapshotsCount: 0
-            };
-            candidatesMap.set(email, cand);
-          }
-
-          cand.testStatus = 'completed';
-          cand.submissionId = s.certificateId;
-          cand.totalScore = s.totalScore !== null && s.totalScore !== undefined ? Number(s.totalScore) : null;
-          cand.maxScore = s.maxScore ? Number(s.maxScore) : 50;
-          cand.percentage = s.percentage !== null && s.percentage !== undefined ? Number(s.percentage) : null;
-          cand.scholarshipTier = s.scholarshipTier;
-          cand.submittedAt = s.timestamp;
-          cand.violationsCount = Number(s.violationsCount) || 0;
-
-          if (s.timeSpent) {
-            const mMatch = s.timeSpent.match(/(\d+)m/);
-            const sMatch = s.timeSpent.match(/(\d+)s/);
-            const sec = (mMatch ? parseInt(mMatch[1]) * 60 : 0) + (sMatch ? parseInt(sMatch[1]) : 0);
-            cand.timeSpentSeconds = sec || parseInt(s.timeSpent) || 0;
-          }
-        });
-
-        if (violations && Array.isArray(violations)) {
-          violations.forEach(v => {
-            const email = (v.candidateEmail || '').trim().toLowerCase();
-            if (email && candidatesMap.has(email)) {
-              const cand = candidatesMap.get(email);
-              const matchCount = violations.filter(x => (x.candidateEmail || '').trim().toLowerCase() === email).length;
-              cand.violationsCount = Math.max(cand.violationsCount || 0, matchCount);
-            }
-          });
-        }
-      }
-    } catch (err) {
-      console.warn('Google Sheet live sync notice:', err.message);
+  async fetchUnifiedCandidates(store, forceRefresh = false) {
+    // Check in-memory cache (15s TTL)
+    if (!forceRefresh && global.__candidatesCache && (Date.now() - global.__candidatesCacheTime < 15000)) {
+      return global.__candidatesCache;
     }
 
-    // 2. Parse fallback records from Local CSV if Google Sheets didn't return them
+    const candidatesMap = new Map();
+
+    // Step A: Pre-populate map with any previously cached candidates
+    if (global.__candidatesCache && Array.isArray(global.__candidatesCache)) {
+      global.__candidatesCache.forEach(c => {
+        if (c.email) candidatesMap.set(c.email.toLowerCase(), { ...c });
+      });
+    }
+
+    // Step B: Pre-populate with in-memory store
+    if (store && typeof store.getAllCandidates === 'function') {
+      const memoryCandidates = store.getAllCandidates();
+      memoryCandidates.forEach(c => {
+        const lowerEmail = (c.email || '').toLowerCase();
+        if (!lowerEmail) return;
+
+        const test = store.getCompletedTestByCandidateId(c.id) || store.getActiveTestByCandidateId(c.id) || {};
+        const submission = test.id ? (store.getSubmissionByTestId(test.id) || {}) : {};
+        const violations = test.id ? store.getViolationsByTestId(test.id) : [];
+        const snapshots = test.id ? store.getSnapshotsByTestId(test.id) : [];
+
+        let existing = candidatesMap.get(lowerEmail);
+        if (!existing) {
+          candidatesMap.set(lowerEmail, {
+            id: c.id,
+            fullName: c.fullName,
+            email: lowerEmail,
+            phone: c.phone,
+            college: c.college,
+            experience: c.experience,
+            coach: c.coach,
+            createdAt: c.createdAt,
+            candidateStatus: c.status,
+            testId: test.id || null,
+            startedAt: test.startedAt || null,
+            submittedAt: test.submittedAt || null,
+            timeSpentSeconds: test.timeSpentSeconds || 0,
+            testStatus: test.status || 'registered',
+            submissionId: submission.id || null,
+            totalScore: submission.totalScore !== undefined ? submission.totalScore : null,
+            maxScore: submission.maxScore || 50,
+            percentage: submission.percentage !== undefined ? submission.percentage : null,
+            scholarshipTier: submission.scholarshipTier || null,
+            emailSent: submission.emailSent || 0,
+            violationsCount: violations.length,
+            snapshotsCount: snapshots.length
+          });
+        }
+      });
+    }
+
+    // Step C: Pre-populate with local CSV fallback records
     const csvContent = this.readLocalCSVRecords();
     if (csvContent) {
       const lines = csvContent.split('\n');
@@ -404,7 +382,6 @@ module.exports = {
         const trimmed = line.trim();
         if (!trimmed || trimmed.startsWith('Type,') || trimmed.startsWith('"Type",')) return;
 
-        // Simple CSV cell splitter respecting quotes
         const cells = [];
         let inQuote = false;
         let current = '';
@@ -485,56 +462,117 @@ module.exports = {
       });
     }
 
-    // 3. Merge with current in-memory store
-    if (store && typeof store.getAllCandidates === 'function') {
-      const memoryCandidates = store.getAllCandidates();
-      memoryCandidates.forEach(c => {
-        const lowerEmail = (c.email || '').toLowerCase();
-        if (!lowerEmail) return;
+    // Step D: Fetch fresh live data from Google Sheets Web App and overlay
+    try {
+      const sheetRes = await this.fetchSheetData();
+      if (sheetRes.success && sheetRes.data) {
+        const { registrations, scorecards, violations } = sheetRes.data;
 
-        const test = store.getCompletedTestByCandidateId(c.id) || store.getActiveTestByCandidateId(c.id) || {};
-        const submission = test.id ? (store.getSubmissionByTestId(test.id) || {}) : {};
-        const violations = test.id ? store.getViolationsByTestId(test.id) : [];
-        const snapshots = test.id ? store.getSnapshotsByTestId(test.id) : [];
+        (registrations || []).forEach(r => {
+          const email = (r.email || '').trim().toLowerCase();
+          if (!email) return;
 
-        let existing = candidatesMap.get(lowerEmail);
-        if (!existing) {
-          candidatesMap.set(lowerEmail, {
-            id: c.id,
-            fullName: c.fullName,
-            email: lowerEmail,
-            phone: c.phone,
-            college: c.college,
-            experience: c.experience,
-            coach: c.coach,
-            createdAt: c.createdAt,
-            candidateStatus: c.status,
-            testId: test.id || null,
-            startedAt: test.startedAt || null,
-            submittedAt: test.submittedAt || null,
-            timeSpentSeconds: test.timeSpentSeconds || 0,
-            testStatus: test.status || 'registered',
-            submissionId: submission.id || null,
-            totalScore: submission.totalScore !== undefined ? submission.totalScore : null,
-            maxScore: submission.maxScore || 50,
-            percentage: submission.percentage !== undefined ? submission.percentage : null,
-            scholarshipTier: submission.scholarshipTier || null,
-            emailSent: submission.emailSent || 0,
-            violationsCount: violations.length,
-            snapshotsCount: snapshots.length
+          let cand = candidatesMap.get(email);
+          if (!cand) {
+            cand = {
+              id: r.candidateId || email,
+              fullName: r.fullName,
+              email: email,
+              phone: r.phone,
+              college: r.college,
+              experience: r.experience,
+              coach: r.coach,
+              createdAt: r.timestamp,
+              candidateStatus: r.status || 'registered',
+              testId: null,
+              startedAt: null,
+              submittedAt: null,
+              timeSpentSeconds: 0,
+              testStatus: 'registered',
+              submissionId: null,
+              totalScore: null,
+              maxScore: 50,
+              percentage: null,
+              scholarshipTier: null,
+              emailSent: 0,
+              violationsCount: 0,
+              snapshotsCount: 0
+            };
+            candidatesMap.set(email, cand);
+          } else {
+            // Update fields from Google Sheet
+            if (r.fullName) cand.fullName = r.fullName;
+            if (r.phone) cand.phone = r.phone;
+            if (r.coach) cand.coach = r.coach;
+            if (r.college) cand.college = r.college;
+            if (r.experience) cand.experience = r.experience;
+          }
+        });
+
+        (scorecards || []).forEach(s => {
+          const email = (s.email || '').trim().toLowerCase();
+          if (!email) return;
+
+          let cand = candidatesMap.get(email);
+          if (!cand) {
+            cand = {
+              id: email,
+              fullName: s.fullName,
+              email: email,
+              phone: s.phone,
+              college: s.college,
+              experience: s.experience,
+              coach: s.coach,
+              createdAt: s.timestamp,
+              candidateStatus: 'completed',
+              snapshotsCount: 0
+            };
+            candidatesMap.set(email, cand);
+          }
+
+          cand.testStatus = 'completed';
+          cand.submissionId = s.certificateId;
+          cand.totalScore = s.totalScore !== null && s.totalScore !== undefined ? Number(s.totalScore) : null;
+          cand.maxScore = s.maxScore ? Number(s.maxScore) : 50;
+          cand.percentage = s.percentage !== null && s.percentage !== undefined ? Number(s.percentage) : null;
+          cand.scholarshipTier = s.scholarshipTier;
+          cand.submittedAt = s.timestamp;
+          cand.violationsCount = Number(s.violationsCount) || 0;
+
+          if (s.timeSpent) {
+            const mMatch = s.timeSpent.match(/(\d+)m/);
+            const sMatch = s.timeSpent.match(/(\d+)s/);
+            const sec = (mMatch ? parseInt(mMatch[1]) * 60 : 0) + (sMatch ? parseInt(sMatch[1]) : 0);
+            cand.timeSpentSeconds = sec || parseInt(s.timeSpent) || 0;
+          }
+        });
+
+        if (violations && Array.isArray(violations)) {
+          violations.forEach(v => {
+            const email = (v.candidateEmail || '').trim().toLowerCase();
+            if (email && candidatesMap.has(email)) {
+              const cand = candidatesMap.get(email);
+              const matchCount = violations.filter(x => (x.candidateEmail || '').trim().toLowerCase() === email).length;
+              cand.violationsCount = Math.max(cand.violationsCount || 0, matchCount);
+            }
           });
-        } else {
-          // If in-memory has active test or snapshots, enrich existing record
-          if (test.id) existing.testId = test.id;
-          if (snapshots.length > 0) existing.snapshotsCount = snapshots.length;
-          if (violations.length > 0) existing.violationsCount = Math.max(existing.violationsCount || 0, violations.length);
         }
-      });
+      }
+    } catch (err) {
+      console.warn('Google Sheet live sync notice:', err.message);
     }
 
-    // 4. Hydrate in-memory store with any records that were missing so other endpoints can access them
+    // Convert map to sorted array (newest first)
+    const result = Array.from(candidatesMap.values());
+    result.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+
+    // Update in-memory cache for ultra-fast subsequent calls
+    global.__candidatesCache = result;
+    global.__candidatesCacheTime = Date.now();
+
+    // Hydrate in-memory store with any records that were missing
     if (store && typeof store.saveCandidate === 'function') {
-      candidatesMap.forEach(cand => {
+      result.forEach(cand => {
         const existingInStore = store.getCandidateByEmail(cand.email);
         if (!existingInStore) {
           store.saveCandidate({
@@ -576,9 +614,6 @@ module.exports = {
       });
     }
 
-    // Convert map to sorted array (newest first)
-    const result = Array.from(candidatesMap.values());
-    result.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
     return result;
   }
 };
