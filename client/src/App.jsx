@@ -46,7 +46,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col justify-between" style={{ background: '#f0f4ff', color: '#0f172a', WebkitUserSelect: 'auto' }}>
+    <div className="d-flex flex-column min-vh-100" style={{ background: '#f0f4ff', color: '#0f172a', WebkitUserSelect: 'auto' }}>
       {/* Top Navigation */}
       <Navbar
         currentView={currentView}
@@ -56,7 +56,7 @@ export default function App() {
       />
 
       {/* Main View Area */}
-      <main className="flex-1">
+      <main className="flex-grow-1">
         {currentView === 'register' && (
           <RegistrationForm
             onRegistered={handleRegistered}
@@ -110,7 +110,7 @@ export default function App() {
           fontSize: 12,
           color: '#94a3b8'
         }}>
-          <div className="max-w-7xl mx-auto px-4 flex flex-wrap items-center justify-between gap-4">
+          <div className="container d-flex flex-wrap align-items-center justify-content-between gap-3">
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
               <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#059669', display: 'inline-block' }}></span>
               <span>Proctored CBT Engine &bull; DBS IT Scholarship &bull; v2.0</span>

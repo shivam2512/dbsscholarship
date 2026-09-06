@@ -148,7 +148,7 @@ export default function AdminDashboard() {
   return (
     <div className="max-w-7xl mx-auto px-4 py-8 animate-fade-in">
       {/* Top Header */}
-      <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
+      <div className="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-3">
         <div>
           <span className="text-xs font-bold text-indigo-400 uppercase tracking-wider">Administration Suite</span>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-white">Live Proctoring & Candidate Leaderboard</h1>
@@ -198,7 +198,7 @@ export default function AdminDashboard() {
       </div>
 
       {/* Overview Metric Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
+      <div className="row row-cols-2 row-cols-md-5 g-4 mb-8">
         <div className="glass-panel p-4">
           <div className="text-xs text-slate-400 font-semibold uppercase">Total Candidates</div>
           <div className="text-2xl sm:text-3xl font-extrabold text-white font-mono mt-1">{total}</div>

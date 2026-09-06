@@ -58,7 +58,7 @@ export default function Scorecard({ submissionData, candidateData, onRestart }) 
       )}
 
       {/* Top Action Bar */}
-      <div className="flex flex-wrap items-center justify-between gap-4 mb-6 print:hidden">
+      <div className="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-3 d-print-none">
         <div>
           <span className="text-xs font-bold text-sky-400 uppercase tracking-wider">Assessment Result</span>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-white">Official Scorecard & Scholarship Certificate</h1>

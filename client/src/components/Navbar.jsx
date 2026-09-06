@@ -3,52 +3,23 @@ import { ShieldCheck, Award, Lock, UserCheck } from 'lucide-react';
 
 export default function Navbar({ currentView, setView, isExamActive, candidate }) {
   return (
-    <header className="sticky top-0 z-50 px-4 lg:px-8 py-3"
-      style={{
-        background: 'rgba(255,255,255,0.92)',
-        backdropFilter: 'blur(16px)',
-        WebkitBackdropFilter: 'blur(16px)',
-        borderBottom: '1.5px solid rgba(147,197,253,0.45)',
-        boxShadow: '0 2px 16px rgba(29,78,216,0.07)'
-      }}>
-      <div className="max-w-7xl mx-auto flex items-center justify-between">
-
+    <header className="sticky top-0 z-50 navbar navbar-expand-lg bg-white bg-opacity-90 border-bottom shadow-sm" style={{ backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)' }}>
+      <div className="container-fluid d-flex align-items-center justify-content-between">
         {/* Brand */}
-        <div className="flex items-center gap-3">
-          {/* DBS Logo Badge */}
-          <div style={{
-            width: 44, height: 44, borderRadius: 13,
-            background: 'linear-gradient(135deg, #1d4ed8 0%, #3b82f6 100%)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            boxShadow: '0 4px 14px rgba(29,78,216,0.35)'
-          }}>
-            <Award className="w-6 h-6" style={{ color: '#fff' }} />
+        <div className="d-flex align-items-center gap-3">
+          <div className="d-flex align-items-center justify-content-center bg-primary text-white rounded-3 shadow-sm" style={{ width: 44, height: 44 }}>
+            <Award className="w-6 h-6" />
           </div>
           <div>
-            <div className="flex items-center gap-2">
-              <span style={{
-                fontFamily: "'Outfit', sans-serif",
-                fontWeight: 800,
-                fontSize: 17,
-                background: 'linear-gradient(90deg, #1d4ed8 0%, #d97706 100%)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text',
-                letterSpacing: '-0.02em',
-                lineHeight: 1.1
-              }}>
+            <div className="d-flex align-items-center gap-2">
+              <span className="fw-bold text-primary" style={{ fontSize: 17, letterSpacing: '-0.02em' }}>
                 DBS IT Scholarship Test
               </span>
-              <span style={{
-                fontSize: 10, fontWeight: 700, padding: '2px 8px',
-                borderRadius: 20, background: 'rgba(29,78,216,0.08)',
-                color: '#1d4ed8', border: '1px solid rgba(29,78,216,0.2)',
-                textTransform: 'uppercase', letterSpacing: '0.06em'
-              }}>
+              <span className="badge bg-primary bg-opacity-10 text-primary border border-primary-subtle rounded-pill text-uppercase" style={{ fontSize: 10, padding: '2px 8px' }}>
                 Proctored
               </span>
             </div>
-            <p style={{ fontSize: 11, color: '#64748b', marginTop: 1 }} className="hidden sm:block">
+            <p className="text-muted mb-0 d-none d-sm-block" style={{ fontSize: 11 }}>
               IT Career Readiness &amp; Scholarship Assessment
             </p>
           </div>
@@ -56,37 +27,33 @@ export default function Navbar({ currentView, setView, isExamActive, candidate }
 
         {/* Center Status */}
         {isExamActive ? (
-          <div style={{
-            display: 'flex', alignItems: 'center', gap: 14,
-            background: '#f0f6ff', border: '1.5px solid #bfdbfe',
-            borderRadius: 30, padding: '6px 16px'
-          }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <span className="pulse-indicator"></span>
-              <span style={{ fontSize: 11, fontWeight: 700, color: '#059669', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+          <div className="d-flex align-items-center gap-3 bg-primary-subtle border border-primary-light rounded-pill px-3 py-1">
+            <div className="d-flex align-items-center gap-2">
+              <span className="spinner-grow spinner-grow-sm text-success" role="status" aria-hidden="true"></span>
+              <span className="text-success fw-bold text-uppercase" style={{ fontSize: 11, letterSpacing: '0.06em' }}>
                 AI Proctor Active
               </span>
             </div>
-            <div style={{ width: 1, height: 16, background: '#bfdbfe' }}></div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-              <Lock className="w-3.5 h-3.5" style={{ color: '#1d4ed8' }} />
-              <span style={{ fontSize: 12, fontFamily: "'JetBrains Mono', monospace", fontWeight: 700, color: '#1d4ed8' }}>
+            <div className="vr bg-primary-subtle" style={{ height: 16 }}></div>
+            <div className="d-flex align-items-center gap-2">
+              <Lock className="w-3.5 h-3.5 text-primary" />
+              <span className="text-primary fw-bold font-monospace" style={{ fontSize: 12 }}>
                 {candidate?.fullName || 'Candidate'}
               </span>
             </div>
           </div>
         ) : (
-          <div className="hidden md:flex items-center gap-6" style={{ fontSize: 12, color: '#64748b' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-              <ShieldCheck className="w-4 h-4" style={{ color: '#059669' }} />
+          <div className="d-none d-md-flex align-items-center gap-4 text-muted" style={{ fontSize: 12 }}>
+            <div className="d-flex align-items-center gap-2">
+              <ShieldCheck className="w-4 h-4 text-success" />
               <span>Anti-Cheat Protected</span>
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-              <Lock className="w-4 h-4" style={{ color: '#1d4ed8' }} />
+            <div className="d-flex align-items-center gap-2">
+              <Lock className="w-4 h-4 text-primary" />
               <span>One-Time Attempt</span>
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-              <UserCheck className="w-4 h-4" style={{ color: '#d97706' }} />
+            <div className="d-flex align-items-center gap-2">
+              <UserCheck className="w-4 h-4 text-warning" />
               <span>Instant Certificate</span>
             </div>
           </div>
@@ -94,33 +61,16 @@ export default function Navbar({ currentView, setView, isExamActive, candidate }
 
         {/* Navigation */}
         {!isExamActive && (
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+          <div className="d-flex align-items-center gap-2">
             <button
               onClick={() => setView('register')}
-              style={{
-                fontSize: 12, fontWeight: 700, padding: '7px 14px', borderRadius: 8,
-                border: currentView === 'register' || currentView === 'system-check'
-                  ? '1.5px solid rgba(29,78,216,0.35)' : '1.5px solid transparent',
-                background: currentView === 'register' || currentView === 'system-check'
-                  ? 'rgba(29,78,216,0.08)' : 'transparent',
-                color: currentView === 'register' || currentView === 'system-check'
-                  ? '#1d4ed8' : '#64748b',
-                cursor: 'pointer', transition: 'all 0.2s'
-              }}
+              className={`btn btn-sm ${currentView === 'register' ? 'btn-primary' : 'btn-outline-primary'}`}
             >
               Candidate Portal
             </button>
             <button
               onClick={() => setView('admin')}
-              style={{
-                fontSize: 12, fontWeight: 700, padding: '7px 14px', borderRadius: 8,
-                border: currentView === 'admin'
-                  ? '1.5px solid rgba(217,119,6,0.35)' : '1.5px solid transparent',
-                background: currentView === 'admin'
-                  ? 'rgba(217,119,6,0.08)' : 'transparent',
-                color: currentView === 'admin' ? '#d97706' : '#64748b',
-                cursor: 'pointer', transition: 'all 0.2s'
-              }}
+              className={`btn btn-sm ${currentView === 'admin' ? 'btn-warning' : 'btn-outline-secondary'}`}
             >
               Admin Monitor
             </button>
