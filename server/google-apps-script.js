@@ -161,6 +161,56 @@ function doPost(e) {
         .setMimeType(ContentService.MimeType.JSON);
     }
 
+    if (data.action === "CHECK_EMAIL") {
+      var emailToCheck = (data.email || "").trim().toLowerCase();
+      if (!emailToCheck) {
+        return ContentService.createTextOutput(JSON.stringify({ result: "error", error: "No email provided" }))
+          .setMimeType(ContentService.MimeType.JSON);
+      }
+
+      // Check Scorecards & Results first (completed candidates)
+      var subSheet2 = ss.getSheetByName("Scorecards & Results");
+      if (subSheet2 && subSheet2.getLastRow() > 1) {
+        var subVals = subSheet2.getRange(2, 1, subSheet2.getLastRow() - 1, Math.max(subSheet2.getLastColumn(), 4)).getValues();
+        for (var si = 0; si < subVals.length; si++) {
+          if (String(subVals[si][3] || "").trim().toLowerCase() === emailToCheck) {
+            return ContentService.createTextOutput(JSON.stringify({
+              result: "found",
+              status: "completed",
+              email: emailToCheck,
+              certificateId: String(subVals[si][1] || "").trim(),
+              fullName: String(subVals[si][2] || "").trim()
+            })).setMimeType(ContentService.MimeType.JSON);
+          }
+        }
+      }
+
+      // Check Registrations sheet (registered/in-progress candidates)
+      var regSheet2 = ss.getSheetByName("Registrations");
+      if (regSheet2 && regSheet2.getLastRow() > 1) {
+        var regVals = regSheet2.getRange(2, 1, regSheet2.getLastRow() - 1, Math.max(regSheet2.getLastColumn(), 4)).getValues();
+        for (var ri = 0; ri < regVals.length; ri++) {
+          if (String(regVals[ri][3] || "").trim().toLowerCase() === emailToCheck) {
+            return ContentService.createTextOutput(JSON.stringify({
+              result: "found",
+              status: "registered",
+              email: emailToCheck,
+              candidateId: String(regVals[ri][1] || "").trim(),
+              fullName: String(regVals[ri][2] || "").trim(),
+              phone: String(regVals[ri][4] || "").trim(),
+              coach: String(regVals[ri][5] || "").trim(),
+              college: String(regVals[ri][6] || "").trim(),
+              experience: String(regVals[ri][7] || "").trim()
+            })).setMimeType(ContentService.MimeType.JSON);
+          }
+        }
+      }
+
+      // Not found in any sheet
+      return ContentService.createTextOutput(JSON.stringify({ result: "not_found", email: emailToCheck }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+
     return ContentService.createTextOutput(JSON.stringify({ result: "unknown_action", received: data }))
       .setMimeType(ContentService.MimeType.JSON);
 

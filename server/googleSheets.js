@@ -351,6 +351,32 @@ module.exports = {
     global.__candidatesCacheTime = 0;
   },
 
+  /**
+   * Lightweight email lookup in Google Sheets via CHECK_EMAIL action.
+   * Returns { found: bool, status: 'completed'|'registered'|null, data: {...} }
+   * Works independently of FETCH_ALL_DATA — much faster and more reliable.
+   */
+  async checkEmailInSheets(email) {
+    const url = getWebhookUrl();
+    if (isWebhookPlaceholder(url)) {
+      return { found: false, error: 'Webhook not configured' };
+    }
+    try {
+      const result = await postToGoogleSheets({ action: 'CHECK_EMAIL', email: email.trim().toLowerCase() });
+      if (result && result.result === 'found') {
+        return { found: true, status: result.status, data: result };
+      }
+      if (result && result.result === 'not_found') {
+        return { found: false };
+      }
+      // If result is unknown_action (old Apps Script), fall through to not_found
+      return { found: false, needsScriptUpdate: result && result.result === 'unknown_action' };
+    } catch (err) {
+      console.warn('checkEmailInSheets error:', err.message);
+      return { found: false, error: err.message };
+    }
+  },
+
   async fetchUnifiedCandidates(store, forceRefresh = false) {
     if (forceRefresh) {
       global.__candidatesCache = null;

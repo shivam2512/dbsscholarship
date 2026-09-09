@@ -121,51 +121,57 @@ router.post('/register', async (req, res) => {
       });
     }
 
-    // ── STEP 2: Check Google Sheets (catches candidates from previous server restarts) ──
-    // Only reached if the email is NOT in the in-memory store.
-    let sheetExisting = null;
+    // ── STEP 2: Check Google Sheets directly for this email (reliable across server restarts & serverless) ──
+    // Uses the lightweight CHECK_EMAIL action — does NOT fetch all data, just looks up one email.
+    // This is the primary persistent guard since the in-memory store can be empty on cold start.
+    let sheetCheck = { found: false };
     try {
-      const unifiedList = await googleSheets.fetchUnifiedCandidates(store);
-      sheetExisting = unifiedList.find(c => (c.email || '').trim().toLowerCase() === normalizedEmail);
+      sheetCheck = await googleSheets.checkEmailInSheets(normalizedEmail);
+      console.log(`📊 [Register] Google Sheets email check for ${normalizedEmail}:`, JSON.stringify(sheetCheck));
     } catch (fetchErr) {
-      console.warn('Google Sheets fetch warning during registration check:', fetchErr.message);
+      console.warn('Google Sheets CHECK_EMAIL warning during registration:', fetchErr.message);
     }
 
-    if (sheetExisting) {
-      // Found in Google Sheets but not in local store — block re-attempt
-      if (sheetExisting.testStatus === 'completed' || sheetExisting.totalScore !== null || sheetExisting.submissionId) {
+    if (sheetCheck.found) {
+      if (sheetCheck.status === 'completed') {
+        // Already finished the test — hard block
         return res.status(403).json({
           error: 'One-Time Attempt Limit Reached. You have already completed this scholarship assessment.',
           isAttempted: true,
-          submissionId: sheetExisting.submissionId
+          submissionId: sheetCheck.data?.certificateId || null
         });
       }
-      // In-progress/registered in sheets: restore to local store and resume
+
+      // Registered/in-progress in Google Sheets — restore to local store and resume
+      const sheetData = sheetCheck.data || {};
       const restoredCandidate = store.saveCandidate({
-        id: sheetExisting.id || uuidv4(),
-        fullName: sheetExisting.fullName || fullName.trim(),
+        id: sheetData.candidateId || uuidv4(),
+        fullName: sheetData.fullName || fullName.trim(),
         email: normalizedEmail,
-        phone: sheetExisting.phone || phone.trim(),
-        college: sheetExisting.college || college || '',
-        experience: sheetExisting.experience || experience || 'Fresher / Student',
-        coach: sheetExisting.coach || coach || coaches[0] || 'Direct / None',
+        phone: sheetData.phone || phone.trim(),
+        college: sheetData.college || college || '',
+        experience: sheetData.experience || experience || 'Fresher / Student',
+        coach: sheetData.coach || coach || coaches[0] || 'Direct / None',
         status: 'registered'
       });
-      const testId = uuidv4();
-      const token = uuidv4();
-      const resumedTest = store.saveTest({
-        id: testId,
-        candidateId: restoredCandidate.id,
-        token,
-        status: 'in_progress',
-        timeSpentSeconds: 0,
-        currentAnswers: {}
-      });
+      let activeTest = store.getActiveTestByCandidateId(restoredCandidate.id);
+      if (!activeTest) {
+        const testId = uuidv4();
+        const token = uuidv4();
+        activeTest = store.saveTest({
+          id: testId,
+          candidateId: restoredCandidate.id,
+          token,
+          status: 'in_progress',
+          timeSpentSeconds: 0,
+          currentAnswers: {}
+        });
+      }
       return res.json({
         success: true,
         candidate: restoredCandidate,
-        testId: resumedTest.id,
-        token: resumedTest.token,
+        testId: activeTest.id,
+        token: activeTest.token,
         isResume: true
       });
     }
