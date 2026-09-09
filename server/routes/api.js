@@ -62,32 +62,43 @@ router.post('/register', async (req, res) => {
 
     const normalizedEmail = email.trim().toLowerCase();
 
-    // Check if candidate exists and has already completed test
-    const existingCandidate = store.getCandidateByEmail(normalizedEmail);
+    // Check across in-memory store AND Google Sheets unified list for existing registration
+    const unifiedList = await googleSheets.fetchUnifiedCandidates(store);
+    const existingUnified = unifiedList.find(c => (c.email || '').trim().toLowerCase() === normalizedEmail);
 
-    if (existingCandidate) {
-      const completedTest = store.getCompletedTestByCandidateId(existingCandidate.id);
-
-      if (completedTest) {
-        const submission = store.getSubmissionByTestId(completedTest.id);
+    if (existingUnified) {
+      // 1. If candidate has already completed the assessment, reject re-attempt strictly (403)
+      if (existingUnified.testStatus === 'completed' || existingUnified.totalScore !== null || existingUnified.submissionId) {
         return res.status(403).json({
           error: 'One-Time Attempt Limit Reached. You have already completed this scholarship assessment.',
           isAttempted: true,
-          candidate: existingCandidate,
-          testId: completedTest.id,
-          submissionId: submission ? submission.id : null
+          candidate: existingUnified,
+          submissionId: existingUnified.submissionId
         });
       }
 
-      // Check if there is an active incomplete test to resume
-      let activeTest = store.getActiveTestByCandidateId(existingCandidate.id);
+      // 2. Candidate exists and is registered/in_progress — reuse active session instead of creating duplicate entry
+      let activeCandidate = store.getCandidateByEmail(normalizedEmail);
+      if (!activeCandidate) {
+        activeCandidate = store.saveCandidate({
+          id: existingUnified.id || uuidv4(),
+          fullName: existingUnified.fullName || fullName.trim(),
+          email: normalizedEmail,
+          phone: existingUnified.phone || phone.trim(),
+          college: existingUnified.college || college || '',
+          experience: existingUnified.experience || experience || 'Fresher / Student',
+          coach: existingUnified.coach || coach || coaches[0] || 'Direct / None',
+          status: 'registered'
+        });
+      }
 
+      let activeTest = store.getActiveTestByCandidateId(activeCandidate.id);
       if (!activeTest) {
         const testId = uuidv4();
         const token = uuidv4();
         activeTest = store.saveTest({
           id: testId,
-          candidateId: existingCandidate.id,
+          candidateId: activeCandidate.id,
           token,
           status: 'in_progress',
           timeSpentSeconds: 0,
@@ -97,7 +108,7 @@ router.post('/register', async (req, res) => {
 
       return res.json({
         success: true,
-        candidate: existingCandidate,
+        candidate: activeCandidate,
         testId: activeTest.id,
         token: activeTest.token,
         isResume: true

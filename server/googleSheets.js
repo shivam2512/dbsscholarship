@@ -544,12 +544,12 @@ module.exports = {
             };
             candidatesMap.set(email, cand);
           } else {
-            // Update fields from Google Sheet
-            if (r.fullName) cand.fullName = r.fullName;
-            if (r.phone) cand.phone = r.phone;
-            if (r.coach) cand.coach = r.coach;
-            if (r.college) cand.college = r.college;
-            if (r.experience) cand.experience = r.experience;
+            // Fill missing fields without overwriting original candidate info
+            if (!cand.fullName && r.fullName) cand.fullName = r.fullName;
+            if (!cand.phone && r.phone) cand.phone = r.phone;
+            if (!cand.coach && r.coach) cand.coach = r.coach;
+            if (!cand.college && r.college) cand.college = r.college;
+            if (!cand.experience && r.experience) cand.experience = r.experience;
           }
         });
 
