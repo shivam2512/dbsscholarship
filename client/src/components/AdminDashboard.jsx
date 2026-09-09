@@ -25,7 +25,7 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     if (isAuthenticated) {
-      loadCandidates();
+      loadCandidates(false);
       api.fetchCoaches().then(data => {
         if (data.coaches) setCoachesList(data.coaches);
       }).catch(console.warn);
@@ -42,10 +42,10 @@ export default function AdminDashboard() {
     }
   };
 
-  const loadCandidates = async () => {
+  const loadCandidates = async (forceRefresh = true) => {
     setLoading(true);
     try {
-      const res = await api.fetchAdminCandidates();
+      const res = await api.fetchAdminCandidates(forceRefresh);
       setCandidates(res.candidates || []);
       if (res.googleSheets) {
         setGoogleSheetStatus(res.googleSheets);
@@ -164,24 +164,27 @@ export default function AdminDashboard() {
             Export CSV
           </a>
           <button
-            onClick={loadCandidates}
+            onClick={() => loadCandidates(true)}
+            disabled={loading}
             className="btn btn-primary py-2 px-3 fs-6 fw-bold d-flex align-items-center gap-1.5"
           >
-            <RotateCcw className="w-4 h-4" />
-            Refresh Data
+            <RotateCcw className={`w-4 h-4 ${loading ? 'spin' : ''}`} />
+            {loading ? 'Refreshing...' : 'Refresh Data'}
           </button>
         </div>
       </div>
 
       {/* Google Sheets Status Banner */}
-      <div className="alert alert-success d-flex flex-wrap align-items-center justify-content-between gap-2 mb-4 p-3 border-0 shadow-sm rounded-3">
+      <div className={`alert ${googleSheetStatus?.lastError ? 'alert-warning' : 'alert-success'} d-flex flex-wrap align-items-center justify-content-between gap-2 mb-4 p-3 border-0 shadow-sm rounded-3`}>
         <div className="d-flex align-items-center gap-2">
           <span className="pulse-indicator"></span>
           <div>
-            <span className="fw-bold text-success">Google Sheets Operating Backend: </span>
+            <span className={`fw-bold ${googleSheetStatus?.lastError ? 'text-warning' : 'text-success'}`}>Google Sheets Operating Backend: </span>
             <span className="small text-muted">
               {googleSheetStatus?.isConfigured 
-                ? 'Active Webhook Connected (Registrations & Scorecards auto-sync in real-time)' 
+                ? (googleSheetStatus?.lastError 
+                    ? `Webhook Connected (Notice: ${googleSheetStatus.lastError})` 
+                    : 'Active Webhook Connected (Registrations & Scorecards auto-sync in real-time)') 
                 : 'Zero-Database Mode (Connect Apps Script Webhook in server/.env to sync to Google Sheets)'}
             </span>
           </div>

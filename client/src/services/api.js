@@ -89,8 +89,8 @@ export const api = {
     return result;
   },
 
-  async fetchAdminCandidates() {
-    const res = await fetch(`${BASE_URL}/admin/candidates`);
+  async fetchAdminCandidates(refresh = false) {
+    const res = await fetch(`${BASE_URL}/admin/candidates${refresh ? '?refresh=true' : ''}`);
     const result = await res.json();
     if (!res.ok) throw result;
     return result;

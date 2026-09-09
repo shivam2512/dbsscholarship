@@ -113,7 +113,7 @@ function getRedirectTarget(redirectUrl) {
         });
       });
       req.on('error', e => resolve({ success: false, error: e.message }));
-      req.setTimeout(10000, () => { req.destroy(); resolve({ success: false, error: 'Redirect GET timeout' }); });
+      req.setTimeout(15000, () => { req.destroy(); resolve({ success: false, error: 'Redirect GET timeout after 15s' }); });
       req.end();
     } catch (e) {
       resolve({ success: false, error: e.message });
@@ -170,9 +170,9 @@ function postToGoogleSheets(payload, targetUrl) {
         resolve({ success: false, error: err.message });
       });
 
-      req.setTimeout(12000, () => {
+      req.setTimeout(15000, () => {
         req.destroy();
-        resolve({ success: false, error: 'Timeout connecting to Google Sheets' });
+        resolve({ success: false, error: 'Timeout connecting to Google Sheets after 15s' });
       });
 
       req.write(dataString);
@@ -193,7 +193,8 @@ module.exports = {
         ? 'Not set — running in local CSV fallback mode'
         : url.substring(0, 35) + '...',
       sheetViewUrl: getSheetViewUrl() || 'Not set',
-      localCSV: CSV_PATH
+      localCSV: CSV_PATH,
+      lastError: global.__lastGoogleSheetError || null
     };
   },
 
@@ -275,7 +276,7 @@ module.exports = {
     }
 
     const timeoutPromise = new Promise(resolve => {
-      setTimeout(() => resolve({ success: false, timeout: true }), 5000);
+      setTimeout(() => resolve({ success: false, timeout: true, error: 'Google Sheet Webhook request timed out after 15 seconds' }), 15000);
     });
 
     const fetchPromise = (async () => {
@@ -292,7 +293,7 @@ module.exports = {
           return { success: true, data: postResult };
         }
 
-        return { success: false, raw: getResult || postResult };
+        return { success: false, raw: getResult || postResult, error: 'Empty or invalid response from Google Sheet Webhook' };
       } catch (err) {
         return { success: false, error: err.message };
       }
@@ -343,6 +344,10 @@ module.exports = {
   },
 
   async fetchUnifiedCandidates(store, forceRefresh = false) {
+    if (forceRefresh) {
+      global.__candidatesCache = null;
+      global.__candidatesCacheTime = 0;
+    }
     // Check in-memory cache (5s TTL — short enough to reflect recent deletions/registrations)
     if (!forceRefresh && global.__candidatesCache && (Date.now() - global.__candidatesCacheTime < 5000)) {
       return global.__candidatesCache;
@@ -494,6 +499,7 @@ module.exports = {
     try {
       const sheetRes = await this.fetchSheetData();
       if (sheetRes.success && sheetRes.data) {
+        global.__lastGoogleSheetError = null;
         const { registrations, scorecards, violations } = sheetRes.data;
 
         (registrations || []).forEach(r => {
@@ -589,8 +595,12 @@ module.exports = {
             }
           });
         }
+      } else if (!sheetRes.success) {
+        global.__lastGoogleSheetError = sheetRes.error || 'Failed to fetch live Google Sheets data';
+        console.warn('Google Sheet live sync warning:', global.__lastGoogleSheetError);
       }
     } catch (err) {
+      global.__lastGoogleSheetError = err.message;
       console.warn('Google Sheet live sync notice:', err.message);
     }
 

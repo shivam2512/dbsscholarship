@@ -130,7 +130,7 @@ router.post('/register', async (req, res) => {
 
     // Log registration directly to Google Sheet
     try {
-      backgroundQueue.enqueueGoogleSheets('CANDIDATE', newCandidate);
+      await backgroundQueue.enqueueGoogleSheets('CANDIDATE', newCandidate);
     } catch (err) {
       console.warn('Background Queue Registration enqueue warning:', err.message);
     }
@@ -241,7 +241,7 @@ router.post('/violation', async (req, res) => {
 
     const candidate = store.getCandidateById(test.candidateId);
     try {
-      backgroundQueue.enqueueGoogleSheets('VIOLATION', { violation, candidate });
+      await backgroundQueue.enqueueGoogleSheets('VIOLATION', { violation, candidate });
     } catch (err) {
       console.warn('Background Queue Violation enqueue warning:', err.message);
     }
@@ -409,14 +409,14 @@ router.post('/submit-test', async (req, res) => {
 
     // 📊 Sync Final Submission & Scorecard to Google Sheet
     try {
-      backgroundQueue.enqueueGoogleSheets('SUBMISSION', { candidate, submission: submissionPayload, test });
+      await backgroundQueue.enqueueGoogleSheets('SUBMISSION', { candidate, submission: submissionPayload, test });
     } catch (err) {
       console.warn('Background Queue Submission enqueue warning:', err.message);
     }
 
     // Email Dispatch (Scorecard & Scholarship Certificate)
     try {
-      backgroundQueue.enqueueEmail(candidate, submissionPayload, test);
+      await backgroundQueue.enqueueEmail(candidate, submissionPayload, test);
     } catch (err) {
       console.warn('Background Queue Email enqueue warning:', err.message);
     }
@@ -460,7 +460,8 @@ router.get('/scorecard/:id', (req, res) => {
 // 9. Admin: All Candidates & Proctoring Summary (Synced with Google Sheets)
 router.get('/admin/candidates', async (req, res) => {
   try {
-    const candidatesList = await googleSheets.fetchUnifiedCandidates(store);
+    const forceRefresh = req.query.refresh === 'true';
+    const candidatesList = await googleSheets.fetchUnifiedCandidates(store, forceRefresh);
 
     res.json({
       candidates: candidatesList,
