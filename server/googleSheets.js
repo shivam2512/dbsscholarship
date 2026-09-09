@@ -287,10 +287,18 @@ module.exports = {
           return { success: true, data: getResult };
         }
 
-        // If doGet returned default status, try POST with action 'FETCH_ALL_DATA'
+        // If doGet returned status object or status:online, try POST with action 'FETCH_ALL_DATA'
         const postResult = await postToGoogleSheets({ action: 'FETCH_ALL_DATA' }, url);
         if (postResult && Array.isArray(postResult.registrations)) {
           return { success: true, data: postResult };
+        }
+
+        if ((postResult && postResult.result === 'unknown_action') || (getResult && getResult.status === 'online')) {
+          return {
+            success: false,
+            raw: postResult || getResult,
+            error: 'Apps Script needs update: Copy server/google-apps-script.js into Google Apps Script editor & deploy New Version.'
+          };
         }
 
         return { success: false, raw: getResult || postResult, error: 'Empty or invalid response from Google Sheet Webhook' };
