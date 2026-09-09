@@ -51,8 +51,12 @@ router.get('/google-sheets/status', (req, res) => {
   res.json(googleSheets.getStatus());
 });
 
+// Per-email registration locks to prevent race conditions from double-submits
+global.__registeringEmails = global.__registeringEmails || new Set();
+
 // 2. Candidate Registration & Strict One-Time Attempt Enforcement
 router.post('/register', async (req, res) => {
+  let normalizedEmail = '';
   try {
     const { fullName, email, phone, college, experience, coach } = req.body;
 
@@ -60,45 +64,47 @@ router.post('/register', async (req, res) => {
       return res.status(400).json({ error: 'Name, Email, and Phone number are required.' });
     }
 
-    const normalizedEmail = email.trim().toLowerCase();
+    normalizedEmail = email.trim().toLowerCase();
 
-    // Check across in-memory store AND Google Sheets unified list for existing registration
-    const unifiedList = await googleSheets.fetchUnifiedCandidates(store);
-    const existingUnified = unifiedList.find(c => (c.email || '').trim().toLowerCase() === normalizedEmail);
+    // ── RACE CONDITION GUARD ───────────────────────────────────────────────────
+    // Prevents two simultaneous requests for the same email from both slipping
+    // through the duplicate check before either one writes to the store.
+    if (global.__registeringEmails.has(normalizedEmail)) {
+      return res.status(429).json({
+        error: 'A registration for this email is already being processed. Please wait a moment and try again.',
+        isAttempted: true
+      });
+    }
+    global.__registeringEmails.add(normalizedEmail);
+    // ──────────────────────────────────────────────────────────────────────────
 
-    if (existingUnified) {
-      // 1. If candidate has already completed the assessment, reject re-attempt strictly (403)
-      if (existingUnified.testStatus === 'completed' || existingUnified.totalScore !== null || existingUnified.submissionId) {
+    // ── STEP 1: Fast synchronous in-memory store check ─────────────────────────
+    // This is the primary guard. The store is always consistent because saveCandidate
+    // is synchronous. Even if Google Sheets fetch fails, this prevents duplicates.
+    const existingInStore = store.getCandidateByEmail(normalizedEmail);
+    if (existingInStore) {
+      // Any existing entry (registered / in_progress / completed) blocks re-registration.
+      // Admin must use "Retest" action to reset the candidate.
+      const existingTest = store.getCompletedTestByCandidateId(existingInStore.id)
+                        || store.getActiveTestByCandidateId(existingInStore.id);
+      const existingSubmission = existingTest ? store.getSubmissionByTestId(existingTest.id) : null;
+
+      if (existingSubmission || (existingTest && existingTest.status === 'completed')) {
         return res.status(403).json({
           error: 'One-Time Attempt Limit Reached. You have already completed this scholarship assessment.',
           isAttempted: true,
-          candidate: existingUnified,
-          submissionId: existingUnified.submissionId
+          submissionId: existingSubmission?.id
         });
       }
 
-      // 2. Candidate exists and is registered/in_progress — reuse active session instead of creating duplicate entry
-      let activeCandidate = store.getCandidateByEmail(normalizedEmail);
-      if (!activeCandidate) {
-        activeCandidate = store.saveCandidate({
-          id: existingUnified.id || uuidv4(),
-          fullName: existingUnified.fullName || fullName.trim(),
-          email: normalizedEmail,
-          phone: existingUnified.phone || phone.trim(),
-          college: existingUnified.college || college || '',
-          experience: existingUnified.experience || experience || 'Fresher / Student',
-          coach: existingUnified.coach || coach || coaches[0] || 'Direct / None',
-          status: 'registered'
-        });
-      }
-
-      let activeTest = store.getActiveTestByCandidateId(activeCandidate.id);
+      // Registered or in-progress: resume their existing session
+      let activeTest = store.getActiveTestByCandidateId(existingInStore.id);
       if (!activeTest) {
         const testId = uuidv4();
         const token = uuidv4();
         activeTest = store.saveTest({
           id: testId,
-          candidateId: activeCandidate.id,
+          candidateId: existingInStore.id,
           token,
           status: 'in_progress',
           timeSpentSeconds: 0,
@@ -108,14 +114,63 @@ router.post('/register', async (req, res) => {
 
       return res.json({
         success: true,
-        candidate: activeCandidate,
+        candidate: existingInStore,
         testId: activeTest.id,
         token: activeTest.token,
         isResume: true
       });
     }
 
-    // Register new candidate
+    // ── STEP 2: Check Google Sheets (catches candidates from previous server restarts) ──
+    // Only reached if the email is NOT in the in-memory store.
+    let sheetExisting = null;
+    try {
+      const unifiedList = await googleSheets.fetchUnifiedCandidates(store);
+      sheetExisting = unifiedList.find(c => (c.email || '').trim().toLowerCase() === normalizedEmail);
+    } catch (fetchErr) {
+      console.warn('Google Sheets fetch warning during registration check:', fetchErr.message);
+    }
+
+    if (sheetExisting) {
+      // Found in Google Sheets but not in local store — block re-attempt
+      if (sheetExisting.testStatus === 'completed' || sheetExisting.totalScore !== null || sheetExisting.submissionId) {
+        return res.status(403).json({
+          error: 'One-Time Attempt Limit Reached. You have already completed this scholarship assessment.',
+          isAttempted: true,
+          submissionId: sheetExisting.submissionId
+        });
+      }
+      // In-progress/registered in sheets: restore to local store and resume
+      const restoredCandidate = store.saveCandidate({
+        id: sheetExisting.id || uuidv4(),
+        fullName: sheetExisting.fullName || fullName.trim(),
+        email: normalizedEmail,
+        phone: sheetExisting.phone || phone.trim(),
+        college: sheetExisting.college || college || '',
+        experience: sheetExisting.experience || experience || 'Fresher / Student',
+        coach: sheetExisting.coach || coach || coaches[0] || 'Direct / None',
+        status: 'registered'
+      });
+      const testId = uuidv4();
+      const token = uuidv4();
+      const resumedTest = store.saveTest({
+        id: testId,
+        candidateId: restoredCandidate.id,
+        token,
+        status: 'in_progress',
+        timeSpentSeconds: 0,
+        currentAnswers: {}
+      });
+      return res.json({
+        success: true,
+        candidate: restoredCandidate,
+        testId: resumedTest.id,
+        token: resumedTest.token,
+        isResume: true
+      });
+    }
+
+    // ── STEP 3: Genuinely new candidate — create registration ─────────────────
     const candidateId = uuidv4();
     const newCandidate = store.saveCandidate({
       id: candidateId,
@@ -139,7 +194,7 @@ router.post('/register', async (req, res) => {
       currentAnswers: {}
     });
 
-    // Log registration directly to Google Sheet
+    // Log registration to Google Sheet
     try {
       await backgroundQueue.enqueueGoogleSheets('CANDIDATE', newCandidate);
     } catch (err) {
@@ -156,8 +211,12 @@ router.post('/register', async (req, res) => {
   } catch (error) {
     console.error('Registration Error:', error);
     res.status(500).json({ error: 'Server error during registration: ' + error.message });
+  } finally {
+    // Always release the per-email lock
+    if (normalizedEmail) global.__registeringEmails.delete(normalizedEmail);
   }
 });
+
 
 // 3. Start Assessment Session & Fetch Cleaned Questions (No client-side answer leaking)
 router.post('/start-test', (req, res) => {
