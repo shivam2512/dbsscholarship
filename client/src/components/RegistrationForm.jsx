@@ -3,7 +3,7 @@ import { api } from '../services/api';
 import {
   ShieldCheck, User, Mail, Phone, GraduationCap, Briefcase,
   UserCheck, AlertCircle, ArrowRight, Lock, CheckCircle2,
-  Star, Trophy, Zap, TrendingUp, Award, Clock
+  Star, Trophy, Zap, TrendingUp, Award, Clock, Info
 } from 'lucide-react';
 
 export default function RegistrationForm({ onRegistered, onResumeScorecard }) {
@@ -145,6 +145,23 @@ export default function RegistrationForm({ onRegistered, onResumeScorecard }) {
           </div>
         </div>
       )}
+
+      {/* Dev / Testing Notice Banner */}
+      <div className="alert alert-info border border-info-subtle rounded-3 p-3 mb-4 shadow-sm" style={{ background: '#f0f9ff' }}>
+        <div className="d-flex align-items-center gap-3">
+          <div className="p-2 bg-info bg-opacity-10 rounded-2 d-flex-shrink-0">
+            <Info style={{ width: 20, height: 20, color: '#0284c7' }} />
+          </div>
+          <div>
+            <div className="fw-bold text-dark" style={{ fontSize: 14 }}>
+              Notice: Platform is currently in Development &amp; Testing phase 🧪
+            </div>
+            <div className="small text-muted mb-0">
+              Please reach out to <strong>Shivam Shinde</strong> (<a href="mailto:shivamshinde786@gmail.com" className="text-primary text-decoration-none fw-semibold">shivamshinde786@gmail.com</a>) in case of any bug reports or suggestions.
+            </div>
+          </div>
+        </div>
+      </div>
 
       {/* Main Grid */}
       <div className="row g-4">

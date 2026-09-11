@@ -115,8 +115,8 @@ export default function App() {
               <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#059669', display: 'inline-block' }}></span>
               <span>Proctored CBT Engine &bull; DBS IT Scholarship &bull; v2.0</span>
             </div>
-            <div style={{ color: '#94a3b8' }}>
-              &copy; {new Date().getFullYear()} DBS IT Scholarship Test. All Rights Reserved.
+            <div style={{ color: '#64748b' }}>
+              Development &amp; Testing Phase &bull; Contact: <strong>Shivam Shinde</strong> (<a href="mailto:shivamshinde786@gmail.com" style={{ color: '#2563eb', textDecoration: 'none' }}>shivamshinde786@gmail.com</a>)
             </div>
           </div>
         </footer>
