@@ -251,50 +251,6 @@ export default function RegistrationForm({ onRegistered, onResumeScorecard }) {
         {/* Right: Info Sidebar */}
         <div className="col-md-4">
           <div className="d-flex flex-column gap-3">
-            {/* Scholarship Tiers */}
-            <div className="card border-0 shadow-sm rounded-3">
-              <div className="card-body p-3">
-                <div className="d-flex justify-content-between align-items-center mb-3">
-                  <h5 className="mb-0 fw-bold text-primary d-flex align-items-center gap-2" style={{ fontSize: 15 }}><Trophy style={{ width: 15, height: 15, color: '#d97706' }} /> Scholarship Brackets</h5>
-                  <span className="badge bg-primary bg-opacity-10 text-primary border border-primary-subtle rounded-pill" style={{ fontSize: 11 }}>50 Marks Max</span>
-                </div>
-                <div className="list-group">
-                  {/* Platinum */}
-                  <div className="list-group-item d-flex justify-content-between align-items-center bg-white border border-primary-subtle rounded mb-2 p-2.5">
-                    <div className="d-flex align-items-center gap-2">
-                      <span style={{ fontSize: 18 }}>🥇</span>
-                      <div>
-                        <div className="small fw-bold text-primary">Platinum — 90% to 100%</div>
-                        <div className="small text-muted">45 – 50 Marks</div>
-                      </div>
-                    </div>
-                    <span className="badge bg-primary text-white">100% OFF</span>
-                  </div>
-                  {/* Gold */}
-                  <div className="list-group-item d-flex justify-content-between align-items-center bg-white border border-warning-subtle rounded mb-2 p-2.5">
-                    <div className="d-flex align-items-center gap-2">
-                      <span style={{ fontSize: 18 }}>🥈</span>
-                      <div>
-                        <div className="small fw-bold text-warning">Gold — 75% to 89%</div>
-                        <div className="small text-muted">38 – 44 Marks</div>
-                      </div>
-                    </div>
-                    <span className="badge bg-warning text-dark">50% OFF</span>
-                  </div>
-                  {/* Silver */}
-                  <div className="list-group-item d-flex justify-content-between align-items-center bg-white border border-info-subtle rounded mb-2 p-2.5">
-                    <div className="d-flex align-items-center gap-2">
-                      <span style={{ fontSize: 18 }}>🥉</span>
-                      <div>
-                        <div className="small fw-bold text-info">Silver — 60% to 74%</div>
-                        <div className="small text-muted">30 – 36 Marks</div>
-                      </div>
-                    </div>
-                    <span className="badge bg-info text-dark">25% OFF</span>
-                  </div>
-                </div>
-              </div>
-            </div>
             {/* Why Appear */}
             <div className="card border-0 shadow-sm rounded-3">
               <div className="card-body p-3">

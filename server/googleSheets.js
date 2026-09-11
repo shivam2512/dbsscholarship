@@ -361,18 +361,77 @@ module.exports = {
     if (isWebhookPlaceholder(url)) {
       return { found: false, error: 'Webhook not configured' };
     }
+    const normalizedEmail = email.trim().toLowerCase();
     try {
-      const result = await postToGoogleSheets({ action: 'CHECK_EMAIL', email: email.trim().toLowerCase() });
+      const result = await postToGoogleSheets({ action: 'CHECK_EMAIL', email: normalizedEmail });
       if (result && result.result === 'found') {
         return { found: true, status: result.status, data: result };
       }
       if (result && result.result === 'not_found') {
         return { found: false };
       }
-      // If result is unknown_action (old Apps Script), fall through to not_found
-      return { found: false, needsScriptUpdate: result && result.result === 'unknown_action' };
+      // FALLBACK: If Apps Script hasn't been redeployed yet (returns unknown_action),
+      // use the existing FETCH_ALL_DATA action to search for the email manually.
+      if (result && result.result === 'unknown_action') {
+        console.warn('⚠️ CHECK_EMAIL action not available — falling back to FETCH_ALL_DATA. Please redeploy your Google Apps Script!');
+        return await this._fallbackCheckEmail(normalizedEmail);
+      }
+      // Any other unexpected response — also try fallback
+      console.warn('⚠️ Unexpected CHECK_EMAIL response, trying fallback:', JSON.stringify(result));
+      return await this._fallbackCheckEmail(normalizedEmail);
     } catch (err) {
-      console.warn('checkEmailInSheets error:', err.message);
+      console.warn('checkEmailInSheets error, trying fallback:', err.message);
+      try {
+        return await this._fallbackCheckEmail(normalizedEmail);
+      } catch (fallbackErr) {
+        console.warn('Fallback also failed:', fallbackErr.message);
+        return { found: false, error: err.message };
+      }
+    }
+  },
+
+  /**
+   * Fallback: fetch ALL data from Google Sheets and search for the email.
+   * Used when CHECK_EMAIL action is not available (old Apps Script deployment).
+   */
+  async _fallbackCheckEmail(normalizedEmail) {
+    try {
+      const allData = await postToGoogleSheets({ action: 'FETCH_ALL_DATA' });
+      if (!allData) return { found: false };
+
+      // Check Scorecards & Results (completed tests)
+      const submissions = allData['Scorecards & Results'] || allData.submissions || [];
+      for (const row of submissions) {
+        const rowEmail = String(row.email || row.Email || row[3] || '').trim().toLowerCase();
+        if (rowEmail === normalizedEmail) {
+          return { found: true, status: 'completed', data: { email: normalizedEmail, fullName: row.fullName || row['Full Name'] || row[2] || '' } };
+        }
+      }
+
+      // Check Registrations (registered/in-progress)
+      const registrations = allData['Registrations'] || allData.registrations || [];
+      for (const row of registrations) {
+        const rowEmail = String(row.email || row.Email || row[3] || '').trim().toLowerCase();
+        if (rowEmail === normalizedEmail) {
+          return {
+            found: true,
+            status: 'registered',
+            data: {
+              email: normalizedEmail,
+              candidateId: row.candidateId || row['Candidate ID'] || row[1] || '',
+              fullName: row.fullName || row['Full Name'] || row[2] || '',
+              phone: row.phone || row.Phone || row[4] || '',
+              coach: row.coach || row['Coach/Counsellor'] || row[5] || '',
+              college: row.college || row.College || row[6] || '',
+              experience: row.experience || row.Experience || row[7] || ''
+            }
+          };
+        }
+      }
+
+      return { found: false };
+    } catch (err) {
+      console.warn('_fallbackCheckEmail error:', err.message);
       return { found: false, error: err.message };
     }
   },
